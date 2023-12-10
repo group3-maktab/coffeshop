@@ -1,10 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 from django.utils import timezone
 from twilio.rest import Client
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import random
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
@@ -21,20 +21,38 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(phone_number, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    phone_number = models.CharField(max_length=15, unique=True)
-    otp = models.CharField(max_length=6, null=True, blank=True)
-    otp_expiry = models.DateTimeField(null=True, blank=True)
+    """
+    django mixins:Mixins are not meant to stand alone; instead, they are designed to be mixed into other classes to extend or enhance their functionality.
+    PermissionsMixin:provides a set of fields and methods for handling permissions related to authentication and authorization in a Django model.
+    """
+    phone_number = models.CharField(max_length=11, unique=True)
+    # otp = models.CharField(max_length=6, null=True, blank=True)
+    # otp_expiry = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
-    
+
     def generate_otp(self):
         return str(random.randint(100000, 999999))
 
+    """
+    django.core.management.base.SystemCheckError: SystemCheckError: System check identified some issues:
+ERRORS:
+auth.User.groups: (fields.E304) Reverse accessor 'Group.user_set' for 'auth.User.groups' clashes with reverse accessor for 'users.CustomUser.groups'.
+        HINT: Add or change a related_name argument to the definition for 'auth.User.groups' or 'users.CustomUser.groups'.
+auth.User.user_permissions: (fields.E304) Reverse accessor 'Permission.user_set' for 'auth.User.user_permissions' clashes with reverse accessor for 'users.CustomUser.user_permissions'.
+        HINT: Add or change a related_name argument to the definition for 'auth.User.user_permissions' or 'users.CustomUser.user_permissions'.
+users.CustomUser.groups: (fields.E304) Reverse accessor 'Group.user_set' for 'users.CustomUser.groups' clashes with reverse accessor for 'auth.User.groups'.
+        HINT: Add or change a related_name argument to the definition for 'users.CustomUser.groups' or 'auth.User.groups'.
+users.CustomUser.user_permissions: (fields.E304) Reverse accessor 'Permission.user_set' for 'users.CustomUser.user_permissions' clashes with reverse accessor for 'auth.User.user_permissions'.
+        HINT: Add or change a related_name argument to the definition for 'users.CustomUser.user_permissions' or 'auth.User.user_permissions'.
+for this bug we should make these groups and permissions attr
+    """
     groups = models.ManyToManyField(
         Group,
         verbose_name=_('groups'),
@@ -51,14 +69,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def send_otp(self):
         otp = self.generate_otp()
-        self.otp = otp
-        self.otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        # self.otp = otp
+        # self.otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
         self.save()
 
         account_sid = 'AC7b880f6bcd7d76164b08b45c97e4693f'
         auth_token = '73b4c27d580e3f83775f99e691f2ca91'
         twilio_phone_number = '+14846601335'
-        print("reach down here")
+
         client = Client(account_sid, auth_token)
         print("Phone Number:", self.phone_number)
         message = client.messages.create(
@@ -68,6 +87,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         )
 
         print("Twilio Response:", message)
+        return otp, otp_expiry
 
-    def check_otp(self, entered_otp):
-        return self.otp == entered_otp and timezone.now() < self.otp_expiry
+    def check_otp(self, otp, otp_expiry, entered_otp):
+        return otp == entered_otp and timezone.now() < otp_expiry
