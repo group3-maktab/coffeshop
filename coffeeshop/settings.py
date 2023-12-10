@@ -74,7 +74,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'coffeehop.wsgi.application'
+WSGI_APPLICATION = 'coffeeshop.wsgi.application'
+
 
 
 # Database
