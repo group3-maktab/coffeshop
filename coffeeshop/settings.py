@@ -38,10 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
-    'coffeeshop_custom',
+    'core',
     'foodmenu',
     'order',
-    'staff',
     'tables',
     'users',
     
