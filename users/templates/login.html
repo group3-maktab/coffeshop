@@ -1,5 +1,11 @@
-{% extends ../../coffeeshop_custom/templates/base.html %}
-
+{% extends "base.html" %}
 {% block content %}
-<h1>login</h1>
+<form method="post" action="{% url 'users:send_sms' %}">
+    {% csrf_token %}
+    <label for="phone_number">Enter Phone Number:</label>
+    <input type="text" name="phone_number" required>
+    <br>
+    <input type="submit" value="Send me a code">
+</form>
+{{ error }}
 {% endblock %}

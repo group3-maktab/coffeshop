@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" action="{% url 'users:auth_sms' %}">
+    {% csrf_token %}
+    <label for="otp">Enter code:</label>
+    <input type="text" name="otp" required>
+    <br>
+    <input type="submit" value="Verify OTP">
+    {{ error }}
+</form>{% endblock %}
