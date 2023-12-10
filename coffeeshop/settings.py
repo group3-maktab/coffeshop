@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'coffeshop.urls'
+ROOT_URLCONF = 'coffeeshop.urls'
 
 TEMPLATES = [
     {
@@ -74,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'coffeshop.wsgi.application'
+WSGI_APPLICATION = 'coffeeshop.wsgi.application'
 
 
 # Database
