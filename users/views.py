@@ -4,6 +4,11 @@ from django.shortcuts import redirect
 from .models import CustomUser
 from django.contrib.auth import login
 from django.urls import reverse
+from django.utils import timezone
+import dotenv
+
+dotenv.load_dotenv()
+
 
 
 # Create your views here.
@@ -25,7 +30,8 @@ class SendOtpView(View):
 
         otp, otp_expiry = user.send_otp()
         request.session['otp'] = otp
-        request.session['otp_expiry'] = otp_expiry
+        # request.session['otp_expiry'] = otp_expiry {{cant pass time to session}}
+        request.session['otp_expiry'] = int(otp_expiry.timestamp())
         request.session['phone_number'] = phone_number
         return redirect(reverse('users:login_code'))
 
@@ -43,6 +49,8 @@ class VerifyOtpView(View):
         phone_number = request.session.get('phone_number')
         otp = request.session.get('otp')
         otp_expiry = request.session.get('otp_expiry ')
+        otp_expiry = timezone.datetime.fromtimestamp(otp_expiry)
+
         try:
             user = CustomUser.objects.get(phone_number=phone_number)
             if user.check_otp(otp,otp_expiry,entered_otp):
