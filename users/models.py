@@ -98,7 +98,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         auth_token = os.getenv('auth_token')
         twilio_phone_number = os.getenv('twilio_phone_number')
 
-        dist_phone_number = self.phone_number.replace("0", "+98")
+        dist_phone_number = self.phone_number.replace("0", "+98", 1)
 
         client = Client(account_sid, auth_token)
         print("Phone Number:", self.phone_number)

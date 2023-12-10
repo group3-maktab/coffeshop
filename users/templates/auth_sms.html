@@ -6,5 +6,11 @@
     <input type="text" name="otp" required>
     <br>
     <input type="submit" value="Verify OTP">
-    {{ error }}
+    {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 </form>{% endblock %}

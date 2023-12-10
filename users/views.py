@@ -5,6 +5,7 @@ from .models import CustomUser
 from django.contrib.auth import login
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib import messages
 import dotenv
 
 dotenv.load_dotenv()
@@ -33,7 +34,7 @@ class SendOtpView(View):
         # request.session['otp_expiry'] = otp_expiry {{cant pass time to session}}
         request.session['otp_expiry'] = int(otp_expiry.timestamp())
         request.session['phone_number'] = phone_number
-        return redirect(reverse('users:login_code'))
+        return redirect('users:login_code')
 
 
 class Auth(View):
@@ -48,8 +49,9 @@ class VerifyOtpView(View):
         entered_otp = request.POST.get('otp')
         phone_number = request.session.get('phone_number')
         otp = request.session.get('otp')
-        otp_expiry = request.session.get('otp_expiry ')
-        otp_expiry = timezone.datetime.fromtimestamp(otp_expiry)
+        otp_expiry = request.session.get('otp_expiry')
+        # otp_expiry = timezone.datetime.fromtimestamp(otp_expiry) {{can't compare offset-naive and offset-aware datetimes}}
+        otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
 
         try:
             user = CustomUser.objects.get(phone_number=phone_number)
@@ -57,6 +59,8 @@ class VerifyOtpView(View):
                 login(request, user)  # :-/
                 return redirect('core:home')
             else:
-                return redirect('login', {'error': 'Invalid code'})
+                messages.error(request, 'Invalid code')
         except CustomUser.DoesNotExist:
-            return redirect('login', {'error': 'User not found'})
+            messages.error(request, 'User not found')
+
+        return redirect('users:login')
