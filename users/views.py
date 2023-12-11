@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.shortcuts import redirect
 from .models import CustomUser
-from django.contrib.auth import login,logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.views import LogoutView
 from django.urls import reverse
 from django.utils import timezone
@@ -10,7 +10,6 @@ from django.contrib import messages
 import dotenv
 
 dotenv.load_dotenv()
-
 
 
 # Create your views here.
@@ -21,6 +20,8 @@ class Login(View):
     def get(self, request):
         return render(request, self.template_name)
 
+# @has_permission_decorator('update_blog_record')
+# has_permission(user, 'update_blog_record')
 
 class SendOtpView(View):
     def post(self, request):
@@ -39,7 +40,6 @@ class SendOtpView(View):
 
 
 class Auth(View):
-
     template_name = 'auth_sms.html'
 
     def get(self, request):
@@ -59,7 +59,7 @@ class VerifyOtpView(View):
 
         try:
             user = CustomUser.objects.get()
-            if user.check_otp(otp,otp_expiry,entered_otp):
+            if user.check_otp(otp, otp_expiry, entered_otp):
                 login(request, user)  # :-/
                 return redirect('core:home')
             else:

@@ -14,6 +14,6 @@ class PhoneBackend(ModelBackend):
 
     def get_user(self, user_id):
         try:
-            return CustomUser.objects.get()
+            return CustomUser.objects.get(pk=user_id)
         except CustomUser.DoesNotExist:
             return None
