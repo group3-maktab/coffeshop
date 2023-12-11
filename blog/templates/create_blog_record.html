@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Create New Blog</h2>
+
+        <form method="post" action="{% url 'blog:create_blog' %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input name="title" id="title" type="text" class="form-control" placeholder="Enter Title" required>
+            </div>
+
+            <div class="">
+                <label for="content_count" class="form-label">Content Count</label>
+                <input id="content_count" name="content_count" type="number" min="1" max="5"
+                    onchange="generateTextAreas()" required>
+            </div>
+            
+            <div id="content_areas">
+                <label for="content"> Content 1</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+
+            <button type="submit">Create Blog</button>
+        </form>
+    </div>
+
+<script>
+    function generateTextAreas() {
+        const maxContentCount = 5;  // Set the maximum number of text areas
+        const contentCount = document.getElementById('content_count').value;
+        const contentAreasContainer = document.getElementById('content_areas');
+        contentAreasContainer.innerHTML = '';
+
+        // Ensure contentCount does not exceed the maximum
+        if (contentCount > maxContentCount) {
+            alert('Maximum allowed content count is 5.');
+            document.getElementById('content_count').value = maxContentCount;
+            contentCount = maxContentCount;
+        }
+
+        for (let count = 0; count < contentCount; count++) {
+            const textareaLabel = document.createElement('label');
+            textareaLabel.htmlFor = `content${count}`;
+            textareaLabel.className = 'form-label';
+            textareaLabel.innerText = `Content ${count + 1}`;
+
+            const textarea = document.createElement('textarea');
+            textarea.className = 'form-control';
+            textarea.id = `content${count}`;
+            textarea.name = `content${count}`;
+            textarea.required = true;
+
+            contentAreasContainer.appendChild(textareaLabel);
+            contentAreasContainer.appendChild(textarea);
+        }
+    }
+</script>
+
+{% endblock %}

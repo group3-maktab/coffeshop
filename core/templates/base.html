@@ -8,13 +8,13 @@
 <body>
     <div>
         <div>
-            <a href="{% url ''}">menu</a>
-            <a href="">blog</a>
+{#            <a href="{% url ''%}">menu</a>#}
+            <a href="{% url 'blog:create_blog' %}">blog</a>
             <a href="">login</a> 
             <a href="">login</a>
         </div>
         <div>
-            <a href="">login</a>
+            <a href="{% url 'users:login' %}">login</a>
             <a href=""></a> 
         </div>
     </div>
