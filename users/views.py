@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views import View
 from django.shortcuts import redirect
 from .models import CustomUser
-from django.contrib.auth import login
+from django.contrib.auth import login,logout
+from django.contrib.auth.views import LogoutView
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
@@ -25,7 +26,7 @@ class SendOtpView(View):
     def post(self, request):
         phone_number = request.POST.get('phone_number')
         try:
-            user = CustomUser.objects.get(phone_number=phone_number)
+            user = CustomUser.objects.get()
         except CustomUser.DoesNotExist:
             user = CustomUser.objects.create_user(phone_number=phone_number)
 
@@ -34,13 +35,16 @@ class SendOtpView(View):
         # request.session['otp_expiry'] = otp_expiry {{cant pass time to session}}
         request.session['otp_expiry'] = int(otp_expiry.timestamp())
         request.session['phone_number'] = phone_number
-        return redirect('users:login_code')
+        return redirect('users:login')
 
 
 class Auth(View):
+
     template_name = 'auth_sms.html'
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('users:login')
         return render(request, self.template_name)
 
 
@@ -54,7 +58,7 @@ class VerifyOtpView(View):
         otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
 
         try:
-            user = CustomUser.objects.get(phone_number=phone_number)
+            user = CustomUser.objects.get()
             if user.check_otp(otp,otp_expiry,entered_otp):
                 login(request, user)  # :-/
                 return redirect('core:home')
@@ -64,3 +68,10 @@ class VerifyOtpView(View):
             messages.error(request, 'User not found')
 
         return redirect('users:login')
+
+
+
+class LogoutView(LogoutView):
+    def get(self, request, **kwargs):
+        logout(request)
+        return redirect('user:login')

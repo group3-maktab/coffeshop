@@ -5,7 +5,7 @@ from .models import CustomUser
 class PhoneBackend(ModelBackend):
     def authenticate(self, request, phone_number=None, otp=None, **kwargs):
         try:
-            user = CustomUser.objects.get(phone_number=phone_number)
+            user = CustomUser.objects.get()
         except CustomUser.DoesNotExist:
             return None
 
@@ -14,6 +14,6 @@ class PhoneBackend(ModelBackend):
 
     def get_user(self, user_id):
         try:
-            return CustomUser.objects.get(pk=user_id)
+            return CustomUser.objects.get()
         except CustomUser.DoesNotExist:
             return None
