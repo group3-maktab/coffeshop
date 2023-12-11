@@ -21,6 +21,7 @@ class CreateBlogRecord(View):
     def get(self, request):
         template_name = 'create_blog_record.html'
         return render(request, template_name)
+
     def post(self, request):
         template_name = 'create_blog_record.html'
         title = request.POST['title']
