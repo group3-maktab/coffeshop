@@ -26,7 +26,7 @@ class SendOtpView(View):
     def post(self, request):
         phone_number = request.POST.get('phone_number')
         try:
-            user = CustomUser.objects.get()
+            user = CustomUser.objects.get(phone_number=phone_number)
         except CustomUser.DoesNotExist:
             user = CustomUser.objects.create_user(phone_number=phone_number)
 
@@ -35,7 +35,7 @@ class SendOtpView(View):
         # request.session['otp_expiry'] = otp_expiry {{cant pass time to session}}
         request.session['otp_expiry'] = int(otp_expiry.timestamp())
         request.session['phone_number'] = phone_number
-        return redirect('users:login')
+        return redirect('users:login_code')
 
 
 class Auth(View):
@@ -70,8 +70,7 @@ class VerifyOtpView(View):
         return redirect('users:login')
 
 
-
-class LogoutView(LogoutView):
-    def get(self, request, **kwargs):
+class LogOutView(View):
+    def get(self, request):
         logout(request)
-        return redirect('user:login')
+        return redirect(reverse('core:home'))

@@ -9,5 +9,5 @@ urlpatterns = [
     path('send_sms', views.SendOtpView.as_view(), name='send_sms'),
     path('login_code', views.Auth.as_view(), name='login_code'),
     path('auth_sms', views.VerifyOtpView.as_view(), name='auth_sms'),
-    path('logout', LogoutView.as_view(next_page='users:login'), name="logout"),
+    path('logout', views.LogOutView.as_view(), name="logout"),
 ]

@@ -34,15 +34,15 @@ class CustomUserAdmin(BaseUserAdmin):
     readonly_fields = ('last_login', 'phone_number')
 
     fieldsets = (
-        (None, {'fields': ('phone_number',)}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'groups', 'user_permissions')}),
-        ('Last_login', {'fields': ('last_login',)}),
+        (None, {'fields': ['phone_number',]}),
+        ('Permissions', {'fields': ['is_active', 'is_staff', 'groups', 'user_permissions']}),
+        ('Last_login', {'fields': ['last_login',]}),
     )
 
     add_fieldsets = (
         (None, {
-            'classes': ('wide',),
-            'fields': ('phone_number'),
+            'classes': ['wide'],
+            'fields': ['phone_number'],
         }),
     )
 

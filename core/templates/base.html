@@ -11,12 +11,16 @@
 
 {#            <a href="{% url ''%}">menu</a>#}
             <a href="{% url 'blog:create_blog' %}">blog</a>
-            <a href="{% url 'users:logout' %}">login</a> 
+           
 
-            <a href="">login</a>
         </div>
         <div>
+            {% if not user.is_authenticated %}
             <a href="{% url 'users:login' %}">login</a>
+            {% else %}
+            <p>{{ user.phone_number }}</p>
+             <a href="{% url 'users:logout' %}">logout</a> 
+            {% endif %}
             <a href=""></a> 
         </div>
     </div>

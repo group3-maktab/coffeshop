@@ -91,7 +91,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # self.otp = otp
         # self.otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
         otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
-        self.save()
 
         # todo: dotenv# #done
         account_sid = os.getenv('account_sid')
@@ -101,7 +100,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         dist_phone_number = self.phone_number.replace("0", "+98", 1)
 
         client = Client(account_sid, auth_token)
-        print("Phone Number:", self.phone_number)
+        print("Phone Number:", dist_phone_number)
         message = client.messages.create(
             body=f'Your code is: {otp}',
             from_=twilio_phone_number,
