@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 from django.utils import timezone
+from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group
 from twilio.rest import Client
 from django.db import models
 from django.core.validators import RegexValidator
@@ -42,11 +44,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             message='Phone number must start with "09" and have 11 digits.',
             code='invalid_phone_number'
         )])
-    # otp = models.CharField(max_length=6, null=True, blank=True)
-    # otp_expiry = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    last_login = models.DateTimeField(auto_now_add=True,verbose_name='last')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
@@ -114,3 +114,4 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     @staticmethod
     def check_otp(otp, otp_expiry, entered_otp):
         return otp == entered_otp and timezone.now() < otp_expiry
+

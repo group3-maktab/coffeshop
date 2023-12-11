@@ -29,7 +29,7 @@ class GroupInline(admin.TabularInline):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(BaseUserAdmin):
-    # admin.site.unregister(User)
+    admin.site.unregister(User)
     list_display = ('phone_number', 'is_active', 'is_staff', 'last_login')
     readonly_fields = ('last_login', 'phone_number')
 
