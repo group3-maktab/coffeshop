@@ -58,7 +58,7 @@ class VerifyOtpView(View):
         otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
 
         try:
-            user = CustomUser.objects.get()
+            user = CustomUser.objects.get(phone_number=phone_number)
             if user.check_otp(otp, otp_expiry, entered_otp):
                 login(request, user)  # :-/
                 return redirect('core:home')
