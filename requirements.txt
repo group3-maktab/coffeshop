@@ -16,3 +16,4 @@ sqlparse==0.4.4
 twilio==8.10.3
 urllib3==2.1.0
 python-dotenv~=1.0.0
+django-debug-toolbar==4.2.0
