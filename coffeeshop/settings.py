@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import dotenv
+import os
+import psycopg2
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,11 +92,22 @@ WSGI_APPLICATION = 'coffeeshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+dotenv.load_dotenv()
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+        'ENGINE': f"{os.getenv('ENGINE')}",
+
+        'NAME': f"{os.getenv('NAME')}",
+
+        'USER': f"{os.getenv('USER')}",
+
+        'PASSWORD': f"{os.getenv('PASSWORD')}",
+
+        'HOST': f"{os.getenv('HOST')}",
+
+        'PORT': f"{os.getenv('PORT')}",
     }
 }
 
