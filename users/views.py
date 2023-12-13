@@ -65,6 +65,7 @@ class Auth(View):
                 return redirect('core:home')
             else:
                 messages.error(request, 'Invalid code')
+                user.delete()
         except CustomUser.DoesNotExist:
             messages.error(request, 'User not found')
 

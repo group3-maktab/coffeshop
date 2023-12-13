@@ -44,6 +44,7 @@ class CustomUserAdmin(BaseUserAdmin):
             'classes': ['wide'],
             'fields': ['phone_number'],
         }),
+        ('Permitions',{'fields': ['is_active', 'is_staff']})
     )
 
     search_fields = ('phone_number',)
