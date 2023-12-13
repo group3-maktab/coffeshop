@@ -39,53 +39,35 @@ class CreateBlogRecord(LoginRequiredMixin, View):
             thumbnail = form.cleaned_data['thumbnail']
             content = form.cleaned_data['content']
 
-            # Create a unique slug for the blog post
             slug = slugify(title)
-            # Save the uploaded thumbnail to a designated folder
 
-            thumbnail_folder = 'blog/blogs'
-            os.makedirs(thumbnail_folder, exist_ok=True)  # Create the folder if it doesn't exist
+            thumbnail_folder = 'blog/templates/articles'
+            os.makedirs(thumbnail_folder, exist_ok=True)
 
             thumbnail_path = os.path.join(thumbnail_folder, thumbnail.name)
             with open(thumbnail_path, 'wb') as destination:
                 for chunk in thumbnail.chunks():
                     destination.write(chunk)
 
-            # Create a dynamic HTML template for the blog post
-            blog_template = os.path.join('blog', 'blogs', f'{slug}.html')
+            blog_template = os.path.join('blog', 'templates', 'articles', f'{slug}.html')
 
             with open(blog_template, 'w') as file:
-                file.write("{% extends 'blog_base.html' %}\n")
                 file.write(render_to_string('blog_base.html',
                                             {'title': title,
                                              'content': content,
                                              'thumbnail_url': thumbnail_path}))
 
-            # Redirect to the detail view of the created blog post
             return redirect('blog:blog_detail', slug=slug)
         else:
             return render(request, self.template_name, {'form': form})
 
 
-class BlogDetailView(TemplateView):
-    template_name = 'blog_base.html'
+class BlogDetailView(View):
+    def get(self, request, slug):
+        template_name =f'articles/{slug}.html'
+        return render(request, template_name)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        slug = kwargs['slug']
-        blog_template_path = f'blogs/{slug}.html'
 
-        if not os.path.exists(blog_template_path):
-            raise Http404("Blog does not exist")
-
-        # Read the content of the HTML file and pass it to the template
-        with open(blog_template_path, 'r') as file:
-            content = file.read()
-
-        # Set the title based on the slug
-        context['title'] = slugify(slug)
-        context['content'] = content
-        return context
 
 
 class UpdateBlogRecord(View):
@@ -96,5 +78,3 @@ class BlogsListView(View):
     pass
 
 
-class BlogDetailView(View):
-    pass

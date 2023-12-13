@@ -70,7 +70,7 @@ ROOT_URLCONF = 'coffeeshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['articles'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
