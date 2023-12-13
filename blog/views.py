@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
 from .forms import GenerateBlogForm
+import glob
 import os
 
 # Create your views here.
@@ -41,7 +42,7 @@ class CreateBlogRecord(LoginRequiredMixin, View):
 
             slug = slugify(title)
 
-            thumbnail_folder = 'blog/templates/articles'
+            thumbnail_folder = 'blog/static/articles'
             os.makedirs(thumbnail_folder, exist_ok=True)
 
             thumbnail_path = os.path.join(thumbnail_folder, thumbnail.name)
@@ -51,7 +52,11 @@ class CreateBlogRecord(LoginRequiredMixin, View):
 
             blog_template = os.path.join('blog', 'templates', 'articles', f'{slug}.html')
 
+            thumbnail_path = f'articles/{thumbnail.name}'
+            thumbnail_path = f'{{% static "{thumbnail_path}" %}}'
+
             with open(blog_template, 'w') as file:
+                file.write("{% load static %}\n")
                 file.write(render_to_string('blog_base.html',
                                             {'title': title,
                                              'content': content,
@@ -64,10 +69,8 @@ class CreateBlogRecord(LoginRequiredMixin, View):
 
 class BlogDetailView(View):
     def get(self, request, slug):
-        template_name =f'articles/{slug}.html'
+        template_name = f'articles/{slug}.html'
         return render(request, template_name)
-
-
 
 
 class UpdateBlogRecord(View):
@@ -75,6 +78,8 @@ class UpdateBlogRecord(View):
 
 
 class BlogsListView(View):
-    pass
+    templates = 'blogs.html'
+    template_files = glob.glob('blog/templates/articles/*.html')
 
-
+    for file_path in template_files:
+        print(file_path)
