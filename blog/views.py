@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import GenerateBlogForm
 # Create your views here.
 """
 permissions:
@@ -17,17 +18,19 @@ update_blog_record
 # has_permission(user, 'create_medical_record')
 
 
-class CreateBlogRecord(View):
+class CreateBlogRecord(LoginRequiredMixin, View):
     def get(self, request):
         template_name = 'create_blog_record.html'
-        return render(request, template_name)
+
+        form = GenerateBlogForm()
+
+        return render(request, template_name, {'form' : form})
 
     def post(self, request):
-        template_name = 'create_blog_record.html'
+
         title = request.POST['title']
-        count = request.POST['count']
-        content = [content for content in request.POST['content']]
-        author = request.user
+        thumbnail = request.POST['thumbnail']
+        content = request.POST['content']
 
 
 class DeleteBlogRecord(View):

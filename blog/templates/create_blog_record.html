@@ -4,22 +4,16 @@
     <div class="container mt-5">
         <h2>Create New Blog</h2>
 
-        <form method="post" action="{% url 'blog:create_blog' %}">
+        <form method="post" enctype="multipart/form-data" action="{% url 'blog:create_blog' %}">
             {% csrf_token %}
+            {{ form.title.label_tag }} {{ form.title }}
+            <br>
 
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input name="title" id="title" type="text" class="form-control" placeholder="Enter Title" required>
-            </div>
-            <div class="">
-                <label for="thumbnail" class="form-label">Thumbnail</label>
-                <input name="thumbnail" id="thumbnail" type="image" alt="your internet connection is interrupted so u cant see this image" class="" required>
-            </div>
-            
-            <div id="content_areas">
-                <label for="content"> Content 1</label>
-                <textarea id="content" name="content" required></textarea>
-            </div>
+            {{ form.thumbnail.label_tag }} {{ form.thumbnail }}
+            <br>
+            <label for="content">content</label>
+            <input type="text" id="content" name="content">
+            <br><br>
 
             <button type="submit">Create Blog</button>
         </form>
