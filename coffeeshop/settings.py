@@ -139,4 +139,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = ['users.backends.PhoneBackend']
-AUTH_USER_MODEL = 'users.User'
+# AUTH_USER_MODEL = 'users.CustomUser'
