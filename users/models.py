@@ -45,9 +45,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             code='invalid_phone_number'
         )])
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    last_login = models.DateTimeField(auto_now_add=True,verbose_name='last')
+    last_login = models.DateTimeField(auto_now_add=True, verbose_name='last')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
@@ -74,12 +75,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Group,
         verbose_name=_('groups'),
         blank=True,
-        related_name='users_groups'
-    )
+        related_name='users_groups')
 
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
         blank=True,
-        related_name='user_perms'
-    )
+        related_name='user_perms')

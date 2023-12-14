@@ -5,9 +5,10 @@ from django.contrib.auth import login, logout
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from .forms import SendSMSForm, VerifyOTPForm
+from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm
 from .models import CustomUser
 import dotenv
+
 from .utils import Authentication
 dotenv.load_dotenv()
 
@@ -73,3 +74,39 @@ class LogOutView(View):
     def get(self, request):
         logout(request)
         return redirect(reverse('core:home'))
+
+
+# views.py
+
+class Register(View):
+    template_name = 'register.html'
+
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            verification_method = form.cleaned_data['verification_method']
+
+            # user = CustomUser.objects.create_user(
+            #     phone_number=phone_number,
+            #     email=email,
+            #     password=password,
+            # )
+            request.session['phone_number'] = phone_number
+            request.session['email'] = email
+            request.session['password'] = password
+            request.session['v_m'] = verification_method
+
+
+            messages.success(request, f'Registration successful. Please verify your {verification_method} !')
+            return redirect('users:login')
+        else:
+            messages.error(request, 'Invalid registration form data.')
+
+        return render(request, self.template_name, {'form': form})
