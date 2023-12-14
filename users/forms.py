@@ -35,7 +35,6 @@ class RegistrationForm(forms.Form):
         initial='phone',
         widget=forms.RadioSelect,
         label='Preferred Verification Method')
-    username = forms.CharField(label='Username', help_text='Enter your email or phone number for login.')
 
 
 class VerifyOTPForm(forms.Form):

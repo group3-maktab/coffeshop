@@ -24,18 +24,12 @@ class Login(View):
     def post(self, request):
         phone_number = request.POST.get('phone_number')
 
-        otp, otp_expiry = Authentication.send_otp(phone_number)
-
-        request.session['otp'] = otp
-        request.session['otp_expiry'] = int(otp_expiry.timestamp())
-        request.session['phone_number'] = phone_number
-
-        messages.success(request, 'OTP sent successfully. Please check your phone.')
-
-        return redirect('users:login_code')
 
 
-class Auth(View):
+
+
+
+class Auth_Phone(View):
     template_name = 'login_code.html'
 
     def get(self, request):
@@ -47,27 +41,24 @@ class Auth(View):
     def post(self, request):
         entered_otp = request.POST.get('otp')
         phone_number = request.session.get('phone_number')
+        email = request.session.get('email')
         otp = request.session.get('otp')
         otp_expiry = request.session.get('otp_expiry')
-        # otp_expiry = timezone.datetime.fromtimestamp(otp_expiry) {{can't compare offset-naive and offset-aware
-            # datetimes}}
         otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
-
-        try:
-            user = CustomUser.objects.get(phone_number=phone_number)
-            if Authentication.check_otp(otp, otp_expiry, entered_otp):
+        verification_method = request.session['v_m']
+        if verification_method == 'phone' or verification_method == 'email' and Authentication.check_otp(otp, otp_expiry, entered_otp) :
                 try:
-                    user = CustomUser.objects.get(phone_number=phone_number)
+                    user = CustomUser.objects.get(phone_number=phone_number, email=email)
                 except CustomUser.DoesNotExist:
-                    user = CustomUser.objects.create_user(phone_number=phone_number)
+                    messages.error(request, f'User not found try again!')
+                    return redirect('users:register')
                 login(request, user)  # :-/
                 return redirect('core:home')
-            else:
-                messages.error(request, 'Invalid code')
-        except CustomUser.DoesNotExist:
-            messages.error(request, 'User not found')
-
+        else:
+            messages.error(request, 'Invalid code')
         return redirect('users:login')
+
+
 
 
 class LogOutView(View):
@@ -93,20 +84,45 @@ class Register(View):
             password = form.cleaned_data['password']
             verification_method = form.cleaned_data['verification_method']
 
-            # user = CustomUser.objects.create_user(
-            #     phone_number=phone_number,
-            #     email=email,
-            #     password=password,
-            # )
+            user = CustomUser.objects.create_user(
+                phone_number=phone_number,
+                email=email,
+                password=password,
+                is_active=False
+            )
+
             request.session['phone_number'] = phone_number
             request.session['email'] = email
-            request.session['password'] = password
             request.session['v_m'] = verification_method
 
 
             messages.success(request, f'Registration successful. Please verify your {verification_method} !')
-            return redirect('users:login')
+            return redirect('users:verification')
         else:
             messages.error(request, 'Invalid registration form data.')
 
         return render(request, self.template_name, {'form': form})
+
+
+class Verification(View):
+    def get(self,request):
+        phone_number = request.session['phone_number']
+        email = request.session['email']
+        verification_method = request.session['v_m']
+
+        if verification_method == 'phone':
+            otp, otp_expiry = Authentication.send_otp(phone_number)
+
+            request.session['otp'] = otp
+            request.session['otp_expiry'] = int(otp_expiry.timestamp())
+            request.session['phone_number'] = phone_number
+            messages.success(request, 'CODE sent successfully. Please check your phone.')
+            return redirect('users:login_code')
+        else:
+            otp, otp_expiry = Authentication.send_otp_email(email)
+            request.session['otp'] = otp
+            request.session['otp_expiry'] = int(otp_expiry.timestamp())
+            request.session['email'] = email
+
+
+
