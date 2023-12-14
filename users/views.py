@@ -8,9 +8,8 @@ from django.contrib import messages
 from .forms import SendSMSForm, VerifyOTPForm
 from .models import CustomUser
 import dotenv
-
+from .utils import Authentication
 dotenv.load_dotenv()
-
 
 # todo:DOCUMENTATION
 
@@ -24,12 +23,7 @@ class Login(View):
     def post(self, request):
         phone_number = request.POST.get('phone_number')
 
-        try:
-            user = CustomUser.objects.get(phone_number=phone_number)
-        except CustomUser.DoesNotExist:
-            user = CustomUser.objects.create_user(phone_number=phone_number)
-
-        otp, otp_expiry = user.send_otp()
+        otp, otp_expiry = Authentication.send_otp(phone_number)
 
         request.session['otp'] = otp
         request.session['otp_expiry'] = int(otp_expiry.timestamp())
@@ -60,12 +54,15 @@ class Auth(View):
 
         try:
             user = CustomUser.objects.get(phone_number=phone_number)
-            if user.check_otp(otp, otp_expiry, entered_otp):
+            if Authentication.check_otp(otp, otp_expiry, entered_otp):
+                try:
+                    user = CustomUser.objects.get(phone_number=phone_number)
+                except CustomUser.DoesNotExist:
+                    user = CustomUser.objects.create_user(phone_number=phone_number)
                 login(request, user)  # :-/
                 return redirect('core:home')
             else:
                 messages.error(request, 'Invalid code')
-                user.delete()
         except CustomUser.DoesNotExist:
             messages.error(request, 'User not found')
 

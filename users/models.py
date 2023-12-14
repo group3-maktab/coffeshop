@@ -1,14 +1,13 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
-from django.utils import timezone
+
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import Group
-from twilio.rest import Client
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-import random
+
 import dotenv
-import os
+
 
 dotenv.load_dotenv()
 
@@ -51,10 +50,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'phone_number'
 
-    @staticmethod
-    def generate_otp():
-        return str(random.randint(100000, 999999))
-
     """django.core.management.base.SystemCheckError: SystemCheckError: System check identified some issues: ERRORS: 
     auth.User.groups: (fields.E304) Reverse accessor 'Group.user_set' for 'auth.User.groups' clashes with reverse 
     accessor for 'users.CustomUser.groups'. HINT: Add or change a related_name argument to the definition for 
@@ -85,32 +80,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True,
         related_name='user_perms'
     )
-
-    def send_otp(self):
-        otp = self.generate_otp()
-        # self.otp = otp
-        # self.otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
-        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
-
-        # todo: dotenv# #done
-        account_sid = os.getenv('account_sid')
-        auth_token = os.getenv('auth_token')
-        twilio_phone_number = os.getenv('twilio_phone_number')
-
-        dist_phone_number = self.phone_number.replace("0", "+98", 1)
-
-        client = Client(account_sid, auth_token)
-        print("Phone Number:", dist_phone_number)
-        message = client.messages.create(
-            body=f'Your code is: {otp}',
-            from_=twilio_phone_number,
-            to=dist_phone_number
-        )
-
-        print("Twilio Response:", message)
-        return otp, otp_expiry
-
-    @staticmethod
-    def check_otp(otp, otp_expiry, entered_otp):
-        return otp == entered_otp and timezone.now() < otp_expiry
-
