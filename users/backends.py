@@ -3,14 +3,15 @@ from .models import CustomUser
 
 
 class PhoneBackend(ModelBackend):
-    def authenticate(self, request, phone_number=None, otp=None, **kwargs):
-        try:
-            user = CustomUser.objects.get()
-        except CustomUser.DoesNotExist:
-            return None
+    class CustomUserBackend(ModelBackend):
+        def authenticate(self, request, phone_number=None, password=None, **kwargs):
+            try:
+                user = CustomUser.objects.get(phone_number=phone_number)
+            except CustomUser.DoesNotExist:
+                return None
 
-        if user.check_otp(otp):
-            return user
+            if user.check_password(password):
+                return user
 
     def get_user(self, user_id):
         try:

@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm, SetPasswordForm
+from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm
 from .models import CustomUser
 import dotenv
 
@@ -18,11 +18,18 @@ class Login(View):
     template_name = 'login.html'
 
     def get(self, request):
-        form = SendSMSForm()
+        form = LoginForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        phone_number = request.POST.get('phone_number')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number')
+            password = form.cleaned_data.get('password')
+            user = authenticate(phone_number=phone_number, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('core:home')
 
 
 
