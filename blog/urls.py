@@ -3,9 +3,9 @@ from . import views
 
 app_name = 'blog'
 urlpatterns = [
-    path('blog/<slug:title>', views.BlogDetailView.as_view(), name='login'),
-    path('blogs', views.BlogsListView.as_view(), name='login'),
     path('create_blog', views.CreateBlogRecord.as_view(), name='create_blog'),
+    path('<slug:slug>', views.BlogDetailView.as_view(), name='blog_detail'),
+    path('blogs', views.BlogsListView.as_view(), name='blog_list'),
     path('update_blog', views.UpdateBlogRecord.as_view(), name='edit_blog'),
-    path('delete_blog', views.DeleteBlogRecord.as_view(), name='delete_blog'),
+    # path('delete_blog', views.DeleteBlogRecord.as_view(), name='delete_blog'),
 ]

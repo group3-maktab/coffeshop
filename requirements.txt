@@ -6,15 +6,18 @@ attrs==23.1.0
 certifi==2023.11.17
 charset-normalizer==3.3.2
 Django==5.0
+-e git+https://github.com/jazzband/django-debug-toolbar.git@be989d278d6fd736344eee3bf85d2025d5a34645#egg=django_debug_toolbar
 frozenlist==1.4.0
 idna==3.6
 multidict==6.0.4
 phonenumbers==8.13.26
+Pillow==10.1.0
+psycopg2==2.9.9
 PyJWT==2.8.0
+python-dotenv==1.0.0
 requests==2.31.0
+sinchsms==1.0.5
 sqlparse==0.4.4
 twilio==8.10.3
 urllib3==2.1.0
-python-dotenv~=1.0.0
-django-debug-toolbar==4.2.0
-psycopg2==2.9.9
+yarl==1.9.4

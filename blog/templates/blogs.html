@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for url in urls %}
+    	<a href="{{ 'blog:blog_detail url' }}"
+    {% endfor %}
+{% endblock %}
