@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 
-class SendSMSForm(forms.Form):
+class Login(forms.Form):
     phone_number = forms.CharField(
         label='Enter Phone Number:',
         widget=forms.TextInput(attrs={'id': 'phone_number'}),
