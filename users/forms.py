@@ -2,18 +2,8 @@ from django import forms
 from django.core.validators import RegexValidator
 
 class LoginForm(forms.Form):
-    phone_number = forms.CharField(
-        label='Enter Phone Number:',
-        widget=forms.TextInput(attrs={'id': 'phone_number'}),
-        validators=[
-            RegexValidator(
-                regex=r'^09\d{9}$',
-                message='Phone number must be in the format 09XXXXXXXXX.',
-                code='invalid_phone_number'
-            )
-        ]
-    )
-
+    phone_number = forms.CharField(max_length=11, required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
 
 
 class RegistrationForm(forms.Form):

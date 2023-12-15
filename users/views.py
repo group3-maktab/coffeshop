@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm
+from .forms import VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm
 from .models import CustomUser
 import dotenv
 
@@ -30,6 +30,12 @@ class Login(View):
             if user is not None:
                 login(request, user)
                 return redirect('core:home')
+            else:
+                messages.error(request, 'Auth faild')
+                return redirect('users:login')
+        else:
+            messages.error(request, 'Invalid data')
+            return redirect('users:login')
 
 
 
