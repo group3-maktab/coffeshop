@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+
+class Table(models.Model):
+    reservation = [("r", "reserved"), ("e", "empty"), ("f", "full")]
+    number = models.PositiveIntegerField()
+    status = models.CharField(max_length=1, choices=reservation)
