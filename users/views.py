@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm
+from .forms import SendSMSForm, VerifyOTPForm, RegistrationForm, SetPasswordForm
 from .models import CustomUser
 import dotenv
 
@@ -47,11 +47,11 @@ class Auth_Phone(View):
         otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
         verification_method = request.session['v_m']
         if verification_method == 'phone' or verification_method == 'email' and Authentication.check_otp(otp, otp_expiry, entered_otp) :
-                try:
-                    user = CustomUser.objects.get(phone_number=phone_number, email=email)
-                except CustomUser.DoesNotExist:
-                    messages.error(request, f'User not found try again!')
-                    return redirect('users:register')
+                # try:
+                #     user = CustomUser.objects.get(phone_number=phone_number, email=email)
+                # except CustomUser.DoesNotExist:
+                #     messages.error(request, f'User not found try again!')
+                #     return redirect('users:register')
                 login(request, user)  # :-/
                 return redirect('core:home')
         else:
@@ -80,7 +80,7 @@ class Register(View):
         if form.is_valid():
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+
             verification_method = form.cleaned_data['verification_method']
 
 
@@ -103,21 +103,17 @@ class Verification(View):
         email = request.session['email']
         verification_method = request.session['v_m']
 
-        if verification_method == 'phone':
-            otp, otp_expiry = Authentication.send_otp(phone_number)
+        otp, otp_expiry = Authentication.send_otp(phone_number)
 
-            request.session['otp'] = otp
-            request.session['otp_expiry'] = int(otp_expiry.timestamp())
+        request.session['otp'] = otp
+        request.session['otp_expiry'] = int(otp_expiry.timestamp())
+
+        if verification_method == 'phone':
             request.session['phone_number'] = phone_number
             messages.success(request, 'CODE sent successfully. Please check your phone.')
             return redirect('users:login_code')
         else:
-            otp, otp_expiry = Authentication.send_otp_email(email)
-            request.session['otp'] = otp
-            request.session['otp_expiry'] = int(otp_expiry.timestamp())
             request.session['email'] = email
             messages.success(request, 'CODE sent successfully. Please check your email.')
             return redirect('users:login_code')
-
-
 

@@ -148,4 +148,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'djmailyosof@gmail.com'
 EMAIL_HOST_PASSWORD = 'wlbqpqetjidxlxvs'
 
+
+TABLE_NUMBER = 10
 # AUTH_USER_MODEL = 'users.CustomUser'

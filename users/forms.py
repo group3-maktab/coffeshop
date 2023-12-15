@@ -29,7 +29,6 @@ class RegistrationForm(forms.Form):
         ]
     )
     email = forms.EmailField(label='Email')
-    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
     verification_method = forms.ChoiceField(
         choices=[('phone', 'Phone Number'), ('email', 'Email')],
         initial='email',
@@ -42,3 +41,17 @@ class VerifyOTPForm(forms.Form):
         label='Enter code:',
         widget=forms.TextInput(attrs={'id': 'otp'}),
         required=True)
+
+
+class SetPasswordForm(forms.Form):
+    password1 = forms.CharField(label='New Password', widget=forms.PasswordInput, validators=[RegexValidator(regex=r'^.{5,}$', message='Password must be at least 5 characters long.')])
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match.")
+
+        return password2
