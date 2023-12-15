@@ -26,7 +26,7 @@ update_blog_record
 # has_permission(user, 'create_medical_record')
 
 
-class CreateBlogRecord(LoginRequiredMixin, View):
+class CreateBlogRecord(LoginRequiredMixin,View):
     template_name = 'create_blog_record.html'
 
     def get(self, request):
@@ -52,11 +52,10 @@ class CreateBlogRecord(LoginRequiredMixin, View):
 
             blog_template = os.path.join('blog', 'templates', 'articles', f'{slug}.html')
 
-            thumbnail_path = f'articles/{thumbnail.name}'
-            thumbnail_path = f'{{% static "{thumbnail_path}" %}}'
+            thumbnail_path = f'/static/articles/{thumbnail.name}'
+
 
             with open(blog_template, 'w') as file:
-                file.write("{% load static %}\n")
                 file.write(render_to_string('blog_base.html',
                                             {'title': title,
                                              'content': content,
