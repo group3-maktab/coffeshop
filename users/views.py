@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.shortcuts import redirect
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
@@ -60,7 +60,6 @@ class Auth_Phone(View):
 
 
 
-
 class LogOutView(View):
     def get(self, request):
         logout(request)
@@ -84,12 +83,6 @@ class Register(View):
             password = form.cleaned_data['password']
             verification_method = form.cleaned_data['verification_method']
 
-            user = CustomUser.objects.create_user(
-                phone_number=phone_number,
-                email=email,
-                password=password,
-                is_active=False
-            )
 
             request.session['phone_number'] = phone_number
             request.session['email'] = email
@@ -123,6 +116,8 @@ class Verification(View):
             request.session['otp'] = otp
             request.session['otp_expiry'] = int(otp_expiry.timestamp())
             request.session['email'] = email
+            messages.success(request, 'CODE sent successfully. Please check your email.')
+            return redirect('users:login_code')
 
 
 

@@ -32,7 +32,7 @@ class RegistrationForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
     verification_method = forms.ChoiceField(
         choices=[('phone', 'Phone Number'), ('email', 'Email')],
-        initial='phone',
+        initial='email',
         widget=forms.RadioSelect,
         label='Preferred Verification Method')
 
