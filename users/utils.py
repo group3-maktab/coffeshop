@@ -24,9 +24,9 @@ class Authentication:
 
         try:
 
-            email_from = settings.EMAIL_HOST_USER
+            email_from = 'djmailyosof@gmail.com'
             recipient_list = [to_email,]
-            send_mail(subject, message, email_from, recipient_list, fail_silently=False)
+            send_mail(subject, message, email_from, recipient_list,auth_user=email_from,auth_password=settings.EMAIL_HOST_PASSWORD)
             return otp, otp_expiry
         except Exception as e:
             print(f"Error sending email: {e}")
