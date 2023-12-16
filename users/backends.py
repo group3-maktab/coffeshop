@@ -8,7 +8,6 @@ class PhoneBackend(ModelBackend):
             user = CustomUser.objects.get(phone_number=phone_number)
         except CustomUser.DoesNotExist:
             return None
-        print(user,password)
         if user.check_password(password):
             return user
 
