@@ -5,12 +5,14 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from .forms import VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm
+from .forms import VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm, ForgotPass
 from .models import CustomUser
 import dotenv
 
 from .utils import Authentication
+
 dotenv.load_dotenv()
+
 
 # todo:DOCUMENTATION
 
@@ -38,10 +40,6 @@ class Login(View):
             return redirect('users:login')
 
 
-
-
-
-
 class Auth_Phone(View):
     template_name = 'login_code.html'
 
@@ -53,18 +51,17 @@ class Auth_Phone(View):
 
     def post(self, request):
         entered_otp = request.POST.get('otp')
-        phone_number = request.session.get('phone_number')
-        email = request.session.get('email')
         otp = request.session.get('otp')
         otp_expiry = request.session.get('otp_expiry')
         otp_expiry = timezone.datetime.fromtimestamp(otp_expiry, tz=timezone.get_current_timezone())
         verification_method = request.session['v_m']
-        if verification_method == 'phone' or verification_method == 'email' and Authentication.check_otp(otp, otp_expiry, entered_otp) :
-                return redirect('users:set-password')
+        if verification_method == 'phone' or verification_method == 'email' and Authentication.check_otp(otp,
+                                                                                                         otp_expiry,
+                                                                                                         entered_otp):
+            return redirect('users:set-password')
         else:
             messages.error(request, 'Invalid code')
         return redirect('users:login')
-
 
 
 class LogOutView(View):
@@ -90,11 +87,9 @@ class Register(View):
 
             verification_method = form.cleaned_data['verification_method']
 
-
             request.session['phone_number'] = phone_number
             request.session['email'] = email
             request.session['v_m'] = verification_method
-
 
             messages.success(request, f'Registration successful. Please verify your {verification_method} !')
             return redirect('users:verification')
@@ -105,12 +100,11 @@ class Register(View):
 
 
 class Verification(View):
-    def get(self,request):
-        phone_number = request.session['phone_number']
-        email = request.session['email']
-        verification_method = request.session['v_m']
+    def get(self, request):
 
+        verification_method = request.session['v_m']
         if verification_method == 'phone':
+            phone_number = request.session['phone_number']
             otp, otp_expiry = Authentication.send_otp(phone_number)
 
             request.session['otp'] = otp
@@ -119,6 +113,7 @@ class Verification(View):
             messages.success(request, 'CODE sent successfully. Please check your phone.')
             return redirect('users:login_code')
         else:
+            email = request.session['email']
             otp, otp_expiry = Authentication.send_otp_email(email)
             request.session['otp'] = otp
             request.session['otp_expiry'] = int(otp_expiry.timestamp())
@@ -129,13 +124,13 @@ class Verification(View):
 
 class SetPasswordView(View):
     template_name = 'set_password.html'
+
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('core:home')
         else:
             form = SetPasswordForm()
-            return render(request,self.template_name,{'form':form})
-
+            return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = SetPasswordForm(request.POST)
@@ -144,18 +139,42 @@ class SetPasswordView(View):
             email = request.session.get('email')
             verification_method = request.session.get('v_m')
 
-            if not (phone_number and email and verification_method):
+            if not (phone_number or email):
                 messages.error(request, 'Invalid session data.')
                 return redirect('users:register')
 
+            user = CustomUser.objects.filter(phone_number=phone_number) or CustomUser.objects.filter(email=email)
 
-            user = CustomUser.objects.create_user(phone_number=phone_number, email=email,
-                                                  password=form.cleaned_data['password2'])
+            if user.exists():
+                user = user.first()
+                user.set_password(form.cleaned_data['password2'])
+                user.save()
+            else:
+                user = CustomUser.objects.create_user(phone_number=phone_number, email=email,
+                                                      password=form.cleaned_data['password2'])
             user.save()
-            login(request, user)  # :-/
+            login(request, user)
             messages.success(request, 'Account created successfully.')
             return redirect('core:home')
         else:
             messages.error(request, 'Invalid password.')
 
         return render(request, self.template_name, {'form': form})
+
+
+class ForgotPassword(View):
+    template_name = 'forgot_password.html'
+
+    def get(self, request):
+        form = ForgotPass()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = ForgotPass(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            verification_method = 'email'
+            request.session['email'] = email
+            request.session['v_m'] = verification_method
+            messages.success(request, 'CODE sent successfully. Please check your email.')
+            return redirect('users:verification')

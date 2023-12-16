@@ -45,3 +45,7 @@ class SetPasswordForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
 
         return password2
+
+class ForgotPass(forms.Form):
+    email = forms.EmailField(label='Email')
+

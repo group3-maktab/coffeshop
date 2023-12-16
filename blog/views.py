@@ -10,7 +10,7 @@ from .forms import GenerateBlogForm
 import glob
 import os
 
-# Create your views here.
+
 """
 permissions:
 ------------------
@@ -137,3 +137,5 @@ class DeleteBlogView(View):
         if os.path.exists(path):
             os.remove(path)
         return redirect('blog:create_blog')
+
+
