@@ -110,6 +110,30 @@ class UpdateBlogRecord(View):
 class BlogsListView(View):
     templates = 'blogs.html'
     template_files = glob.glob('blog/templates/articles/*.html')
+    def get(self, request):
+        urls = []
+        for file_path in self.template_files:
+            url = file_path.split('/')[-1].split('.')[0]
+            urls.append(url)
+        return render(request, self.templates, {'urls' : urls})
 
-    for file_path in template_files:
-        print(file_path)
+
+class DeleteBlogView(View):
+    def get(self, request, slug):
+        path = f'blog/templates/articles/{slug}.html'
+
+        with open(path, 'r') as file:
+            lines = file.readlines()
+            thumbnail_url = None
+            for i, data in enumerate(lines):
+                if '<div id="thumbnail"><img id="thumbnail" src="' in data:
+                    thumbnail_url = lines[i + 1].strip()
+
+        thumbnail_path = f'blog/{thumbnail_url}'
+        print(thumbnail_path)
+        if os.path.exists(thumbnail_path):
+            os.remove(thumbnail_path)
+
+        if os.path.exists(path):
+            os.remove(path)
+        return redirect('blog:create_blog')
