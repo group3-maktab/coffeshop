@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for url in urls %}<br>
+        <a href="{% url 'blog:blog_detail' slug=url %}">{{ url }}</a>
+    <br>{% endfor %}
+{% endblock %}

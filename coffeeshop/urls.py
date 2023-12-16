@@ -18,9 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from users.views import Login
 urlpatterns = [
-    path("__debug__/", include("debug_toolbar.urls")),
+    path('__debug__/', include('debug_toolbar.urls')),
     path('admin/login/', Login.as_view(),),
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('blog', include('blog.urls')),
-    path('users/', include('users.urls', namespace='users')),]
+    path('blog/', include('blog.urls', namespace='blog')),
+    path('users/', include('users.urls', namespace='users')),
+]

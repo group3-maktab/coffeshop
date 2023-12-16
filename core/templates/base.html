@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     <div>
@@ -17,6 +17,7 @@
         <div>
             {% if not user.is_authenticated %}
             <a href="{% url 'users:login' %}">login</a>
+            <a href="{% url 'users:register' %}">register</a>
             {% else %}
 {#            <p>{{ user.phone_number }}</p>#}
              <a href="{% url 'users:logout' %}">logout</a> 

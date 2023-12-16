@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block content %}
+    <a href="{% url 'blog:update_blog' title|slugify %}"><h3>Update</h3></a>
+    <a href="{% url 'blog:delete_blog' title|slugify %}"><h3>Delete</h3></a>
+    <div class="">
+        <div id="title">
+            <h2>
+                {{ title }}
+            </h2>
+        </div>
+        <div id="thumbnail"><img id="thumbnail" src="
+                {{ thumbnail_url }}
+                        " alt="{{ title }} Thumbnail">
+        </div>
+        <div id="content">
+            <p>
+                {{ content }}
+            </p>
+        </div>
+    </div>
+{% endblock %}

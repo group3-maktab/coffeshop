@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     {% if not user.is_authenticated %}
-    
+        <a href="{% url 'users:forgot' %}" >Forgot password</a>
     <form method="post" action="{% url 'users:login' %}" id="loginForm">
         {% csrf_token %}
         {{ form.as_p }}

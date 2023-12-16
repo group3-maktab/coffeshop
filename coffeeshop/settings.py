@@ -70,7 +70,7 @@ ROOT_URLCONF = 'coffeeshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,5 +138,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 AUTHENTICATION_BACKENDS = ['users.backends.PhoneBackend']
-AUTH_USER_MODEL = 'users.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'djmailyosof@gmail.com'
+EMAIL_HOST_PASSWORD = 'wlbqpqetjidxlxvs'
+
+
+TABLE_NUMBER = 10
+# AUTH_USER_MODEL = 'users.CustomUser'

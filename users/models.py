@@ -13,19 +13,20 @@ dotenv.load_dotenv()
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, phone_number, password=None, **extra_fields):
-        if not phone_number:
-            raise ValueError('The Phone Number field must be set')
-        user = self.model(phone_number=phone_number, **extra_fields)
+
+    def create_user(self, phone_number, email, password=None, **extra_fields):
+        if not phone_number and not email:
+            raise ValueError('The phone number or email field must be set')
+        user = self.model(phone_number=phone_number, email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone_number, password=None, **extra_fields):
+    def create_superuser(self, phone_number, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(phone_number, password, **extra_fields)
+        return self.create_user(phone_number, email, password, **extra_fields)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -43,12 +44,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             message='Phone number must start with "09" and have 11 digits.',
             code='invalid_phone_number'
         )])
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    last_login = models.DateTimeField(auto_now_add=True,verbose_name='last')
+    last_login = models.DateTimeField(auto_now_add=True, verbose_name='last')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = ['email']
 
     """django.core.management.base.SystemCheckError: SystemCheckError: System check identified some issues: ERRORS: 
     auth.User.groups: (fields.E304) Reverse accessor 'Group.user_set' for 'auth.User.groups' clashes with reverse 
@@ -71,12 +75,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Group,
         verbose_name=_('groups'),
         blank=True,
-        related_name='users_groups'
-    )
+        related_name='users_groups')
 
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
         blank=True,
-        related_name='user_perms'
-    )
+        related_name='user_perms')
