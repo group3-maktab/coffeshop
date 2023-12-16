@@ -50,7 +50,8 @@ class CreateBlogRecord(LoginRequiredMixin,View):
                 for chunk in thumbnail.chunks():
                     destination.write(chunk)
 
-            blog_template = os.path.join('blog', 'templates', 'articles', f'{slug}.html')
+            blog_template = os.path.join('blog', 'templates', 'articles',
+                                         f'{slug}.html')
 
             thumbnail_path = f'/static/articles/{thumbnail.name}'
 
@@ -73,7 +74,36 @@ class BlogDetailView(View):
 
 
 class UpdateBlogRecord(View):
-    pass
+    template_name = 'create_blog_record.html'
+    def get(self, request, slug):
+        path = f'articles/{slug}.html'
+
+        with open(path, 'r') as file:
+            lines = file.readlines()
+            title = None
+            thumbnail_url = None
+            content = None
+
+            for i, data in enumerate(lines):
+                if data.strip() == '<h2>{{ title }}</h2>':
+                    title = lines[i + 1].strip()
+                elif data.strip() == '<img src="{{ thumbnail_url }}" alt="{{ title }} Thumbnail">':
+                    thumbnail_url = lines[i + 1].strip()
+                elif data.strip() == '<p>{{ content }}</p>':
+                    content = lines[i + 1].strip()
+
+        form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
+
+        thumbnail_path = os.path.join('blog', 'static', 'articles',
+                                      os.path.basename(thumbnail_url))
+        if os.path.exists(thumbnail_path):
+            os.remove(thumbnail_path)
+
+        if os.path.exists(path):
+            os.remove(path)
+        return render(request, self.template_name,
+                      {'form': form})
+
 
 
 class BlogsListView(View):

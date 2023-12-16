@@ -4,9 +4,15 @@
 
 
 {% block content %}
-    <div class="container mt-5">
-        <h2>{{ title }}</h2>
-        <img src="{{ thumbnail_url }}" alt="{{ title }} Thumbnail">
-        <p>{{ content }}</p>
+    <div class="">
+        <div id="title">
+            <h2>{{ title }}</h2>
+        </div>
+        <div id="thumbnail">
+            <img src="{{ thumbnail_url }}" alt="{{ title }} Thumbnail">
+        </div>
+        <div id="content">
+            <p>{{ content }}</p>
+        </div>
     </div>
 {% endblock %}
