@@ -40,7 +40,7 @@ class Login(View):
             return redirect('users:login')
 
 
-class Auth_Phone(View):
+class AuthCode(View):
     template_name = 'login_code.html'
 
     def get(self, request):
