@@ -76,26 +76,27 @@ class BlogDetailView(View):
 class UpdateBlogRecord(View):
     template_name = 'create_blog_record.html'
     def get(self, request, slug):
-        path = f'articles/{slug}.html'
+        path = f'blog/templates/articles/{slug}.html'
 
         with open(path, 'r') as file:
             lines = file.readlines()
             title = None
             thumbnail_url = None
             content = None
-
             for i, data in enumerate(lines):
-                if data.strip() == '<h2>{{ title }}</h2>':
-                    title = lines[i + 1].strip()
-                elif data.strip() == '<img src="{{ thumbnail_url }}" alt="{{ title }} Thumbnail">':
+                if '<div id="title">' in data:
+                    title = lines[i + 2].strip()
+
+                elif '<div id="thumbnail"><img id="thumbnail" src="' in data:
                     thumbnail_url = lines[i + 1].strip()
-                elif data.strip() == '<p>{{ content }}</p>':
-                    content = lines[i + 1].strip()
+
+                elif '<div id="content">' in data:
+                    content = lines[i + 2].strip()
 
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
 
-        thumbnail_path = os.path.join('blog', 'static', 'articles',
-                                      os.path.basename(thumbnail_url))
+        thumbnail_path = f'blog/{thumbnail_url}'
+        print(thumbnail_path)
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
 
