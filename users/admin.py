@@ -30,11 +30,11 @@ class GroupInline(admin.TabularInline):
 @admin.register(CustomUser)
 class CustomUserAdmin(BaseUserAdmin):
     admin.site.unregister(User)
-    list_display = ('phone_number', 'is_active', 'is_staff', 'last_login')
-    readonly_fields = ('last_login', 'phone_number')
+    list_display = ('phone_number', 'email','is_active', 'is_staff', 'last_login')
+    readonly_fields = ('last_login', 'phone_number','email')
 
     fieldsets = (
-        (None, {'fields': ['phone_number',]}),
+        (None, {'fields': ['phone_number', 'email']}),
         ('Permissions', {'fields': ['is_active', 'is_staff', 'groups', 'user_permissions']}),
         ('Last_login', {'fields': ['last_login',]}),
     )
@@ -42,13 +42,13 @@ class CustomUserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ['wide'],
-            'fields': ['phone_number'],
+            'fields': ['phone_number','email',],
         }),
-        ('Permitions',{'fields': ['is_active', 'is_staff']})
+        # ('Permitions',{'fields': ['is_active', 'is_staff']})
     )
 
-    search_fields = ('phone_number',)
-    ordering = ('phone_number',)
+    search_fields = ('phone_number','email')
+    ordering = ('phone_number','email')
     filter_horizontal = ('groups', 'user_permissions')
 
     inlines = [PermissionInline, GroupInline]
