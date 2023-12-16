@@ -1,32 +1,32 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
-from django.utils import timezone
+
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import Group
-from twilio.rest import Client
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
-import random
+
 import dotenv
-import os
+
 
 dotenv.load_dotenv()
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, phone_number, password=None, **extra_fields):
-        if not phone_number:
-            raise ValueError('The Phone Number field must be set')
-        user = self.model(phone_number=phone_number, **extra_fields)
+
+    def create_user(self, phone_number, email, password=None, **extra_fields):
+        if not phone_number and not email:
+            raise ValueError('The phone number or email field must be set')
+        user = self.model(phone_number=phone_number, email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone_number, password=None, **extra_fields):
+    def create_superuser(self, phone_number, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(phone_number, password, **extra_fields)
+        return self.create_user(phone_number, email, password, **extra_fields)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -44,16 +44,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             message='Phone number must start with "09" and have 11 digits.',
             code='invalid_phone_number'
         )])
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    last_login = models.DateTimeField(auto_now_add=True,verbose_name='last')
+    last_login = models.DateTimeField(auto_now_add=True, verbose_name='last')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
-
-    @staticmethod
-    def generate_otp():
-        return str(random.randint(100000, 999999))
+    REQUIRED_FIELDS = ['email']
 
     """django.core.management.base.SystemCheckError: SystemCheckError: System check identified some issues: ERRORS: 
     auth.User.groups: (fields.E304) Reverse accessor 'Group.user_set' for 'auth.User.groups' clashes with reverse 
@@ -76,41 +75,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Group,
         verbose_name=_('groups'),
         blank=True,
-        related_name='users_groups'
-    )
+        related_name='users_groups')
 
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
         blank=True,
-        related_name='user_perms'
-    )
-
-    def send_otp(self):
-        otp = self.generate_otp()
-        # self.otp = otp
-        # self.otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
-        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
-
-        # todo: dotenv# #done
-        account_sid = os.getenv('account_sid')
-        auth_token = os.getenv('auth_token')
-        twilio_phone_number = os.getenv('twilio_phone_number')
-
-        dist_phone_number = self.phone_number.replace("0", "+98", 1)
-
-        client = Client(account_sid, auth_token)
-        print("Phone Number:", dist_phone_number)
-        message = client.messages.create(
-            body=f'Your code is: {otp}',
-            from_=twilio_phone_number,
-            to=dist_phone_number
-        )
-
-        print("Twilio Response:", message)
-        return otp, otp_expiry
-
-    @staticmethod
-    def check_otp(otp, otp_expiry, entered_otp):
-        return otp == entered_otp and timezone.now() < otp_expiry
-
+        related_name='user_perms')
