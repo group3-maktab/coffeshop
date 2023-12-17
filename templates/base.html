@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'src/styles.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="bg-gray-300">
+    <div>
+        <div>
+            <a href="{% url 'blog:create_blog' %}">blog</a>
+        </div>
+        <div>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'users:login' %}">login</a>
+            <a href="{% url 'users:register' %}">register</a>
+            {% else %}
+             <a href="{% url 'users:logout' %}">logout</a> 
+            {% endif %}
+            <a href=""></a> 
+        </div>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends 'core/templates/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Create New Blog</h2>
+
+        <form method="post" enctype="multipart/form-data" action="{% url 'blog:create_blog' %}">
+            {% csrf_token %}
+            {{ form.title.label_tag }} {{ form.title }}
+            <br>
+            {{ form.thumbnail.label_tag }} {{ form.thumbnail }}
+            <br>
+            {{ form.content.label_tag }} {{ form.content }}
+
+            <br><br>
+
+            <button type="submit">Create Blog</button>
+        </form>
+    </div>
+
+{% endblock %}

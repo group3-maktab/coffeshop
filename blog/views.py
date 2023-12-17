@@ -55,7 +55,7 @@ class CreateBlogRecord(LoginRequiredMixin, View):
             thumbnail_path = f'/static/articles/{thumbnail.name}'
 
             with open(blog_template, 'w') as file:
-                file.write(render_to_string('blog_base.html',
+                file.write(render_to_string('templates/blog_base.html',
                                             {'title': title,
                                              'time' : datetime.now().strftime("%y-%b-%d"),
                                              'content': content,

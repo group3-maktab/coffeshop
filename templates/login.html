@@ -1,0 +1,36 @@
+{% extends "templates/base.html" %}
+{% block content %}
+    {% if not user.is_authenticated %}
+        <a href="{% url 'users:forgot' %}" >Forgot password</a>
+    <form method="post" action="{% url 'users:login' %}" id="loginForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Send me a code" onclick="return validatePhoneNumber()">
+    </form>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    <script>
+        function validatePhoneNumber() {
+            var phoneNumberInput = document.getElementById('phone_number');
+            var phoneNumberPattern = /^09\d{9}$/;
+
+            if (!phoneNumberPattern.test(phoneNumberInput.value)) {
+                alert('Phone number must be in the format 09XXXXXXXXX.');
+                return false;  // Prevent form submission
+            }
+
+            return true;  // Allow form submission
+        }
+    </script>
+    
+    {% else %}
+    <p>you are logged in as {{ user.phone_number }}</p>
+    {% endif %}
+{% endblock %}
