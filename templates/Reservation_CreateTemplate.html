@@ -20,6 +20,9 @@
         <br>
 
         {{ form.datetime.label_tag }} {{ form.datetime }}
+        {% if form.errors.datetime %}
+            <p class="text-danger">{{ form.errors.datetime.0 }}</p>
+        {% endif %}
         <br>
         {{ form.number_of_persons.label_tag }} {{ form.number_of_persons }}
 
