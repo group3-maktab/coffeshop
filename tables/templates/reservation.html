@@ -1,0 +1,37 @@
+<!-- Include Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- Include FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Include Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<div class="container mt-5">
+    <h2>Make New Reservation</h2>
+
+    <form method="post" action="{% url 'tables:reservation' %}">
+        {% csrf_token %}
+        {{ form.phone_number.label_tag }} {{ form.phone_number }}
+        <br>
+
+        {{ form.datetime.label_tag }} {{ form.datetime }}
+        <br>
+        {{ form.number_of_persons.label_tag }} {{ form.number_of_persons }}
+
+        <br><br>
+
+        <button type="submit">Make Reservation</button>
+    </form>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
