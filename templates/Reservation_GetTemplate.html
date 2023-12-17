@@ -1,8 +1,8 @@
-{% extends "templates/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 
     
-    <form action="{% url 'tables:reservation-get' %}" method="post">
+    <form action="{% url 'tables:get-reservation' %}" method="post">
     {% csrf_token %}
     {{ form.code }}
     <input type="submit" value="FIND">

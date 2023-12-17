@@ -10,8 +10,8 @@ from .models import Reservation as ReservationModel
 from .models import Table
 
 
-class Reservation(View):
-    template_name = 'reservation.html'
+class CreateReservationView(View):
+    template_name = 'Reservation_CreateTemplate.html'
 
     def get(self, request):
         form = ReservationForm()
@@ -34,8 +34,8 @@ class Reservation(View):
             return render(request, self.template_name, {'form': form})
 
 
-class ReservationList(LoginRequiredMixin, View):
-    template_name = 'reservation_list.html'
+class ListReservationView(LoginRequiredMixin, View):
+    template_name = 'Reservation_ListTemplate.html'
 
     def get(self, request):
         reservationlist = ReservationModel.objects.all()
@@ -64,14 +64,14 @@ class ReservationList(LoginRequiredMixin, View):
                 reservation.status = new_status
                 reservation.save()
                 messages.success(request, 'Status updated successfully.')
-            return redirect('tables:reservation-list')
+            return redirect('tables:list-reservation')
 
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
 
 
-class ReservationDetail(View):
-    template_name = 'reservation_detail.html'
+class DetailReservationView(View):
+    template_name = 'Reservation_DetailTemplate.html'
 
     def get(self, request, pk):
         tables = Table.objects.all()
@@ -114,14 +114,14 @@ class ReservationDetail(View):
                 reservation.status = new_status
                 reservation.save()
                 messages.success(request, 'Status updated successfully.')
-            return redirect('tables:reservation-detail', pk)
+            return redirect('tables:detail-reservation', pk)
 
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
 
 
-class ReservationGet(View):
-    template_name = 'reservation_get.html'
+class GetReservationView(View):
+    template_name = 'Reservation_GetTemplate.html'
 
     def get(self, request):
         form = ReservationGetForm()
@@ -131,7 +131,7 @@ class ReservationGet(View):
         form = ReservationGetForm(request.POST)
         try:
             if form.is_valid():
-                return redirect('tables:reservation-detail', form.cleaned_data['code'])
+                return redirect('tables:detail-reservation', form.cleaned_data['code'])
             else:
                 messages.error(request,
                                'Reservation does not exist.')

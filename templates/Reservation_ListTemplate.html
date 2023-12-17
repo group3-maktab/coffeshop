@@ -1,12 +1,12 @@
-{% extends "templates/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 
     
     {% for reservation in reservationlist %}<br>
-        <a href="{% url 'tables:reservation-detail' reservation.id %}">{{ reservation }}</a>
+        <a href="{% url 'tables:detail-reservation' reservation.id %}">{{ reservation }}</a>
         
         {% if user.is_authenticated %}
-            <form method="post" action="{% url 'tables:reservation-list' %}">
+            <form method="post" action="{% url 'tables:list-reservation' %}">
             {% csrf_token %}
             <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
 

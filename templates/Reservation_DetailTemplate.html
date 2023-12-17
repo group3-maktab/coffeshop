@@ -1,4 +1,4 @@
-{% extends "templates/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 
     
@@ -10,7 +10,7 @@
     {{ status }}<br>
     
    {% if user.is_authenticated %}
-            <form method="post" action="{% url 'tables:reservation-detail' pk %}">
+            <form method="post" action="{% url 'tables:detail-reservation' pk %}">
             {% csrf_token %}
             <input type="hidden" name="reservation_id" value="{{ pk }}">
 

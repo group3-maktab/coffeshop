@@ -3,9 +3,8 @@ from . import views
 
 app_name = 'tables'
 urlpatterns = [
-    path('reservation', views.Reservation.as_view(), name='reservation'),
-    path('reservation-list', views.ReservationList.as_view(), name='reservation-list'),
-    path('reservation/<uuid:pk>', views.ReservationDetail.as_view(), name='reservation-detail'),
-    path('reservation-get', views.ReservationGet.as_view(), name='reservation-get')
-
+    path('create-reservation', views.CreateReservationView.as_view(), name='create-reservation'),
+    path('list-reservation', views.ListReservationView.as_view(), name='list-reservation'),
+    path('reservation/<uuid:pk>', views.DetailReservationView.as_view(), name='detail-reservation'),
+    path('get-reservation', views.GetReservationView.as_view(), name='get-reservation')
 ]
