@@ -17,7 +17,7 @@ dotenv.load_dotenv()
 # todo:DOCUMENTATION
 
 class Login(View):
-    template_name = 'Users_Login.html'
+    template_name = 'Users_LoginTemplate.html'
 
     def get(self, request):
         form = LoginForm()
@@ -41,7 +41,7 @@ class Login(View):
 
 
 class AuthCode(View):
-    template_name = 'Users_LoginCode.html'
+    template_name = 'Users_LoginCodeTemplate.html'
 
     def get(self, request):
         form = VerifyOTPForm()
@@ -73,7 +73,7 @@ class LogoutView(View):
 # views.py
 
 class Register(View):
-    template_name = 'Users_Register.html'
+    template_name = 'Users_RegisterTemplate.html'
 
     def get(self, request):
         form = RegistrationForm()
@@ -123,7 +123,7 @@ class Verification(View):
 
 
 class SetPasswordView(View):
-    template_name = 'Users_SetPassword.html'
+    template_name = 'Users_SetPasswordTemplate.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -163,7 +163,7 @@ class SetPasswordView(View):
 
 
 class ForgotPassword(View):
-    template_name = 'Users_ForgotPassword.html'
+    template_name = 'Users_ForgotPasswordTemplate.html'
 
     def get(self, request):
         form = ForgotPass()
