@@ -1,15 +1,12 @@
-from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils.text import slugify
 from django.views import View
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
 
 from .forms import GenerateBlogForm
 import glob
 import os
-
 
 """
 permissions:
@@ -26,7 +23,7 @@ update_blog_record
 # has_permission(user, 'create_medical_record')
 
 
-class CreateBlogRecord(LoginRequiredMixin,View):
+class CreateBlogRecord(LoginRequiredMixin, View):
     template_name = 'create_blog_record.html'
 
     def get(self, request):
@@ -55,7 +52,6 @@ class CreateBlogRecord(LoginRequiredMixin,View):
 
             thumbnail_path = f'/static/articles/{thumbnail.name}'
 
-
             with open(blog_template, 'w') as file:
                 file.write(render_to_string('blog_base.html',
                                             {'title': title,
@@ -73,8 +69,9 @@ class BlogDetailView(View):
         return render(request, template_name)
 
 
-class UpdateBlogRecord(View):
+class UpdateBlogRecord(LoginRequiredMixin, View):
     template_name = 'create_blog_record.html'
+
     def get(self, request, slug):
         path = f'blog/templates/articles/{slug}.html'
 
@@ -106,19 +103,19 @@ class UpdateBlogRecord(View):
                       {'form': form})
 
 
-
 class BlogsListView(View):
     templates = 'blogs.html'
     template_files = glob.glob('blog/templates/articles/*.html')
+
     def get(self, request):
         urls = []
         for file_path in self.template_files:
             url = file_path.split('/')[-1].split('.')[0]
             urls.append(url)
-        return render(request, self.templates, {'urls' : urls})
+        return render(request, self.templates, {'urls': urls})
 
 
-class DeleteBlogView(View):
+class DeleteBlogView(LoginRequiredMixin, View):
     def get(self, request, slug):
         path = f'blog/templates/articles/{slug}.html'
 
@@ -137,5 +134,3 @@ class DeleteBlogView(View):
         if os.path.exists(path):
             os.remove(path)
         return redirect('blog:create_blog')
-
-

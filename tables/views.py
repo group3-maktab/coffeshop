@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch
 from django.views import View
@@ -32,7 +34,7 @@ class Reservation(View):
             return render(request, self.template_name, {'form': form})
 
 
-class ReservationList(View):
+class ReservationList(LoginRequiredMixin, View):
     template_name = 'reservation_list.html'
 
     def get(self, request):
@@ -90,6 +92,7 @@ class ReservationDetail(View):
                            'Reservation does not exist.')
         return render(request, self.template_name, context=context)
 
+    @login_required
     def post(self, request, pk):
         reservation_id = request.POST.get('reservation_id')
         action = request.POST.get('action')
