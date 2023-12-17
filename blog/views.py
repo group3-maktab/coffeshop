@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils.text import slugify
@@ -59,6 +61,7 @@ class CreateBlogRecord(LoginRequiredMixin,View):
             with open(blog_template, 'w') as file:
                 file.write(render_to_string('blog_base.html',
                                             {'title': title,
+                                             'time' : datetime.now().strftime("%y-%b-%d"),
                                              'content': content,
                                              'thumbnail_url': thumbnail_path}))
 
