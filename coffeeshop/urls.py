@@ -24,4 +24,5 @@ urlpatterns = [
     path('', include('core.urls')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('users/', include('users.urls', namespace='users')),
+    path('tables/', include('tables.urls', namespace='tables')),
 ]

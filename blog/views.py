@@ -130,7 +130,7 @@ class DeleteBlogView(View):
                     thumbnail_url = lines[i + 1].strip()
 
         thumbnail_path = f'blog/{thumbnail_url}'
-        print(thumbnail_path)
+
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
 

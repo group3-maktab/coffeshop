@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+    
+    {% for reservation in reservationlist %}<br>
+        <a href="{% url 'tables:reservation_detail' reservation.id %}">{{ reservation }}</a>
+    <br>{% endfor %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
