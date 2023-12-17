@@ -3,11 +3,11 @@ from . import views
 
 app_name = 'users'
 urlpatterns = [
-    path('login', views.Login.as_view(), name='login'),
-    path('set-password', views.SetPasswordView.as_view(), name='set-password'),
-    path('chengepass', views.ForgotPassword.as_view(), name='forgot'),
-    path('login_code', views.AuthCode.as_view(), name='login_code'),
-    path('logout', views.LogoutView.as_view(), name="logout"),
-    path('register', views.Register.as_view(), name="register"),
-    path('verification', views.Verification.as_view(), name="verification"),
+    path('login', views.UsersLoginView.as_view(), name='login'),
+    path('set-password', views.UsersSetPasswordView.as_view(), name='set-password'),
+    path('chengepass', views.UsersForgotPasswordView.as_view(), name='forgot'),
+    path('login_code', views.UsersAuthCodeView.as_view(), name='login_code'),
+    path('logout', views.UsersLogoutView.as_view(), name="logout"),
+    path('register', views.UsersRegisterView.as_view(), name="register"),
+    path('verification', views.UsersVerificationView.as_view(), name="verification"),
 ]
