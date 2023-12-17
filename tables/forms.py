@@ -22,4 +22,4 @@ class Reservation(forms.Form):
     number_of_persons = forms.IntegerField(min_value=1)
 
 class ReservationGetForm(forms.Form):
-    code = forms.CharField()
+    code = forms.UUIDField()

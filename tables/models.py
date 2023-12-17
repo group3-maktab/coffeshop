@@ -10,7 +10,7 @@ class Table(models.Model):
     status = models.CharField(max_length=1, choices=status_fields, default='E')
 
     def __str__(self) -> str:
-        return f'{self.number} | {self.status}'
+        return f'{self.number}'
 
 
 class Reservation(models.Model):
@@ -24,4 +24,4 @@ class Reservation(models.Model):
     datetime = models.DateTimeField()
 
     def __str__(self) -> str:
-        return f'{self.phone_number} | {self.datetime} | {self.status}'
+        return f'{self.phone_number} | {self.datetime} | {self.status} | {self.table}'
