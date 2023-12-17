@@ -38,7 +38,7 @@ class ReservationList(View):
     def get(self, request):
         reservationlist = ReservationModel.objects.all()
         tables = Table.objects.all()
-        return render(request, self.template_name, {'reservationlist': reservationlist,'tables':tables})
+        return render(request, self.template_name, {'reservationlist': reservationlist, 'tables': tables})
 
     def post(self, request):
         reservation_id = request.POST.get('reservation_id')
@@ -50,8 +50,8 @@ class ReservationList(View):
             if action == 'set':
                 table_id = request.POST.get('table_id')
                 if table_id == 'Null':
-                        reservation.table = None
-                        reservation.save()
+                    reservation.table = None
+                    reservation.save()
                 else:
                     table = Table.objects.get(id=table_id)
                     reservation.table = table
@@ -66,6 +66,7 @@ class ReservationList(View):
 
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
+
 
 class ReservationDetail(View):
     template_name = 'reservation_detail.html'
@@ -83,11 +84,12 @@ class ReservationDetail(View):
             context = {'id': id, 'phone_number': phone_number, 'datetime': datetime,
                        'number_of_persons': number_of_persons,
                        'table': table, 'status': status,
-                       'tables':tables,'pk':pk}
+                       'tables': tables, 'pk': pk}
         except ReservationModel.DoesNotExist:
             messages.error(request,
                            'Reservation does not exist.')
         return render(request, self.template_name, context=context)
+
     def post(self, request, pk):
         reservation_id = request.POST.get('reservation_id')
         action = request.POST.get('action')
@@ -98,8 +100,8 @@ class ReservationDetail(View):
             if action == 'set':
                 table_id = request.POST.get('table_id')
                 if table_id == 'Null':
-                        reservation.table = None
-                        reservation.save()
+                    reservation.table = None
+                    reservation.save()
                 else:
                     table = Table.objects.get(id=table_id)
                     reservation.table = table
@@ -114,12 +116,14 @@ class ReservationDetail(View):
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
 
+
 class ReservationGet(View):
     template_name = 'reservation_get.html'
 
     def get(self, request):
         form = ReservationGetForm()
         return render(request, self.template_name, {'form': form})
+
     def post(self, request):
         form = ReservationGetForm(request.POST)
         try:
