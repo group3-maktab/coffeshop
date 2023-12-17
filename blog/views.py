@@ -25,8 +25,8 @@ update_blog_record
 # has_permission(user, 'create_medical_record')
 
 
-class CreateBlogRecord(LoginRequiredMixin, View):
-    template_name = 'create_blog_record.html'
+class CreateBlogView(LoginRequiredMixin, View):
+    template_name = 'Blog_CreateTemplate.html'
 
     def get(self, request):
         form = GenerateBlogForm()
@@ -55,25 +55,25 @@ class CreateBlogRecord(LoginRequiredMixin, View):
             thumbnail_path = f'/static/articles/{thumbnail.name}'
 
             with open(blog_template, 'w') as file:
-                file.write(render_to_string('templates/blog_base.html',
+                file.write(render_to_string('templates/Blog_Base.html',
                                             {'title': title,
-                                             'time' : datetime.now().strftime("%y-%b-%d"),
+                                             'time': datetime.now().strftime("%y-%b-%d"),
                                              'content': content,
                                              'thumbnail_url': thumbnail_path}))
 
-            return redirect('blog:blog_detail', slug=slug)
+            return redirect('blog:detail-blog', slug=slug)
         else:
             return render(request, self.template_name, {'form': form})
 
 
-class BlogDetailView(View):
+class DetailBlogView(View):
     def get(self, request, slug):
         template_name = f'articles/{slug}.html'
         return render(request, template_name)
 
 
-class UpdateBlogRecord(LoginRequiredMixin, View):
-    template_name = 'create_blog_record.html'
+class UpdateBlogView(LoginRequiredMixin, View):
+    template_name = 'Blog_CreateTemplate.html'
 
     def get(self, request, slug):
         path = f'blog/templates/articles/{slug}.html'
@@ -106,8 +106,8 @@ class UpdateBlogRecord(LoginRequiredMixin, View):
                       {'form': form})
 
 
-class BlogsListView(View):
-    templates = 'blogs.html'
+class ListBlogView(View):
+    templates = 'Blog_ListTemplate.html'
     template_files = glob.glob('blog/templates/articles/*.html')
 
     def get(self, request):
@@ -136,4 +136,4 @@ class DeleteBlogView(LoginRequiredMixin, View):
 
         if os.path.exists(path):
             os.remove(path)
-        return redirect('blog:create_blog')
+        return redirect('blog:create-blog')

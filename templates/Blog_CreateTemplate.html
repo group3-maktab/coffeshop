@@ -1,10 +1,10 @@
-{% extends 'core/templates/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <div class="container mt-5">
         <h2>Create New Blog</h2>
 
-        <form method="post" enctype="multipart/form-data" action="{% url 'blog:create_blog' %}">
+        <form method="post" enctype="multipart/form-data" action="{% url 'blog:create-blog' %}">
             {% csrf_token %}
             {{ form.title.label_tag }} {{ form.title }}
             <br>
