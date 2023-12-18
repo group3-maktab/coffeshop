@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="icon" href="{% static 'src/g3-m-favicon-black.png' %}" >
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
@@ -44,7 +45,7 @@
         </div>
         </nav>
     
-        <img class="w-24 h-fit mr-3 lg:w-40 lg:mr-10" src="/static/src/g3-m-high-resolution-logo-transparent.png">
+        <img class="w-24 h-fit mr-3 lg:w-40 lg:mr-10" src="{% static 'src/g3-m-high-resolution-logo-transparent.png' %}">
     
         <div class="navbar-menu relative z-50 hidden">
 		<div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
@@ -88,12 +89,14 @@
     </div></div>
        
     
-    <div>
+    <div class="mb-96 h-fit">
         {% block content %}{% endblock %}
     </div>
     
     
-    
+    <footer class="bg-cafe-gray flex bottom-0 w-full z-30">
+        <img class="w-24 h-fit mr-3 lg:w-40 lg:mr-10" src="{% static 'src/g3-m-high-resolution-logo-transparent.png' %}">
+    </footer>
     <script>
 // Burger menus
 document.addEventListener('DOMContentLoaded', function() {
