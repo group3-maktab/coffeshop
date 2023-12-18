@@ -12,8 +12,6 @@ class FoodTagModel(Food):
         unavailable_tags = TaggedItem.objects.get_unavailable_tags(Food)
         content_type = ContentType.objects.get_for_model(Food)
         object_ids = [tag.object_id for tag in unavailable_tags if tag.content_type == content_type]
-
-        # Now you have a list of object_ids that have unavailable tags
         food_objects = Food.objects.filter(id__in=object_ids)
         food_objects.update(availability=False)
 
