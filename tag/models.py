@@ -4,14 +4,17 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class TaggedItemManager(models.Manager):
-
-    def get_tags_for(self, obj_type, obj_id):
+    @staticmethod
+    def get_tags_for(obj_type, obj_id):
         content_type = ContentType.objects.get_for_model(obj_type)
 
-        return TaggedItem.objects .select_related('tag') .filter(content_type=content_type, object_id=obj_id)
-    def get_unavalible_tags(self, obj_type):
+        return TaggedItem.objects.select_related('tag') .filter(content_type=content_type, object_id=obj_id)
+    @staticmethod
+    def get_unavailable_tags(obj_type):
         content_type = ContentType.objects.get_for_model(obj_type)
-        return TaggedItem.objects .select_related('tag') .filter(content_type=content_type, tag__available=False)
+        return (TaggedItem.objects .select_related('tag')
+                .filter(content_type=content_type, tag__available=False))
+
 
 
 

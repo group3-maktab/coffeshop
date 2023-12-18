@@ -48,10 +48,10 @@ INSTALLED_APPS = [
     'blog',
     'core',
     'foodmenu',
+    'tag',
     'order',
     'tables',
     'users',
-    
 ]
 
 MIDDLEWARE = [
