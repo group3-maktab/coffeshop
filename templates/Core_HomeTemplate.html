@@ -1,12 +1,13 @@
 {% extends 'templates/base.html' %}
 {% load static %}
 {% block content %}
-    <div class="relative h-full">
-    <div class="relative place-items-center h-full">
-        <img class="w-full absolute brightness-50" src="{% static 'src/culture-espresso-home-2.jpg' %}">
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/ mt-12 lg:mt-20">
-            <p class="text-5xl lg:text-[10rem] text-cafe-white font-bold text-center">FEEL IT!</p>
-            <p class="text-4xl my-40 lg:text-[100px] text-cafe-white font-bold text-center">WITH US</p>
+    <div class="relative flex pt-24">
+        <div class="absolute z-30 w-full ">
+            <br>
+            <br>
+            <p class="text-5xl lg:text-[10rem] text-cafe-white font-bold text-center self-start ">FEEL IT!</p>
+            <p class="text-4xl mt-4 lg:text-[100px] text-cafe-white font-bold text-center">WITH US</p>
         </div>
+        <img class="w-full relative brightness-50 mb-96" src="{% static 'src/culture-espresso-home-2.jpg' %}">
     </div>
 {% endblock %}
