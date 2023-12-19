@@ -95,10 +95,17 @@
     
     
     <footer class="bg-cafe-lime flex flex-col items-center bottom-0 w-full z-30 ">
-    <div class="mb-4">
-        <img class="w-24 mr-5 lg:w-40 lg:mr-10" src="{% static 'src/Logo.png' %}">
+    <div class="mb-4 flex">
+        <img class="w-24 lg:w-40" src="{% static 'src/Logo.png' %}">
+        <div class="flex flex-col">
+            <p class="font-bold text-xs w-1">Built</p>
+            <p class="font-bold text-xs w-1"> In</p>
+            <p class="font-bold text-xs w-1"> 2023</p>
+            <p class="font-bold text-xs w-1"> By </p>
+            <p class="font-bold text-xs w-1">G3-M</p>
+        </div>
     </div>
-    <div class="flex items-center text-cafe-white gap-x-72 inline-block">
+    <div class="flex items-center text-cafe-black gap-x-72 inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
 </svg>
@@ -110,12 +117,7 @@
 </svg>
 
         </div>
-        <div class="flex">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-3 h-3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-            </svg>
-            <p>Built In 2023 By G3-M</p>
-        </div>
+        
     </footer>
 
     <script>
