@@ -5,3 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
+.forms {
+    @apply px-3 py-2 border-cafe-lime border rounded-md bg-gray-100
+}

@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="{% static 'src/styles.css' %}">
     <title>{% block title %}Home{% endblock %}</title>
 </head>
-<body class="bg-cafe-white font-enfont">
+<body class="bg-gray-100 font-enfont">
     <div class="bg-cafe-white flex  px-4 py-5">
-        <nav class=" px-4 lg:py-4 flex justify-between items-center bg-cafe-white w-full lg:mx-8">
+        <nav class=" px-4 lg:py-4 flex justify-between items-center bg-cafe-white  w-full lg:mx-8 opacity-90">
         
 		<div class="lg:hidden">
 			<button class="navbar-burger flex items-center text-cafe-black p-3">
@@ -94,18 +94,18 @@
     </div>
     
     
-    <footer class="bg-cafe-lime flex flex-col items-center bottom-0 w-full z-30 ">
+    <footer class="bg-cafe-white flex flex-col items-center bottom-0 w-full z-30 py-6">
     <div class="mb-4 flex">
-        <img class="w-24 lg:w-40" src="{% static 'src/Logo.png' %}">
-        <div class="flex flex-col">
-            <p class="font-bold text-xs w-1">Built</p>
-            <p class="font-bold text-xs w-1"> In</p>
-            <p class="font-bold text-xs w-1"> 2023</p>
-            <p class="font-bold text-xs w-1"> By </p>
-            <p class="font-bold text-xs w-1">G3-M</p>
+        <img class="w-16 lg:w-40 h-fit" src="{% static 'src/Logo.png' %}">
+        <div class="lg:flex flex-col hidden">
+            <p class="font-bold text-xs ">Built </p>
+            <p class="font-bold text-xs "> In </p>
+            <p class="font-bold text-xs "> 2023 </p>
+            <p class="font-bold text-xs "> By </p>
+            <p class="font-bold text-xs "> G3-M</p>
         </div>
     </div>
-    <div class="flex items-center text-cafe-black gap-x-72 inline-block">
+    <div class="flex items-center text-cafe-black gap-x-24 inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
 </svg>

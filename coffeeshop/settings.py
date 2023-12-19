@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'order',
     'tables',
     'users',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
