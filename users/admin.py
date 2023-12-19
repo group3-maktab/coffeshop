@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import CustomUser
 # Register your models here.
 from django.contrib.auth.models import Group
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Permission,User
-from .models import CustomUser
+from .models import User
 
 
 @admin.register(Permission)
@@ -17,19 +16,19 @@ class PermissionAdmin(admin.ModelAdmin):
 
 class PermissionInline(admin.TabularInline):
     autocomplete_fields = ['permission']
-    model = CustomUser.user_permissions.through
+    model = User.user_permissions.through
     extra = 1
 
 
 class GroupInline(admin.TabularInline):
     autocomplete_fields = ['group']
-    model = CustomUser.groups.through
+    model = User.groups.through
     extra = 0
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(BaseUserAdmin):
-    admin.site.unregister(User)
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
+    # admin.site.unregister(User)
     list_display = ('phone_number', 'email','is_active', 'is_staff', 'last_login')
     readonly_fields = ('last_login', 'phone_number','email')
 
