@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
 from .forms import VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm, ForgotPass
-from .models import CustomUser
+from .models import User
 import dotenv
 
 from .utils import Authentication
@@ -143,14 +143,14 @@ class UsersSetPasswordView(View):
                 messages.error(request, 'Invalid session data.')
                 return redirect('users:register')
 
-            user = CustomUser.objects.filter(phone_number=phone_number) or CustomUser.objects.filter(email=email)
+            user = User.objects.filter(phone_number=phone_number) or User.objects.filter(email=email)
 
             if user.exists():
                 user = user.first()
                 user.set_password(form.cleaned_data['password2'])
                 user.save()
             else:
-                user = CustomUser.objects.create_user(phone_number=phone_number, email=email,
+                user = User.objects.create_user(phone_number=phone_number, email=email,
                                                       password=form.cleaned_data['password2'])
             user.save()
             login(request, user)
