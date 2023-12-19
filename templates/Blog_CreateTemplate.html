@@ -2,21 +2,28 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
-    <div class=" pb-12 bg-gray-100 rounded-lg my-10 mx-6 lg:mx-12 ">
-        <h2 class='text-4xl font-bold text-cafe-black text-center block py-16 bg-cafe-blue py-5 rounded-t-3xl'>Create New Blog</h2>
+    <div class=" forms-div ">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+        <h2 class='forms-header'>Create New Blog</h2>
 
         <form method="post" enctype="multipart/form-data" action="{% url 'blog:create-blog' %}" 
-        class="w-full flex flex-col items-center bg-cafe-blue rounded-b-3xl pb-10 relative">
+        class="forms-form">
             {% csrf_token %}
-            {{ form.title.label_tag }} <br> {% render_field form.title placeholder="Title" class="forms w-3/5 z-50"%}
+            {{ form.title.label_tag }} <br> {% render_field form.title placeholder="Title" class="forms-field w-3/5 z-50"%}
             <br>
             {{ form.thumbnail.label_tag }} <br> {% render_field form.thumbnail  class="my-3 w-1/2 z-50"%}
             <br>
-            {{ form.content.label_tag }} <br> {% render_field form.content class="forms w-5/6 h-96 z-50"%}
+            {{ form.content.label_tag }} <br> {% render_field form.content class="forms-field w-5/6 h-96 z-50"%}
 
             <br><br>
 
-            <button class="bg-cafe-gray py-2 px-3 rounded-lg place-self-center hover:bg-cafe-black hover:translate-y-1 text-cafe-white duration-[700ms] z-50" type="submit">Create Blog</button>
+            <button class="forms-submit" type="submit">Create Blog</button>
             <img class="opacity-25 absolute z-10 w-2/3 overflow-y-hidden" src="{% static 'src/blog.png' %}">
 
         </form>

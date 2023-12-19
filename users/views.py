@@ -33,7 +33,7 @@ class UsersLoginView(View):
                 login(request, user)
                 return redirect('core:home')
             else:
-                messages.error(request, 'Auth faild')
+                messages.error(request, 'Authentication failed')
                 return redirect('users:login')
         else:
             messages.error(request, 'Invalid data')

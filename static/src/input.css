@@ -5,6 +5,24 @@
 @tailwind components;
 @tailwind utilities;
 
-.forms {
+.forms-field {
     @apply px-3 py-2 border-cafe-lime border rounded-md bg-gray-100
 }
+
+.forms-form{
+    @apply w-full flex flex-col items-center bg-cafe-blue rounded-b-3xl pb-10 relative
+}
+
+.forms-submit{
+    @apply cursor-pointer bg-cafe-gray py-2 px-3 rounded-lg place-self-center hover:bg-cafe-black hover:translate-y-1 text-cafe-white duration-[700ms] z-50
+}
+.forms-header{
+    @apply text-4xl font-bold text-cafe-black text-center block py-16 bg-cafe-blue py-5 rounded-t-3xl
+}
+.forms-div{
+    @apply pb-12 bg-gray-100 rounded-lg my-10 mx-6 lg:mx-12
+}
+.forms-logged{
+    @apply py-5 font-bold text-lg text-center bg-cafe-gray rounded-b-3xl text-cafe-white
+}
+

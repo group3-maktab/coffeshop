@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.text import slugify
 from django.views import View
@@ -60,9 +61,10 @@ class CreateBlogView(LoginRequiredMixin, View):
                                              'time': datetime.now().strftime("%y-%b-%d"),
                                              'content': content,
                                              'thumbnail_url': thumbnail_path}))
-
+            messages.success(request, 'Blog created successfully.')
             return redirect('blog:detail-blog', slug=slug)
         else:
+            messages.error(request, 'Invalid Data.')
             return render(request, self.template_name, {'form': form})
 
 

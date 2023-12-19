@@ -1,21 +1,34 @@
-{% extends "templates/base.html" %}
+{% extends "base.html" %}
+{% load widget_tweaks %}
 {% block content %}
-    {% if not user.is_authenticated %}
-        <a href="{% url 'users:forgot' %}" >Forgot password</a>
-    <form method="post" action="{% url 'users:login' %}" id="loginForm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Send me a code" onclick="return validatePhoneNumber()">
-    </form>
-
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    
+            <ul class="messages">
+                {% for message in messages %}
+
+                    <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+</svg>
+{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    <div class=" forms-div ">
+
+    <h2 class='forms-header'>Sign In</h2>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'users:forgot' %}" class="cursor-pointer bg-rose-600 py-3 block text-center place-self-center hover:bg-cafe-gray text-cafe-white duration-[700ms] z-50">Forgot password</a>
+        <form method="post" action="{% url 'users:login' %}" id="loginForm" class="forms-form">
+            {% csrf_token %}
+            <br>
+            {{ form.phone_number.label_tag }} <br> {% render_field form.phone_number placeholder="phone_number" class="forms-field w-3/5 z-50"%}
+            <br>
+            {{ form.password.label_tag }} <br> {% render_field form.password placeholder="password" class="forms-field w-3/5 z-50"%}
+            <br><br>
+            <input type="submit" value="Send me a code" onclick="return validatePhoneNumber()" class="forms-submit">
+        </form>
+
+
+
     <script>
         function validatePhoneNumber() {
             var phoneNumberInput = document.getElementById('phone_number');
@@ -31,6 +44,7 @@
     </script>
     
     {% else %}
-    <p>you are logged in as {{ user.phone_number }}</p>
+    <p class="forms-logged mb-24">you are logged in as <br><span class="text-4xl">{{ user.phone_number }}</span></p>
     {% endif %}
+    </div>
 {% endblock %}
