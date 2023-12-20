@@ -128,3 +128,6 @@ class DeleteFoodView(View):
             messages.error(request, 'Food does not exist!')
             return redirect('foods:list-food')
 
+
+class MakeUnavailableView(View):
+    ...
