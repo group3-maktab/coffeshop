@@ -17,8 +17,6 @@ class Category(models.Model):
         return self.parent is not None
 
 
-from django.db import models
-
 class Food(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -32,4 +30,3 @@ class Food(models.Model):
     @property
     def price_after_off(self):
         return self.price - (self.price * self.off / 100)
-
