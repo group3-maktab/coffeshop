@@ -62,3 +62,31 @@ In Django, signals are based on the Observer design pattern.
   and the receiver is the function that gets executed when the signal is sent.
     """
     update_food_availability(instance)
+
+
+"""
+Signals and middleware are both concepts used in Django for different purposes,
+ and they serve distinct roles in the framework.
+
+    Signal:
+    
+        Purpose:
+            Signals provide a way to allow certain senders to notify a set of receivers when certain actions or events occur.
+            They enable decoupled communication between different parts of a Django application or between different applications.
+            
+        Usage:
+            You can use signals for handling events such as model instance creation (post_save),
+             model instance deletion (post_delete), and other custom events.
+            It allows you to execute specific code in response to events without directly coupling the sender and receiver.
+    Middleware:
+    
+        Purpose:    
+            Middleware is a way to process requests and responses globally before they reach the view or after they leave the view.
+            It provides a hook-based architecture to process the request-response lifecycle.
+        
+        Usage:
+            Middleware components can perform tasks such as authentication, logging, modifying the request or response, and more.
+            They are executed in a specific order during the request-response cycle.
+            
+            
+"""
