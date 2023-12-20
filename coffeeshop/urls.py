@@ -26,4 +26,5 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('tables/', include('tables.urls', namespace='tables')),
     path('foods/', include('foodmenu.urls', namespace='foods')),
+
 ]

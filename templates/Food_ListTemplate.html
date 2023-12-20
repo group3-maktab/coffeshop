@@ -17,8 +17,17 @@
   
     <h1>Menu</h1>
 
+    <div class="mb-4">
+        <button class="bg-green-500 text-white px-4 py-2 rounded">Add Food</button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded">Add Category</button>
+    </div>
+
     {% for category in menu_data %}
         <h2 class="bg-blue-500">{{ category.name }}</h2>
+
+        <div class="mb-2">
+            <button class="bg-red-500 text-white px-3 py-1 rounded">Make Category Unavailable</button>
+        </div>
 
         {% if category.foods %}
             <ul>
@@ -32,6 +41,7 @@
                         {% else %}
                             ${{ food.original_price }}
                         {% endif %}
+                        <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
                     </li>
                 {% endfor %}
             </ul>
@@ -40,11 +50,14 @@
         {% for subcategory in category.subcategories %}
             <h3 class="bg-gray-400">{{ subcategory.name }}</h3>
 
+            <div class="mb-2">
+                <button class="bg-red-500 text-white px-3 py-1 rounded">Make Subcategory Unavailable</button>
+            </div>
+
             {% if subcategory.foods %}
-                <br>
                 <ul>
                     {% for food in subcategory.foods %}
-                        <li class="bg-rose-600 ">
+                        <li class="bg-rose-600">
                             {{ food.name }} - 
                             {% if food.off_percent %}
                                 <span class="text-gray-700">Original Price: ${{ food.original_price }}</span> - 
@@ -53,6 +66,7 @@
                             {% else %}
                                 ${{ food.original_price }}
                             {% endif %}
+                            <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
                         </li>
                     {% endfor %}
                 </ul>

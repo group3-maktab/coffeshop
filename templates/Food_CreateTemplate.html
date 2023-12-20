@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Create Category</h2>
+  <form method="post" action="{% url 'foods:create-category' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+  </form>
+
+  
+{% endblock %}
