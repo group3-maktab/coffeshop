@@ -2,8 +2,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import CategoryCreateForm, FoodCreateForm
-from utils import json_menu_generator,staff_or_superuser_required
+from utils import json_menu_generator, staff_or_superuser_required
 from .models import Food, Category
+from django.db.models.deletion import ProtectedError
+
 
 
 class ListFoodView(View):
@@ -57,6 +59,7 @@ class CreateFoodView(View):
 
         return render(request, 'category_form.html', {'form': form})
 
+
 class UpdateFoodView(View):
     template_name = 'Food_CreateFoodTemplate.html'
 
@@ -97,3 +100,31 @@ class UpdateCategoryView(View):
             return redirect('foods:list-food')
 
         return render(request, 'category_form.html', {'form': form})
+
+
+class DeleteCategoryView(View):
+    @staff_or_superuser_required
+    def get(self, request, pk):
+        try:
+            category_object = Category.objects.get(pk=pk)
+            category_object.delete()
+            messages.success(request, 'Category deleted successfully!')
+            return redirect('foods:list-food')
+        except Category.DoesNotExist:
+            messages.error(request, 'Category does not exist!')
+            return redirect('foods:list-food')
+
+
+
+class DeleteFoodView(View):
+    @staff_or_superuser_required
+    def get(self, request, pk):
+        try:
+            food_object = Food.objects.get(pk=pk)
+            food_object.delete()
+            messages.success(request, 'Food deleted successfully!')
+            return redirect('foods:list-food')
+        except Food.DoesNotExist:
+            messages.error(request, 'Food does not exist!')
+            return redirect('foods:list-food')
+
