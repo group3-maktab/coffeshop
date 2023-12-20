@@ -1,26 +1,12 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
+from django.views import View
+from .utils import json_menu_generator
 from .models import Food, Category
 
-def food_list(request):
-    # Get all Food items
-    foods = Food.objects.all()
 
-    # Get all parent categories (categories with no parent)
-    parent_categories = Category.objects.filter(parent__isnull=True)
+class ListFoodView(View):
+    template_name = 'Food_ListTemplate.html'
+    def get(self, request):
 
-    # Get all subcategories
-    subcategories = Category.objects.filter(parent__isnull=False)
-
-    # Pass the data to the template
-    context = {
-        'foods': foods,
-        'parent_categories': parent_categories,
-        'subcategories': subcategories
-    }
-    return render(request, '', context)
+        menu_data = json_menu_generator()
+        return render(request, self.template_name, {'menu_data': menu_data})

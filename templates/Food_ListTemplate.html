@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+  
+    <h1>Menu</h1>
+
+    {% for category in menu_data %}
+        <h2 class="bg-blue-500">{{ category.name }}</h2>
+
+        {% if category.foods %}
+            <ul>
+                {% for food in category.foods %}
+                    <li class="bg-rose-600">
+                        {{ food.name }} - 
+                        {% if food.off_percent %}
+                            <span class="text-gray-600">Original Price: ${{ food.original_price }}</span> - 
+                            <span class="text-white">Off Percent: {{ food.off_percent }}%</span> -
+                            <span class="text-green-500">Discounted Price: ${{ food.price_after_off }}</span>
+                        {% else %}
+                            ${{ food.original_price }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% for subcategory in category.subcategories %}
+            <h3 class="bg-gray-400">{{ subcategory.name }}</h3>
+
+            {% if subcategory.foods %}
+                <br>
+                <ul>
+                    {% for food in subcategory.foods %}
+                        <li class="bg-rose-600 ">
+                            {{ food.name }} - 
+                            {% if food.off_percent %}
+                                <span class="text-gray-700">Original Price: ${{ food.original_price }}</span> - 
+                                <span class="text-white">Off Percent: {{ food.off_percent }}%</span> - 
+                                <span class="text-green-500">Discounted Price: ${{ food.price_after_off }}</span>
+                            {% else %}
+                                ${{ food.original_price }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
