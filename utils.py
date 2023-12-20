@@ -1,5 +1,15 @@
+from functools import wraps
+
+from django.contrib import messages
 from django.db.models import Prefetch
-from .models import Category, Food
+from django.shortcuts import redirect
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
+import random
+import os
+from twilio.rest import Client
+from foodmenu.models import Category, Food
 
 
 def json_menu_generator():
@@ -107,3 +117,84 @@ You can use the Prefetch object to further control the prefetch operation.
         menu.append(category_data)
 
     return menu
+
+
+
+def staff_or_superuser_required(view_func):
+    """
+        pecifically, situations where @wraps might be necessary include:
+
+        Decorators for nested functions: When a function is used as a decorator for another function,
+         and the latter is defined inside another function (nested functions).
+
+        Usage of decorators in larger codebases:
+         In larger projects where multiple decorators are used, employing @wraps helps maintain the proper preservation of metadata for each function, contributing to code organization and readability.
+
+        In essence, using @wraps addresses potential issues related to metadata and leads to better decisions
+         for maintaining code and readability.
+    """
+
+    @wraps(view_func)
+    def _wrapped_view(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not is_staff_or_superuser(request.user):
+            messages.error(request, 'You are not allowed to access this page.')
+            return redirect('users:login')
+        return view_func(self, request,*args, **kwargs)  # another magic here this logic made by me :)
+
+    return _wrapped_view
+
+
+def is_staff_or_superuser(user):
+    return user.is_active and (user.is_staff or user.is_superuser)
+
+
+class Authentication:
+
+    @staticmethod
+    def generate_otp():
+        return str(random.randint(100000, 999999))
+
+    @staticmethod
+    def send_otp_email(to_email):
+        otp = Authentication.generate_otp()
+
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+
+        subject = 'Your verification Code'
+        message = f'Your code is: {otp}'
+
+        try:
+
+            email_from = 'djmailyosof@gmail.com'
+            recipient_list = [to_email,]
+            send_mail(subject, message, email_from, recipient_list,auth_user=email_from,auth_password=settings.EMAIL_HOST_PASSWORD)
+            return otp, otp_expiry
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            return None
+
+    @staticmethod
+    def send_otp(phone_number):
+        otp = Authentication.generate_otp()
+        otp_expiry = timezone.now() + timezone.timedelta(minutes=5)
+
+        account_sid = os.getenv('account_sid')
+        auth_token = os.getenv('auth_token')
+        twilio_phone_number = os.getenv('twilio_phone_number')
+
+        dist_phone_number = phone_number.replace("0", "+98", 1)
+
+        client = Client(account_sid, auth_token)
+        print("Phone Number:", dist_phone_number)
+        message = client.messages.create(
+            body=f'Your code is: {otp}',
+            from_=twilio_phone_number,
+            to=dist_phone_number
+        )
+
+        print("Twilio Response:", message)
+        return otp, otp_expiry
+
+    @staticmethod
+    def check_otp(otp, otp_expiry, entered_otp):
+        return otp == entered_otp and timezone.now() < otp_expiry

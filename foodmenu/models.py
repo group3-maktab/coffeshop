@@ -29,4 +29,5 @@ class Food(models.Model):
 
     @property
     def price_after_off(self):
-        return self.price - (self.price * self.off / 100)
+        result = self.price - (self.price * self.off / 100)
+        return round(result, 2)

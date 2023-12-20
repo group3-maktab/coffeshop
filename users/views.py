@@ -9,7 +9,7 @@ from .forms import VerifyOTPForm, RegistrationForm, SetPasswordForm, LoginForm, 
 from .models import User
 import dotenv
 
-from .utils import Authentication
+from utils import Authentication
 
 dotenv.load_dotenv()
 
