@@ -1,8 +1,9 @@
 from functools import wraps
-
 from django.db import models
-
-from tag.models import TaggedItem
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.apps import AppConfig
+from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
 from django.shortcuts import redirect
@@ -238,4 +239,3 @@ def update_food_availability(changed_tag):
         food = Food.objects.get(id=food_id)
         food.availability = food_availability_map.get(food_id, True)
         food.save()
-
