@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from core.models import BaseModel
 
 
 class TaggedItemManager(models.Manager):
@@ -18,7 +19,7 @@ class TaggedItemManager(models.Manager):
 
 
 
-class Tag(models.Model):
+class Tag(BaseModel):
     label = models.CharField(max_length=255)
     available = models.BooleanField(default=True)
 
@@ -26,7 +27,7 @@ class Tag(models.Model):
         return self.label
 
 
-class TaggedItem(models.Model):
+class TaggedItem(BaseModel):
     objects = TaggedItemManager()
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

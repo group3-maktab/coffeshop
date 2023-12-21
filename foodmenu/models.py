@@ -1,11 +1,8 @@
-from django.db import models
-from django.db import models
-
-# Create your models here.
+from core.models import BaseModel
 from django.db import models
 
 
-class Category(models.Model):
+class Category(BaseModel):
     id = models.PositiveBigIntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subcategories')
@@ -18,7 +15,7 @@ class Category(models.Model):
         return self.parent is not None
 
 
-class Food(models.Model):
+class Food(BaseModel):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     availability = models.BooleanField(default=True)

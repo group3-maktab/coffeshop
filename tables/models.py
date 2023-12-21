@@ -1,9 +1,9 @@
 import uuid
-
+from core.models import BaseModel
 from django.db import models
 
 
-class Table(models.Model):
+class Table(BaseModel):
     status_fields = [("R", "reserved"), ("E", "empty"), ("F", "full")]
 
     number = models.PositiveIntegerField()
@@ -13,7 +13,7 @@ class Table(models.Model):
         return f'{self.number}'
 
 
-class Reservation(models.Model):
+class Reservation(BaseModel):
     status_fields = [("A", "accept"), ("D", "Denied"), ("O", "on_process")]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     table = models.ForeignKey(Table, on_delete=models.SET_NULL,
