@@ -1,5 +1,5 @@
 # signals.py
-from django.db.models.signals import post_save, post_migrate
+from django.db.models.signals import post_save, post_migrate, post_delete, pre_delete
 from django.dispatch import receiver
 from django.apps import AppConfig
 
@@ -64,10 +64,15 @@ In Django, signals are based on the Observer design pattern.
 
 
 @receiver(post_save, sender=TaggedItem)
+@receiver(post_delete, sender=TaggedItem)
 def handle_taggeditme_generated(sender, instance, **kwargs):
-    taggeditem = TaggedItem.objects.get(pk=instance.pk)
-    tag_id = taggeditem.tag_id
-    update_food_availability(tag_id)
+    try:
+        taggeditem = TaggedItem.objects.get(pk=instance.pk)
+        tag_id = taggeditem.tag_id
+        update_food_availability(tag_id)
+    except TaggedItem.DoesNotExist:
+        ...
+
 
 
 @receiver(post_migrate)

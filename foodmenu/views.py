@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -69,6 +70,8 @@ class UpdateFoodView(View):
     def get(self, request, pk):
         food_object = Food.objects.get(pk=pk)
         form = FoodCreateForm(instance=food_object)
+        associated_tags = TaggedItem.objects.get_tags_for(Food, food_object.id).values_list('tag', flat=True)
+        form.fields['tags'].initial = associated_tags
         return render(request, self.template_name, {'form': form})
 
     @staff_or_superuser_required
@@ -76,7 +79,12 @@ class UpdateFoodView(View):
         food_object = Food.objects.get(pk=pk)
         form = FoodCreateForm(request.POST, instance=food_object)
         if form.is_valid():
-            form.save()
+            food = form.save()
+            TaggedItem.objects.filter(content_type=ContentType.objects.get_for_model(Food), object_id=food.id).delete()
+            tags = form.cleaned_data.get('tags')
+            for tag in tags:
+                TaggedItem.objects.create(tag=tag, content_object=food)
+
             messages.success(request, 'Food updated successfully!')
             return redirect('foods:list-food')
 
