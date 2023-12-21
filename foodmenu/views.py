@@ -33,8 +33,7 @@ class CreateCategoryView(View):
             form.save()
             messages.success(request, 'Category created successfully!')
             return redirect('foods:list-food')
-        else:
-            form = CategoryCreateForm()
+
 
         return render(request, 'category_form.html', {'form': form})
 
@@ -54,8 +53,7 @@ class CreateFoodView(View):
             form.save()
             messages.success(request, 'Food created successfully!')
             return redirect('foods:list-food')
-        else:
-            form = FoodCreateForm()
+
 
         return render(request, 'category_form.html', {'form': form})
 
