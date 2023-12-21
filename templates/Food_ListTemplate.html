@@ -18,8 +18,8 @@
     <h1>Menu</h1>
 
     <div class="mb-4">
-        <button class="bg-green-500 text-white px-4 py-2 rounded">Add Food</button>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">Add Category</button>
+        <a href="{% url 'foods:create-food' %}"><button class="bg-green-500 text-white px-4 py-2 rounded">Add Food</button></a>
+        <a href="{% url 'foods:create-category' %}"><button class="bg-green-500 text-white px-4 py-2 rounded">Add Category</button></a>
     </div>
 
     {% for category in menu_data %}

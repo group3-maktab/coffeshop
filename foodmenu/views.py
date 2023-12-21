@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
+
+from tag.models import TaggedItem
 from .forms import CategoryCreateForm, FoodCreateForm
 from utils import json_menu_generator, staff_or_superuser_required
 from .models import Food, Category
 from django.db.models.deletion import ProtectedError
-
 
 
 class ListFoodView(View):
@@ -50,12 +51,15 @@ class CreateFoodView(View):
     def post(self, request):
         form = FoodCreateForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Food created successfully!')
-            return redirect('foods:list-food')
+            food = form.save()
+            tags = form.cleaned_data.get('tags')
+            for tag in tags:
+                TaggedItem.objects.create(tag=tag, content_object=food)
 
+        messages.success(request, 'Food created successfully!')
+        return redirect('foods:list-food')
 
-        return render(request, 'category_form.html', {'form': form})
+        return render(request, self.template_name, {'form': form})
 
 
 class UpdateFoodView(View):

@@ -1,5 +1,5 @@
 # signals.py
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_migrate
 from django.dispatch import receiver
 from django.apps import AppConfig
 
@@ -49,7 +49,6 @@ from utils import update_food_availability
 
 
 @receiver(post_save, sender=Tag)
-@receiver(post_save, sender=TaggedItem)
 def handle_tag_change(sender, instance, **kwargs):
     """
     Django signals are a mechanism that allows certain senders to notify
@@ -63,6 +62,18 @@ In Django, signals are based on the Observer design pattern.
     """
     update_food_availability(instance)
 
+
+@receiver(post_save, sender=TaggedItem)
+def handle_taggeditme_generated(sender, instance, **kwargs):
+    taggeditem = TaggedItem.objects.get(pk=instance.pk)
+    tag_id = taggeditem.tag_id
+    update_food_availability(tag_id)
+
+
+@receiver(post_migrate)
+def create_default_tags(sender, **kwargs):
+        if not Tag.objects.filter(label='unavailable').exists():
+            Tag.objects.create(label='unavailable', available=False)
 
 """
 Signals and middleware are both concepts used in Django for different purposes,

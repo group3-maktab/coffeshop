@@ -228,10 +228,10 @@ def update_food_availability(changed_tag):
         food.availability = food_availability
         food.save()
     """
+    print('RUN SIGNAL')
     # Get all food IDs associated with the changed_tag
     food_ids = TaggedItem.objects.filter(tag=changed_tag).values_list('object_id', flat=True).distinct()
 
-    # Annotate the count of unavailable tags for each food ID (excluding the changed_tag)
     food_availability_annotation = (
         TaggedItem.objects
         .filter(object_id__in=food_ids)
@@ -239,12 +239,8 @@ def update_food_availability(changed_tag):
         .values('object_id')
         .annotate(unavailable_tags_count=Count('id', filter=~models.Q(tag__available=True)))
     )
-
-    # Convert the annotation result into a dictionary for easier lookup
     food_availability_map = {item['object_id']: item['unavailable_tags_count'] == 0 for item in
                              food_availability_annotation}
-
-    # Update the availability for each food
     for food_id in food_ids:
         food = Food.objects.get(id=food_id)
         food.availability = food_availability_map.get(food_id, True)
