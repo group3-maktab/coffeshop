@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
+from django.db.models import Q
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
@@ -46,10 +47,14 @@ If you use iterator() to run the query,
 
 You can use the Prefetch object to further control the prefetch operation.
     """
-    categories = Category.objects.select_related('parent').prefetch_related(
-        Prefetch('subcategories', queryset=Category.objects.select_related('parent')),
-        Prefetch('food_set', queryset=Food.objects.filter(availability=True).select_related('category'))
-    ).filter(parent__isnull=True)
+    categories = (Category.objects.select_related('parent')
+                  .prefetch_related(
+        Prefetch('subcategories', queryset=Category.objects.select_related('parent')
+                 # .exclude(parent_id__in=Category.objects.values_list('id'))
+                 .prefetch_related(Prefetch('food_set', queryset=Food.objects.filter(availability=True)))),
+        Prefetch('food_set', queryset=Food.objects.filter(availability=True))
+    ).filter(Q(parent__isnull=True) | Q(id__in=(Category.objects.values_list('parent_id', flat=True)))))
+
     """
     this code will generate:) Absolute Magic ->
     """
@@ -75,7 +80,6 @@ You can use the Prefetch object to further control the prefetch operation.
     WHERE "foodmenu_category"."parent_id" IS NULL;
     """
 
-
     menu = []
 
     for category in categories:
@@ -87,7 +91,6 @@ You can use the Prefetch object to further control the prefetch operation.
             'subcategories': []
         }
 
-        # Add foods to the category
         for food in category.food_set.all():
             category_data['foods'].append({
                 'id': food.id,
@@ -97,8 +100,8 @@ You can use the Prefetch object to further control the prefetch operation.
                 'price_after_off': food.price_after_off,
             })
 
-        # Add subcategories to the category
         for subcategory in category.subcategories.all():
+            if is_parent(subcategory): continue
             subcategory_data = {
                 'id': subcategory.id,
                 'name': subcategory.name,
@@ -106,22 +109,26 @@ You can use the Prefetch object to further control the prefetch operation.
                 'foods': []
             }
 
-            # Add foods to the subcategory
             for food in subcategory.food_set.all():
                 subcategory_data['foods'].append({
                     'id': food.id,
                     'name': food.name,
                     'original_price': food.price,
                     'off_percent': food.off,
-                    'price_after_off': food.price_after_off,  # Use the price_after_off property here
+                    'price_after_off': food.price_after_off,
                 })
-
             category_data['subcategories'].append(subcategory_data)
-
         menu.append(category_data)
-
     return menu
 
+
+def is_parent(category):
+    """
+    Check if the category is a parent.
+    """
+    subcategory_query = Category.objects.select_related('parent').prefetch_related(Prefetch('subcategories',
+                        queryset=Category.objects.select_related('parent'))).filter(parent=category).exists()
+    return subcategory_query or category.parent is None
 
 
 def staff_or_superuser_required(view_func):
@@ -143,7 +150,7 @@ def staff_or_superuser_required(view_func):
         if not request.user.is_authenticated or not is_staff_or_superuser(request.user):
             messages.error(request, 'You are not allowed to access this page.')
             return redirect('users:login')
-        return view_func(self, request,*args, **kwargs)  # another magic here this logic made by me :)
+        return view_func(self, request, *args, **kwargs)  # another magic here this logic made by me :)
 
     return _wrapped_view
 
@@ -170,8 +177,9 @@ class Authentication:
         try:
 
             email_from = 'djmailyosof@gmail.com'
-            recipient_list = [to_email,]
-            send_mail(subject, message, email_from, recipient_list,auth_user=email_from,auth_password=settings.EMAIL_HOST_PASSWORD)
+            recipient_list = [to_email, ]
+            send_mail(subject, message, email_from, recipient_list, auth_user=email_from,
+                      auth_password=settings.EMAIL_HOST_PASSWORD)
             return otp, otp_expiry
         except Exception as e:
             print(f"Error sending email: {e}")
@@ -203,6 +211,7 @@ class Authentication:
     def check_otp(otp, otp_expiry, entered_otp):
         return otp == entered_otp and timezone.now() < otp_expiry
 
+
 def update_food_availability(changed_tag):
     """
     def update_food_availability(changed_tag):
@@ -232,7 +241,8 @@ def update_food_availability(changed_tag):
     )
 
     # Convert the annotation result into a dictionary for easier lookup
-    food_availability_map = {item['object_id']: item['unavailable_tags_count'] == 0 for item in food_availability_annotation}
+    food_availability_map = {item['object_id']: item['unavailable_tags_count'] == 0 for item in
+                             food_availability_annotation}
 
     # Update the availability for each food
     for food_id in food_ids:

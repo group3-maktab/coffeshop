@@ -6,6 +6,7 @@ from django.db import models
 
 
 class Category(models.Model):
+    id = models.PositiveBigIntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subcategories')
 

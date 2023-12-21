@@ -23,12 +23,12 @@ class CreateCategoryView(View):
 
     @staff_or_superuser_required
     def get(self, request):
-        form = FoodCreateForm()
+        form = CategoryCreateForm()
         return render(request, self.template_name, {'form': form})
 
     @staff_or_superuser_required
     def post(self, request):
-        form = FoodCreateForm(request.POST)
+        form = CategoryCreateForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Category created successfully!')
