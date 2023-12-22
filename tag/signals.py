@@ -1,8 +1,10 @@
 # signals.py
+from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save, post_migrate, post_delete, pre_delete
 from django.dispatch import receiver
 from django.apps import AppConfig
 
+from foodmenu.models import Food
 from .models import Tag, TaggedItem
 from utils import update_food_availability
 
@@ -71,8 +73,12 @@ def handle_taggeditme_generated(sender, instance, **kwargs):
         tag_id = taggeditem.tag_id
         update_food_availability(tag_id)
     except TaggedItem.DoesNotExist:
-        ...
-
+        Food.objects.update(availability=True)
+        unavailable_tags = TaggedItem.objects.get_unavailable_tags(Food)
+        content_type = ContentType.objects.get_for_model(Food)
+        object_ids = [tag.object_id for tag in unavailable_tags if tag.content_type == content_type]
+        food_objects = Food.objects.filter(id__in=object_ids)
+        food_objects.update(availability=False)
 
 
 @receiver(post_migrate)

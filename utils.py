@@ -228,24 +228,27 @@ def update_food_availability(changed_tag):
         food.availability = food_availability
         food.save()
     """
-    print('RUN SIGNAL')
-    food_ids = TaggedItem.objects.filter(tag=changed_tag).values_list('object_id', flat=True).distinct()
-    print('FOOD_IDS:', food_ids)
+    # print('RUN SIGNAL')
+    food_ids = TaggedItem.objects.filter(
+        tag=changed_tag).values_list(
+        'object_id', flat=True).distinct()
+    # print('FOOD_IDS:', food_ids)
     food_availability_annotation = (
         TaggedItem.objects
         .filter(object_id__in=food_ids)
         .values('object_id')
-        .annotate(unavailable_tags_count=Count('id', filter=models.Q(tag__available=False)))
+        .annotate(unavailable_tags_count=Count(
+            'id', filter=models.Q(tag__available=False)))
     )
-    print('FOOD_ANNotate:', food_availability_annotation)
+    # print('FOOD_ANNotate:', food_availability_annotation)
     food_availability_map = {item['object_id']: item['unavailable_tags_count'] for item in
                              food_availability_annotation}
-    print('FOOD_MAP:', food_availability_map)
+    # print('FOOD_MAP:', food_availability_map)
     for food_id in food_ids:
         food = Food.objects.get(id=food_id)
-        print(food)
+        # print(food)
         if food_availability_map.get(food_id) and food_availability_map.get(food_id)  > 0:
             food.availability = False
         else:food.availability = True
-        print(food.availability)
+        # print(food.availability)
         food.save()

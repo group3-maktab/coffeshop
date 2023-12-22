@@ -80,7 +80,9 @@ class UpdateFoodView(View):
         form = FoodCreateForm(request.POST, instance=food_object)
         if form.is_valid():
             food = form.save()
-            TaggedItem.objects.filter(content_type=ContentType.objects.get_for_model(Food), object_id=food.id).delete()
+            TaggedItem.objects.filter(
+                content_type=ContentType.objects.get_for_model(Food)
+                , object_id=food.id).delete()
             tags = form.cleaned_data.get('tags')
             for tag in tags:
                 TaggedItem.objects.create(tag=tag, content_object=food)
