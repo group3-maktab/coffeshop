@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Table(BaseModel):
-    status_fields = [("R", "reserved"), ("E", "empty"), ("F", "full")]
+    status_fields = [("R", "Reserved"), ("E", "Empty"), ("F", "Full"), ("T", "TakeAway")]
 
     number = models.PositiveIntegerField()
     status = models.CharField(max_length=1, choices=status_fields, default='E')

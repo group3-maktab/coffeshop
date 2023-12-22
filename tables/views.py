@@ -5,10 +5,10 @@ from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch
 from django.views import View
 from .forms import Reservation as ReservationForm
-from .forms import ReservationGetForm
+from .forms import ReservationGetForm, CreateTableForm
 from .models import Reservation as ReservationModel
 from .models import Table
-
+from django.views.generic import ListView
 
 class CreateReservationView(View):
     template_name = 'Reservation_CreateTemplate.html'
@@ -140,3 +140,26 @@ class GetReservationView(View):
             messages.error(request,
                            'Invalid code')
             return render(request, self.template_name, {'form': form})
+
+class CreateTableView(View):
+    template_name = 'Reservation_CreateTable.html'
+    def get(self,request):
+        form = CreateTableForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self,request):
+        form = CreateTableForm(request.POST)
+        if form.is_valid():
+            Table.objects.all().delete()
+            for i in range(1,form.cleaned_data['number'] +1):
+                Table.objects.create(number=i)
+            messages.success(request,
+                           'Tables created successfully')
+
+            redirect('tables:list-table')
+
+
+class ListTableView(ListView):
+    model = Table
+    template_name = 'Reservation_ListTableTemplate.html'
+    context_object_name = 'table'

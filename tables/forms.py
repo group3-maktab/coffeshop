@@ -37,4 +37,5 @@ class Reservation(forms.Form):
 class ReservationGetForm(forms.Form):
     code = forms.UUIDField()
 
-
+class CreateTableForm(forms.Form):
+    number = forms.IntegerField(min_value=1)

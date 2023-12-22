@@ -1,0 +1,17 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class="center">
+	<h2>My Todo List</h2>
+	{% if table %}
+	<ul class="tasks">
+		{% for task in table %}
+            {{ task }}
+		{% endfor %}
+	{% else %}
+		<p>🎉 Yay, you have no pending tasks!</p>
+	{% endif %}
+	</ul>
+</div>
+{%endblock content%}
