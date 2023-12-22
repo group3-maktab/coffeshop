@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    
+
     {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -21,24 +21,27 @@
 	<ul class="tasks">
 		{% for task in table %}
             <br>
-            {{ task }} |||  
+            {{ task }} |||
             {{ task.status }}  |||
-            {% if task.status is not 'R' %}
+            {% if task.status != 'R' %}
             <form action="{% url 'tables:change-table-status' task.pk 'R' %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Reserve</button>
             </form>
             {% endif %}
-
+            {% if task.status != 'E' %}
             <form action="{% url 'tables:change-table-status' task.pk 'E' %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Empty</button>
             </form>
-
+            {% endif %}
+            {% if task.status != 'F' %}
             <form action="{% url 'tables:change-table-status' task.pk 'F' %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Full</button>
             </form>
+            {% endif %}
+
 		{% endfor %}
 	</ul>
 </div>
