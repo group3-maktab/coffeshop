@@ -163,3 +163,10 @@ class ListTableView(ListView):
     model = Table
     template_name = 'Reservation_ListTableTemplate.html'
     context_object_name = 'table'
+
+class ChangeStatusTableView(View):
+    def post(self,request,pk,status):
+        table = Table.objects.get(pk=pk)
+        table.status = status
+        table.save()
+        return redirect('tables:list-table')

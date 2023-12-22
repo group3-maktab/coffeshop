@@ -1,17 +1,45 @@
-{%extends 'base.html'%}
+{% extends "base.html" %}
+{% load widget_tweaks %}
 
-{%block content%}
+{% block content %}
+    
+    {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
 
+                    <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+</svg>
+{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    <div class=" forms-div ">
+
+    <h2 class='forms-header'>Tables</h2>
 <div class="center">
-	<h2>My Todo List</h2>
-	{% if table %}
 	<ul class="tasks">
 		{% for task in table %}
-            {{ task }}
+            <br>
+            {{ task }} |||  
+            {{ task.status }}  |||
+            {% if task.status is not 'R' %}
+            <form action="{% url 'tables:change-table-status' task.pk 'R' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Reserve</button>
+            </form>
+            {% endif %}
+
+            <form action="{% url 'tables:change-table-status' task.pk 'E' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Empty</button>
+            </form>
+
+            <form action="{% url 'tables:change-table-status' task.pk 'F' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Full</button>
+            </form>
 		{% endfor %}
-	{% else %}
-		<p>🎉 Yay, you have no pending tasks!</p>
-	{% endif %}
 	</ul>
 </div>
-{%endblock content%}
+{% endblock content %}
