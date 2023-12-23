@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -143,3 +144,13 @@ class DeleteFoodView(View):
 
 class MakeUnavailableView(View):
     ...
+
+def get_food_items(request):
+    category_id = request.GET.get('category')
+    if category_id :
+        food_items = Food.objects.filter(category_id=category_id)
+
+        food_list = [{'id': food.id, 'name': food.name} for food in food_items]
+        print(food_list)
+        return JsonResponse({'food_items': food_list})
+    return JsonResponse({'food_items': None})

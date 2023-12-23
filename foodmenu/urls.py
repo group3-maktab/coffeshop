@@ -10,6 +10,7 @@ urlpatterns = [
     path('delete-food/<int:pk>', views.DeleteFoodView.as_view(), name='delete-food'),
     path('delete-category/<int:pk>', views.DeleteCategoryView.as_view(), name='delete-category'),
     path('create-category', views.CreateCategoryView.as_view(), name='create-category'),
+    path('get_food_items/', views.get_food_items, name='get_food_items'),
     # path('unavailable-food', views.ListFoodView.as_view(), name='unavailable-food'),
     # path('unavailable-category', views.ListFoodView.as_view(), name='unavailable-category'),
 

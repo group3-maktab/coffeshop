@@ -22,9 +22,10 @@ urlpatterns = [
     path('admin/login/', UsersLoginView.as_view(), ),
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('blog/', include('blog.urls', namespace='blog')),
+    path('blogs/', include('blog.urls', namespace='blog')),
     path('users/', include('users.urls', namespace='users')),
     path('tables/', include('tables.urls', namespace='tables')),
     path('foods/', include('foodmenu.urls', namespace='foods')),
+    path('orders/', include('order.urls', namespace='order')),
 
 ]
