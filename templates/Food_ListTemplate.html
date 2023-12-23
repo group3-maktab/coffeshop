@@ -42,6 +42,11 @@
                             ${{ food.original_price }}
                         {% endif %}
                         <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
+                        <form action="{% url 'order:create-cart' food.id %}" method="post">
+                            {% csrf_token %}
+                            {{ cart_prodict_form.as_p }}
+                            <input type="submit" value="Add to cart">
+                        </form>
                     </li>
                 {% endfor %}
             </ul>
@@ -67,6 +72,11 @@
                                 ${{ food.original_price }}
                             {% endif %}
                             <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
+                            <form action="{% url 'order:create-cart' food.id %}" method="post">
+                                {{ cart_product_form }}
+                                {% csrf_token %}
+                                <input type="submit" value="Add to cart">
+                            </form>
                         </li>
                     {% endfor %}
                 </ul>

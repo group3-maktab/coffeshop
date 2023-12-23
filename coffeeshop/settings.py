@@ -152,3 +152,5 @@ EMAIL_HOST_PASSWORD = 'wlbqpqetjidxlxvs'
 
 TABLE_NUMBER = 10
 AUTH_USER_MODEL = 'users.User'
+
+CART_SESSION_ID = 'cart'

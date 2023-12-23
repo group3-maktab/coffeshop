@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-
+from order.forms import CartAddProductForm
 from tag.models import TaggedItem
 from .forms import CategoryCreateForm, FoodCreateForm
 from utils import json_menu_generator, staff_or_superuser_required
@@ -17,8 +17,10 @@ class ListFoodView(View):
 
     @staff_or_superuser_required
     def get(self, request):
+
         menu_data = json_menu_generator()
-        return render(request, self.template_name, {'menu_data': menu_data})
+        cart_prodict_form = CartAddProductForm()
+        return render(request, self.template_name, {'menu_data': menu_data,'cart_prodict_form':cart_prodict_form})
 
 
 class CreateCategoryView(View):
