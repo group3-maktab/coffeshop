@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
@@ -22,6 +23,7 @@ class CreateCartView(View):
             cart.add(product=product,
                      quantity=cd['quantity'],
                      override_quantity=cd['override'])
+        messages.success(request, 'Item added successfully!')
         return redirect('foods:list-food')
 
 
@@ -31,6 +33,7 @@ class DeleteCartView(View):
         cart = Cart(request)
         product = get_object_or_404(Food, id=product_id)
         cart.remove(product)
+        messages.success(request, 'Order deleted successfully!')
         return redirect('order:detail-cart')
 
 
@@ -69,6 +72,7 @@ class MakeOrderView(View):
                                          price=item['price'],
                                          quantity=item['quantity'])
             cart.clear()
+        messages.success(request, 'Order created successfully!')
         return render(request, self.template_name, {'order': order})
 
 

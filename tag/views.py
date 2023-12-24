@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -22,6 +23,7 @@ class DeleteTagView(View):
     def post(self, request, pk):
         tag = get_object_or_404(Tag, pk=pk)
         tag.delete()
+        messages.success(request, 'Tag deleted successfully!')
         return redirect('tags:tag')
 
 class TagChangeAvailabilityView(View):
@@ -29,6 +31,7 @@ class TagChangeAvailabilityView(View):
         tag = get_object_or_404(Tag, pk=pk)
         tag.available = not tag.available
         tag.save()
+        messages.success(request, 'Tag Changed successfully!')
         return redirect('tags:tag')
 
 
