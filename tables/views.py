@@ -183,4 +183,5 @@ class ChangeStatusTableView(View):
         table = Table.objects.get(pk=pk)
         table.status = status
         table.save()
+        messages.success(request, 'Table status changed successfully!')
         return redirect('tables:list-table')
