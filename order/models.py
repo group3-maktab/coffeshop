@@ -11,15 +11,13 @@ from tables.models import Table
 
 
 class Order(BaseModel):
-    status_fields = [("S", "Start"),
-                     ("W", "Waiting"),
-                     ("C", "Confirmation"),  # todo :optimize status
+    status_fields = [("W", "Waiting"),
                      ("P", "Preparation"),
                      ("T", "Transmission"),
                      ("F", "Finished")]
     customer_phone = models.CharField(max_length=100, blank=True, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    status = models.CharField(max_length=1, choices=status_fields, default='S')
+    status = models.CharField(max_length=1, choices=status_fields, default='W')
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
 
     class Meta:
