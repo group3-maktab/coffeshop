@@ -17,7 +17,7 @@
     <h1>Order List</h1>
     <ul>
         {% for order in orders %}
-            <li>{{ order }}</li>
+            <li>{{ order }} - Status: {{ order.get_status_display }}</li>
         {% endfor %}
     </ul>
 

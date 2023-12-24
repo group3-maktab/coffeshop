@@ -69,5 +69,6 @@ class MakeOrderView(View):
 
 class OrderListView(ListView):
     model = Order
-    template_name = 'order_list.html'
+    template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
+
