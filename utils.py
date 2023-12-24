@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
-from django.db.models import Q
+from django.db.models import Q, Sum
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
@@ -15,7 +15,7 @@ import random
 import os
 from twilio.rest import Client
 from foodmenu.models import Category, Food
-
+from order.models import Order, OrderItem
 
 def json_menu_generator():
     """
@@ -327,3 +327,21 @@ class Cart:
         # remove cart from session
         del self.session[settings.CART_SESSION_ID]
         self.save()
+
+
+class Reporting:
+    """
+    Total sales
+    favorite tables
+    favorite foods
+    generate Sales Invoice
+    """
+    duration = 0
+    def total_sales(self):
+        orders = Order.objects.filter(
+    created_at__gte=timezone.now()
+                    - timezone.timedelta(days=30))
+
+        total_sales_last_month = orders.aggregate(
+        total_sales=Sum('orderitem__get_cost')
+    )['total_sales']
