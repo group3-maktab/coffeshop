@@ -29,7 +29,7 @@ update_blog_record
 
 class CreateBlogView(View):
     template_name = 'Blog_CreateTemplate.html'
-
+    template_files = glob.glob('blog/templates/articles/*.html')
     @staff_or_superuser_required
     def get(self, request):
         form = GenerateBlogForm()
@@ -44,6 +44,15 @@ class CreateBlogView(View):
             content = form.cleaned_data['content']
 
             slug = slugify(title)
+
+            urls = []
+            for file_path in self.template_files:
+                url = file_path.split('/')[-1].split('.')[0]
+                urls.append(url)
+
+            if slug in urls:
+                messages.error(request, 'We have another blog with that name already.')
+                return render(request, self.template_name, {'form': form})
 
             thumbnail_folder = 'blog/static/articles'
             os.makedirs(thumbnail_folder, exist_ok=True)
