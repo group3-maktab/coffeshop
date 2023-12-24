@@ -339,17 +339,18 @@ class Cart:
 
 class Reporting:
     """
-    Total sales
-    favorite tables
-    favorite foods
+    Total sales              *
+    favorite tables          *
+    favorite foods           *
     generate Sales Invoice
     """
-    duration = 0
+    def __init__(self, days):
+        self.days = days
 
     def total_sales(self):
         orders = Order.objects.filter(
             created_at__gte=timezone.now()
-                            - timezone.timedelta(days=30))
+                            - timezone.timedelta(days=self.days))
 
         total_sales = orders.aggregate(
             total_sales=Sum(F('orderitem__price') * F('orderitem__quantity'))
@@ -362,9 +363,19 @@ class Reporting:
             .annotate(used_seats=Count('order__id', distinct=True, filter=(
                     Q(order__status='F') &
                     Q(order__created_at__gte=timezone.now()
-                                             - timezone.timedelta(days=30))
+                                             - timezone.timedelta(days=self.days))
             )))
             .order_by('-used_seats')
         )
         for table in most_used_tables:
             yield table
+    def favorite_foods(self):
+        most_used_foods = (Food.objects.annotate(
+            used_foods=Count('orderitem__id', distinct=True, filter=(
+                Q(orderitem__created_at__gte=timezone.now()
+                  - timezone.timedelta(days=self.days)
+                  )
+            ))).order_by('-used_foods')[0:10]
+        )
+        for food in most_used_foods:
+            yield food

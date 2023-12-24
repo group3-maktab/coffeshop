@@ -13,7 +13,12 @@ class DashboardView(View):
         r = Reporting()
         total_sales = r.total_sales()
         favorite_table = []
+        favorite_food = []
         for table in r.favorite_tables():
             favorite_table.append(f"Table #{table.number} - Seats: {table.used_seats}")
-        context = {'total_sales' : total_sales, 'favorite_table' : favorite_table}
+        for food in r.favorite_foods():
+            favorite_food.append(f"{food} | {food.used_foods}")
+        context = {'total_sales' : total_sales,
+                   'favorite_food' : favorite_food ,
+                   'favorite_table' : favorite_table}
         return render(request, self.template_name, context=context)
