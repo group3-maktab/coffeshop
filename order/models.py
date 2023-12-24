@@ -15,7 +15,7 @@ class Order(BaseModel):
     status_fields = [("S", "Start"), ("W", "Waiting"),
                      ("C", "Confirmation"), ("P", "Preparation"),
                      ("T", "Transmission"), ("F", "Finished")]
-    customer_phone = models.CharField(max_length=100)
+    customer_phone = models.CharField(max_length=100, blank=True, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     status = models.CharField(max_length=1, choices=status_fields, default='S')
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)

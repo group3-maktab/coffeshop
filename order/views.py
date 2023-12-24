@@ -1,14 +1,9 @@
-from django.forms import formset_factory
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
 from foodmenu.models import Food
-from .cart import Cart
+from utils import Cart
 from .forms import CartAddProductForm, OrderCreateForm
-from foodmenu.models import Category
-from order.models import Order, OrderItem
+from order.models import OrderItem
 
 
 # Create your views here.
