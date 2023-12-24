@@ -4,9 +4,15 @@
     <h1>Tags</h1>
     <ul>
     {% for tag in tags %}
+        <br>
         <li>{{ tag.label }} - {{ tag.available }}</li>
+        <form method="post" action="{% url 'tags:change-tag' tag.id %}">{% csrf_token %}
+            <input type="submit" value="Change Availability"></form>
+        <form method="post" action="{% url 'tags:delete-tag' tag.id %}">{% csrf_token %}
+            <input type="submit" value="Delete Tag"></form>
     {% empty %}
         <li>No tag yet.</li>
+        <br>
     {% endfor %}
     </ul>
 {% endblock %}

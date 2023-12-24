@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView
@@ -20,11 +20,16 @@ class CreateTagView(CreateView):
 
 class DeleteTagView(View):
     def post(self, request, pk):
-        tag = Tag.objects.get(pk=pk)
+        tag = get_object_or_404(Tag, pk=pk)
         tag.delete()
         return redirect('tags:tag')
 
-
+class TagChangeAvailabilityView(View):
+    def post(self, request, pk):
+        tag = get_object_or_404(Tag, pk=pk)
+        tag.available = not tag.available
+        tag.save()
+        return redirect('tags:tag')
 
 
 
