@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Tags</h1>
+    <ul>
+    {% for tag in tags %}
+        <li>{{ tag.label }} - {{ tag.available }}</li>
+    {% empty %}
+        <li>No tag yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
