@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 
 from foodmenu.models import Food
-from utils import Cart
+from utils import Cart, staff_or_superuser_required
 from .forms import CartAddProductForm, OrderCreateForm
 from order.models import OrderItem, Order
 
@@ -12,6 +12,7 @@ from order.models import OrderItem, Order
 
 
 class CreateCartView(View):
+    @staff_or_superuser_required
     def post(self, request, product_id):
         cart = Cart(request)
         product = get_object_or_404(Food, id=product_id)
@@ -25,6 +26,7 @@ class CreateCartView(View):
 
 
 class DeleteCartView(View):
+    @staff_or_superuser_required
     def post(self, request, product_id):
         cart = Cart(request)
         product = get_object_or_404(Food, id=product_id)
@@ -35,6 +37,7 @@ class DeleteCartView(View):
 class DetailCartView(View):
     template_name = 'Order_DetailCart.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         cart = Cart(request)
         for item in cart:
@@ -47,11 +50,13 @@ class DetailCartView(View):
 class MakeOrderView(View):
     template_name = 'Order_CreateOrder.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         cart = Cart(request)
         form = OrderCreateForm()
         return render(request, self.template_name, {'cart': cart, 'form': form})
 
+    @staff_or_superuser_required
     def post(self, request):
         cart = Cart(request)
         form = OrderCreateForm(request.POST)

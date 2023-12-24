@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch
 from django.views import View
+
+from utils import staff_or_superuser_required
 from .forms import Reservation as ReservationForm
 from .forms import ReservationGetForm, CreateTableForm
 from .models import Reservation as ReservationModel
@@ -13,10 +15,12 @@ from django.views.generic import ListView
 class CreateReservationView(View):
     template_name = 'Reservation_CreateTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         form = ReservationForm()
         return render(request, self.template_name, {'form': form})
 
+    @staff_or_superuser_required
     def post(self, request):
         form = ReservationForm(request.POST)
         if form.is_valid():
@@ -37,11 +41,13 @@ class CreateReservationView(View):
 class ListReservationView(LoginRequiredMixin, View):
     template_name = 'Reservation_ListTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         reservationlist = ReservationModel.objects.all()
         tables = Table.objects.all()
         return render(request, self.template_name, {'reservationlist': reservationlist, 'tables': tables})
 
+    @staff_or_superuser_required
     def post(self, request):
         reservation_id = request.POST.get('reservation_id')
         action = request.POST.get('action')
@@ -73,6 +79,7 @@ class ListReservationView(LoginRequiredMixin, View):
 class DetailReservationView(View):
     template_name = 'Reservation_DetailTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request, pk):
         tables = Table.objects.all()
         try:
@@ -92,7 +99,7 @@ class DetailReservationView(View):
                            'Reservation does not exist.')
         return render(request, self.template_name, context=context)
 
-    @login_required
+    @staff_or_superuser_required
     def post(self, request, pk):
         reservation_id = request.POST.get('reservation_id')
         action = request.POST.get('action')
@@ -123,10 +130,12 @@ class DetailReservationView(View):
 class GetReservationView(View):
     template_name = 'Reservation_GetTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         form = ReservationGetForm()
         return render(request, self.template_name, {'form': form})
 
+    @staff_or_superuser_required
     def post(self, request):
         form = ReservationGetForm(request.POST)
         try:
@@ -143,10 +152,13 @@ class GetReservationView(View):
 
 class CreateTableView(View):
     template_name = 'Reservation_CreateTable.html'
+
+    @staff_or_superuser_required
     def get(self,request):
         form = CreateTableForm()
         return render(request, self.template_name, {'form': form})
 
+    @staff_or_superuser_required
     def post(self,request):
         form = CreateTableForm(request.POST)
         if form.is_valid():
@@ -165,6 +177,8 @@ class ListTableView(ListView):
     context_object_name = 'table'
 
 class ChangeStatusTableView(View):
+
+    @staff_or_superuser_required
     def post(self,request,pk,status):
         table = Table.objects.get(pk=pk)
         table.status = status

@@ -7,6 +7,7 @@ from django.views import View
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from utils import staff_or_superuser_required
 from .forms import GenerateBlogForm
 import glob
 import os
@@ -26,13 +27,15 @@ update_blog_record
 # has_permission(user, 'create_medical_record')
 
 
-class CreateBlogView(LoginRequiredMixin, View):
+class CreateBlogView(View):
     template_name = 'Blog_CreateTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request):
         form = GenerateBlogForm()
         return render(request, self.template_name, {'form': form})
 
+    @staff_or_superuser_required
     def post(self, request):
         form = GenerateBlogForm(request.POST, request.FILES)
         if form.is_valid():
@@ -77,6 +80,7 @@ class DetailBlogView(View):
 class UpdateBlogView(LoginRequiredMixin, View):
     template_name = 'Blog_CreateTemplate.html'
 
+    @staff_or_superuser_required
     def get(self, request, slug):
         path = f'blog/templates/articles/{slug}.html'
 

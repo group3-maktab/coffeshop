@@ -150,6 +150,5 @@ def get_food_items(request):
         food_items = Food.objects.filter(category_id=category_id)
 
         food_list = [{'id': food.id, 'name': food.name} for food in food_items]
-        print(food_list)
         return JsonResponse({'food_items': food_list})
     return JsonResponse({'food_items': None})

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views import View
-from utils import Reporting
+from utils import Reporting, staff_or_superuser_required
+
+
 # Create your views here.
 class HomeView(View):
     template_name = 'Core_HomeTemplate.html'
@@ -9,6 +11,8 @@ class HomeView(View):
 
 class DashboardView(View):
     template_name = 'Core_DashboardTemplate.html'
+
+    @staff_or_superuser_required
     def get(self,request):
         r = Reporting(30)
         total_sales = r.total_sales()
