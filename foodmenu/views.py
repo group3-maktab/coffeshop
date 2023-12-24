@@ -144,9 +144,6 @@ class DeleteFoodView(View):
             return redirect('foods:list-food')
 
 
-class MakeUnavailableView(View):
-    ...
-
 def get_food_items(request):
     category_id = request.GET.get('category')
     if category_id :

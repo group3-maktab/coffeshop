@@ -24,9 +24,8 @@
 
     {% for category in menu_data %}
         <h2 class="bg-blue-500">{{ category.name }}</h2>
-
+        <a href="{% url 'foods:update-category' category.id %}">Update category</a>
         <div class="mb-2">
-            <button class="bg-red-500 text-white px-3 py-1 rounded">Make Category Unavailable</button>
         </div>
 
         {% if category.foods %}
@@ -41,7 +40,7 @@
                         {% else %}
                             ${{ food.original_price }}
                         {% endif %}
-                        <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
+                        <a href="{% url 'foods:update-food' food.id %}">Update food</a>
                         <form action="{% url 'order:create-cart' food.id %}" method="post">
                             {% csrf_token %}
                             {{ cart_prodict_form.as_p }}
@@ -54,9 +53,8 @@
 
         {% for subcategory in category.subcategories %}
             <h3 class="bg-gray-400">{{ subcategory.name }}</h3>
-
+            <a href="{% url 'foods:update-category' subcategory.id %}">Update category</a>
             <div class="mb-2">
-                <button class="bg-red-500 text-white px-3 py-1 rounded">Make Subcategory Unavailable</button>
             </div>
 
             {% if subcategory.foods %}
@@ -71,7 +69,7 @@
                             {% else %}
                                 ${{ food.original_price }}
                             {% endif %}
-                            <button class="bg-yellow-500 text-white px-3 py-1 rounded">Make Unavailable</button>
+                            <a href="{% url 'foods:update-food' food.id %}">Update food</a>
                             <form action="{% url 'order:create-cart' food.id %}" method="post">
                                 {{ cart_product_form }}
                                 {% csrf_token %}
