@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
 from django.db.models import Q, Sum, F
+
+from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
@@ -16,6 +18,7 @@ import os
 from twilio.rest import Client
 from foodmenu.models import Category, Food
 from order.models import Order, OrderItem
+
 
 def json_menu_generator():
     """
@@ -127,7 +130,9 @@ def is_parent(category):
     Check if the category is a parent.
     """
     subcategory_query = Category.objects.select_related('parent').prefetch_related(Prefetch('subcategories',
-                        queryset=Category.objects.select_related('parent'))).filter(parent=category).exists()
+                                                                                            queryset=Category.objects.select_related(
+                                                                                                'parent'))).filter(
+        parent=category).exists()
     return subcategory_query or category.parent is None
 
 
@@ -247,15 +252,19 @@ def update_food_availability(changed_tag):
     for food_id in food_ids:
         food = Food.objects.get(id=food_id)
         # print(food)
-        if food_availability_map.get(food_id) and food_availability_map.get(food_id)  > 0:
+        if food_availability_map.get(food_id) and food_availability_map.get(food_id) > 0:
             food.availability = False
-        else:food.availability = True
+        else:
+            food.availability = True
         # print(food.availability)
         food.save()
+
 
 from decimal import Decimal
 from django.conf import settings
 from foodmenu.models import Food, Category
+
+
 class Cart:
     def __init__(self, request):
         """
@@ -281,7 +290,6 @@ class Cart:
         else:
             self.cart[product_id]['quantity'] += quantity
         self.save()
-
 
     def save(self):
         # mark the session as "modified" to make sure it gets saved
@@ -337,12 +345,26 @@ class Reporting:
     generate Sales Invoice
     """
     duration = 0
+
     def total_sales(self):
         orders = Order.objects.filter(
-        created_at__gte=timezone.now()
-                    - timezone.timedelta(days=30))
+            created_at__gte=timezone.now()
+                            - timezone.timedelta(days=30))
 
-        total_sales_last_month = orders.aggregate(
+        total_sales = orders.aggregate(
             total_sales=Sum(F('orderitem__price') * F('orderitem__quantity'))
-        )['total_sales']
-        return total_sales_last_month
+        )
+        return total_sales['total_sales']
+
+    def favorite_tables(self):
+        most_used_tables = (
+            Table.objects
+            .annotate(used_seats=Count('order__id', distinct=True, filter=(
+                    Q(order__status='F') &
+                    Q(order__created_at__gte=timezone.now()
+                                             - timezone.timedelta(days=30))
+            )))
+            .order_by('-used_seats')
+        )
+        for table in most_used_tables:
+            yield table

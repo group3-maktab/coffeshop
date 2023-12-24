@@ -15,10 +15,15 @@
     {% endif %}
 
     <a href="{% url 'tables:list-reservation' %}">List Reservation</a>
+    <br>
     <a href="{% url 'tables:list-table' %}">List Table</a>
+    <br>
     <a href="{% url 'foods:list-food' %}">List Menu</a>
+    <br>
     <a href="{% url 'order:list-order' %}">List Order</a>
+    <br>
     {{ total_sales }}
-
+    <br>
+    {{ favorite_table }}
 
 {% endblock %}

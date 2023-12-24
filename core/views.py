@@ -12,5 +12,8 @@ class DashboardView(View):
     def get(self,request):
         r = Reporting()
         total_sales = r.total_sales()
-        context = {'total_sales' : total_sales}
+        favorite_table = []
+        for table in r.favorite_tables():
+            favorite_table.append(f"Table #{table.number} - Seats: {table.used_seats}")
+        context = {'total_sales' : total_sales, 'favorite_table' : favorite_table}
         return render(request, self.template_name, context=context)

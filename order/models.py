@@ -11,14 +11,17 @@ from tables.models import Table
 
 
 class Order(BaseModel):
-
-    status_fields = [("S", "Start"), ("W", "Waiting"),
-                     ("C", "Confirmation"), ("P", "Preparation"),
-                     ("T", "Transmission"), ("F", "Finished")]
+    status_fields = [("S", "Start"),
+                     ("W", "Waiting"),
+                     ("C", "Confirmation"),  # todo :optimize status
+                     ("P", "Preparation"),
+                     ("T", "Transmission"),
+                     ("F", "Finished")]
     customer_phone = models.CharField(max_length=100, blank=True, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     status = models.CharField(max_length=1, choices=status_fields, default='S')
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
+
     class Meta:
         ordering = ['-created_at']
         indexes = [
@@ -27,6 +30,7 @@ class Order(BaseModel):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
+
     def __str__(self):
         return f"Order #{self.id} - {self.customer_phone} - {self.table}"
 

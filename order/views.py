@@ -21,7 +21,7 @@ class CreateCartView(View):
             cart.add(product=product,
                      quantity=cd['quantity'],
                      override_quantity=cd['override'])
-        return redirect('order:detail-cart')
+        return redirect('foods:list-food')
 
 
 class DeleteCartView(View):
@@ -71,4 +71,5 @@ class OrderListView(ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
+    ordering = ['-created_at']
 
