@@ -10,7 +10,7 @@ class HomeView(View):
 class DashboardView(View):
     template_name = 'Core_DashboardTemplate.html'
     def get(self,request):
-        r = Reporting()
+        r = Reporting(30)
         total_sales = r.total_sales()
         favorite_table = []
         favorite_food = []

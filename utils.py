@@ -371,7 +371,7 @@ class Reporting:
             yield table
     def favorite_foods(self):
         most_used_foods = (Food.objects.annotate(
-            used_foods=Count('orderitem__id', distinct=True, filter=(
+            used_foods=Sum('orderitem__quantity', distinct=True, filter=(
                 Q(orderitem__created_at__gte=timezone.now()
                   - timezone.timedelta(days=self.days)
                   )
