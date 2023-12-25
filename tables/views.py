@@ -171,7 +171,7 @@ class CreateTableView(View):
 
             redirect('tables:list-table')
 
-
+#todo @staff_or_superuser_required
 class ListTableView(ListView):
     model = Table
     template_name = 'Reservation_ListTableTemplate.html'
@@ -181,8 +181,12 @@ class ListTableView(ListView):
         context = super().get_context_data(**kwargs)
         context['table_orders'] = {}
         for table_instance in context['table']:
-            order = Order.objects.filter(table=table_instance, status__in=['W', 'P', 'T'])
-            table_instance['order']=order
+            try:
+                order = Order.objects.filter(table=table_instance, status__in=["W", "P", "T"]).first()
+                # print(context['table_orders'][table_instance.id],table_instance.id,"\n\n\n")
+                context['table_orders'][table_instance.id] = order
+            except Order.DoesNotExist:
+                pass
         return context
 
 

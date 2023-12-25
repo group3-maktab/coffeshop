@@ -8,7 +8,7 @@
             <ul class="tasks">
                 {% for table_instance in table %}
                     <br>
-                    {{ table_instance }} ||| {{ table_instance.order }}
+                    {{ table_instance }} ||| {% for order in table_orders.table_instance %}{{ order }}{% endfor %}
                     {{ table_instance.status }}  |||
                     {% if table_instance.status != 'R' %}
                         <form action="{% url 'tables:change-table-status' table_instance.pk 'R' %}" method="post" style="display:inline;">
@@ -28,7 +28,13 @@
                             <button type="submit">Full</button>
                         </form>
                     {% endif %}
-                        <li>Order ID: {{ table_orders.id }} - Status: {{ table_orders.get_status_display }} - Date/Time: {{ table_orders.created_at }}</li>
+                        {% for table_id , order in table_orders.items %}
+                            {% if table_id == table_instance.id %}
+        <li>Order ID: {{ order.id }} - Status: {{ order.get_status_display }} 
+            - Date/Time: {{ order.created_at }}</li> 
+                        {% endif %}
+                    {% endfor %}
+            
                 {% endfor %}
             </ul>
         </div>
