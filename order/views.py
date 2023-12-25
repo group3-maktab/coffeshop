@@ -118,8 +118,9 @@ class OrderTransmissionListView(ListView):
 
 class ChangeStatusView(View):
     def post(self,request, pk):
-        new_status = request.POST.get('new_status')
+        new_status:str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
         order.status = new_status
         order.save()
-        return redirect('order:list-order-w')
+        messages.success(request, 'Order changed successfully!')
+        return redirect(f'order:list-order-{new_status.lower()}')

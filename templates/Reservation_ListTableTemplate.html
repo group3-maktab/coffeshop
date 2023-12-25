@@ -2,37 +2,35 @@
 {% load widget_tweaks %}
 
 {% block content %}
-
-
-    <div class=" forms-div ">
-
-    <h2 class='forms-header'>Tables</h2>
-<div class="center">
-	<ul class="tasks">
-		{% for task in table %}
-            <br>
-            {{ task }} |||
-            {{ task.status }}  |||
-            {% if task.status != 'R' %}
-            <form action="{% url 'tables:change-table-status' task.pk 'R' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Reserve</button>
-            </form>
-            {% endif %}
-            {% if task.status != 'E' %}
-            <form action="{% url 'tables:change-table-status' task.pk 'E' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Empty</button>
-            </form>
-            {% endif %}
-            {% if task.status != 'F' %}
-            <form action="{% url 'tables:change-table-status' task.pk 'F' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Full</button>
-            </form>
-            {% endif %}
-
-		{% endfor %}
-	</ul>
-</div>
+    <div class="forms-div">
+        <h2 class='forms-header'>Tables</h2>
+        <div class="center">
+            <ul class="tasks">
+                {% for table_instance in table %}
+                    <br>
+                    {{ table_instance }} ||| {{ table_instance.order }}
+                    {{ table_instance.status }}  |||
+                    {% if table_instance.status != 'R' %}
+                        <form action="{% url 'tables:change-table-status' table_instance.pk 'R' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Reserve</button>
+                        </form>
+                    {% endif %}
+                    {% if table_instance.status != 'E' %}
+                        <form action="{% url 'tables:change-table-status' table_instance.pk 'E' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Empty</button>
+                        </form>
+                    {% endif %}
+                    {% if table_instance.status != 'F' %}
+                        <form action="{% url 'tables:change-table-status' table_instance.pk 'F' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Full</button>
+                        </form>
+                    {% endif %}
+                        <li>Order ID: {{ table_orders.id }} - Status: {{ table_orders.get_status_display }} - Date/Time: {{ table_orders.created_at }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endblock content %}

@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch
 from django.views import View
 
+from order.models import Order
 from utils import staff_or_superuser_required
 from .forms import Reservation as ReservationForm
 from .forms import ReservationGetForm, CreateTableForm
@@ -175,6 +176,15 @@ class ListTableView(ListView):
     model = Table
     template_name = 'Reservation_ListTableTemplate.html'
     context_object_name = 'table'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['table_orders'] = {}
+        for table_instance in context['table']:
+            order = Order.objects.filter(table=table_instance, status__in=['W', 'P', 'T'])
+            table_instance['order']=order
+        return context
+
 
 class ChangeStatusTableView(View):
 
