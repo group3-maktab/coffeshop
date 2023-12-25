@@ -76,9 +76,50 @@ class MakeOrderView(View):
         return render(request, self.template_name, {'order': order})
 
 
-class OrderListView(ListView):
+class OrderWaitingListView(ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
     ordering = ['-created_at']
 
+    def get_queryset(self):
+        return Order.objects.filter(status='W')
+
+
+class OrderFinishedistView(ListView):
+    model = Order
+    template_name = 'Order_ListOrder.html'
+    context_object_name = 'orders'
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Order.objects.filter(status='F')
+
+
+class OrderPreparationListView(ListView):
+    model = Order
+    template_name = 'Order_ListOrder.html'
+    context_object_name = 'orders'
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Order.objects.filter(status='P')
+
+
+class OrderTransmissionListView(ListView):
+    model = Order
+    template_name = 'Order_ListOrder.html'
+    context_object_name = 'orders'
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Order.objects.filter(status='T')
+
+
+class ChangeStatusView(View):
+    def post(self,request, pk):
+        new_status = request.POST.get('new_status')
+        order = get_object_or_404(Order, id=pk)
+        order.status = new_status
+        order.save()
+        return redirect('order:list-order-w')

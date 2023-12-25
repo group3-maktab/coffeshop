@@ -6,7 +6,28 @@
     <h1>Order List</h1>
     <ul>
         {% for order in orders %}
-            <li>{{ order }} - Status: {{ order.get_status_display }}</li>
+            <li>{{ order.customer_phone }}- Table: {{ order.table }} - Status: {{ order.get_status_display }} Date/Time: {{ order.created_at }}</li>
+            <form method="post" action="{% url 'order:change-status' order.id %}">
+                <br>
+                {% csrf_token %}
+                {% if not order.status == 'W' %}
+                    <button type="submit" name="new_status" value="W">Set to Waiting</button>
+                    <br>
+                {% endif %} 
+                {% if not order.status == 'P' %}
+                    <button type="submit" name="new_status" value="P">Set to Preparation</button>
+                    <br>
+                {% endif %} 
+                {% if not order.status == 'T' %}
+                    <button type="submit" name="new_status" value="T">Set to Transmission</button>
+                    <br>
+                {% endif %} 
+                {% if not order.status == 'F' %}
+                    <button type="submit" name="new_status" value="F">Set to Finished</button>
+                {% endif %} 
+
+              
+            </form>
         {% endfor %}
     </ul>
 
