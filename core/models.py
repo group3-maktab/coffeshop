@@ -34,3 +34,4 @@ class AuditLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     table_name = models.CharField(max_length=50)
     row_id = models.PositiveIntegerField()
+    old_value = models.JSONField(null=True)

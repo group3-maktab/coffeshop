@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from core.models import AuditLog
 from django.dispatch import receiver
 from django.contrib.sessions.models import Session
@@ -6,6 +8,27 @@ from foodmenu.models import Food,Category
 from tag.models import Tag,TaggedItem
 from tables.models import Table, Reservation
 from order.models import Order, OrderItem
+from django.db.models.fields.related import ForeignKey
+from django.db.models.fields.files import FileField
+from django.db.models.fields import DateTimeField
+
+def serialize_model_instance(instance):
+    fields = {}
+    for field in instance._meta.fields:
+        print(field)
+        field_value = getattr(instance, field.name)
+        if isinstance(field, DateTimeField):
+            field_value = field_value.isoformat() if field_value else None
+        elif isinstance(field, ForeignKey):
+            field_value = field_value.pk if field_value else None
+        elif isinstance(field, FileField):
+            continue
+        elif isinstance(field_value, Decimal):
+            field_value = str(field_value)
+
+        fields[field.name] = field_value
+
+    return fields
 
 
 @receiver(post_save, sender=Food)
@@ -23,11 +46,10 @@ def log_create_update(sender, instance, created, **kwargs):
 
     if created:
         action = 'CREATE'
-        # old_value = None
+        old_value = None
     else:
         action = 'UPDATE'
-        # # old_value = {field.name: getattr(instance, field.name) for field in instance._meta.fields}
-        # old_value = None
+        old_value = serialize_model_instance(instance)
 
     table_name = sender._meta.db_table
     row_id = instance.id
@@ -38,7 +60,7 @@ def log_create_update(sender, instance, created, **kwargs):
         action=action,
         table_name=table_name,
         row_id=row_id,
-        # old_value=# old_value,
+        old_value=old_value,
     )
 
 @receiver(pre_delete, sender=Food)
@@ -58,11 +80,12 @@ def log_delete(sender, instance, **kwargs):
     table_name = sender._meta.db_table
     row_id = instance.id
     user = instance.user if hasattr(instance, 'user') else None
+    old_value = serialize_model_instance(instance)
 
     AuditLog.objects.create(
         user=user,
         action='DELETE',
         table_name=table_name,
         row_id=row_id,
-        # old_value=None,
+        old_value=old_value,
     )
