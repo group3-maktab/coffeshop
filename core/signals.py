@@ -1,5 +1,4 @@
 from decimal import Decimal
-
 from core.models import AuditLog
 from django.dispatch import receiver
 from django.contrib.sessions.models import Session
@@ -11,6 +10,23 @@ from order.models import Order, OrderItem
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields.files import FileField
 from django.db.models.fields import DateTimeField
+
+
+""" 
+   ________________________________________________________________________________
+  |                   IF WE WANT TO ADD USER INTO DATABASE                         |    
+  |                                                                                |
+  |  pre_save_signal = Signal(providing_args=["instance", "request"])              |    
+  |  post_save_signal = Signal(providing_args=["instance", "created", "request"])  |
+  |                                                                                |    
+  |  @receiver(post_save_signal, sender=Food)                                      |        
+  |  def log_post_save(sender, instance, created, request, **kwargs):              |                
+  |      user = request.user if request.user.is_authenticated else None            |        
+   ________________________________________________________________________________
+   
+"""
+
+
 
 def serialize_model_instance(instance):
     fields = {}
@@ -53,7 +69,14 @@ def log_create_update(sender, instance, created, **kwargs):
 
     table_name = sender._meta.db_table
     row_id = instance.id
-    user = instance.user if hasattr(instance, 'user') else None
+
+    if hasattr(instance, 'user'):
+        user = instance.user
+    else:
+        # If user is not available in the model, try to get it from the request
+        request = kwargs.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
 
     AuditLog.objects.create(
         user=user,
@@ -79,7 +102,15 @@ def log_delete(sender, instance, **kwargs):
 
     table_name = sender._meta.db_table
     row_id = instance.id
-    user = instance.user if hasattr(instance, 'user') else None
+
+    if hasattr(instance, 'user'):
+        user = instance.user
+    else:
+        # If user is not available in the model, try to get it from the request
+        request = kwargs.get('request')
+        if request and request.user.is_authenticated:
+            user = request.user
+
     old_value = serialize_model_instance(instance)
 
     AuditLog.objects.create(
