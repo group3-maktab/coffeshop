@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 
 from foodmenu.models import Food
+from tables.models import Table
 from utils import Cart, staff_or_superuser_required
 from .forms import CartAddProductForm, OrderCreateForm
 from order.models import OrderItem, Order
@@ -63,7 +64,17 @@ class MakeOrderView(View):
     def post(self, request):
         cart = Cart(request)
         form = OrderCreateForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() :
+
+            table = form.cleaned_data.get('table')
+            table = Table.objects.get(pk=table.pk)
+
+            if table.status == "F":
+                messages.error(request, 'table is full!')
+                return render(request, self.template_name, {'cart': cart, 'form': form})
+            if table.status != "T":
+                table.status = 'F'
+                table.save()
 
             order = form.save()
             for item in cart:
@@ -72,8 +83,11 @@ class MakeOrderView(View):
                                          price=item['price'],
                                          quantity=item['quantity'])
             cart.clear()
-        messages.success(request, 'Order created successfully!')
-        return render(request, self.template_name, {'order': order})
+            messages.success(request, 'Order created successfully!')
+            return render(request, self.template_name, {'order': order})
+        else:
+            messages.error(request, 'invalid data!')
+            return render(request, self.template_name, {'cart': cart, 'form': form})
 
 
 class OrderWaitingListView(ListView):
@@ -116,10 +130,14 @@ class OrderTransmissionListView(ListView):
         return Order.objects.filter(status='T')
 
 
-class ChangeStatusView(View):
+class ChangeStatusOrderView(View):
     def post(self,request, pk):
         new_status:str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
+        if new_status == 'F':
+            table = Table.objects.get(pk = order.table.pk)
+            table.status = 'E'
+            table.save()
         order.status = new_status
         order.save()
         messages.success(request, 'Order changed successfully!')

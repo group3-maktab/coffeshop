@@ -151,6 +151,7 @@ class GetReservationView(View):
                            'Invalid code')
             return render(request, self.template_name, {'form': form})
 
+
 class CreateTableView(View):
     template_name = 'Reservation_CreateTable.html'
 
@@ -171,11 +172,14 @@ class CreateTableView(View):
 
             redirect('tables:list-table')
 
-#todo @staff_or_superuser_required
+# @staff_or_superuser_required
+
 class ListTableView(ListView):
     model = Table
     template_name = 'Reservation_ListTableTemplate.html'
     context_object_name = 'table'
+
+
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -195,6 +199,15 @@ class ChangeStatusTableView(View):
     @staff_or_superuser_required
     def post(self,request,pk,status):
         table = Table.objects.get(pk=pk)
+        order = Order.objects.filter(table=table, status__in=["W", "P", "T"]).first()
+
+        if order :
+            messages.error(request, 'Table has an order you cannot cheng status')
+            return redirect('tables:list-table')
+
+        if table.status == "T":
+            messages.error(request, 'you cannot cheng status of TakeAway Table')
+            return redirect('tables:list-table')
         table.status = status
         table.save()
         messages.success(request, 'Table status changed successfully!')
