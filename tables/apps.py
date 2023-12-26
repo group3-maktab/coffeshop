@@ -7,3 +7,4 @@ class TablesConfig(AppConfig):
 
     def ready(self):
         import tables.singals
+        import core.signals

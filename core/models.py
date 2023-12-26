@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils import timezone
 
 from django.db import models
@@ -26,3 +27,10 @@ class BaseModel(models.Model):
     def delete(self, using=None, keep_parents=False):
         self.deleted_at = timezone.now()
         self.save()
+
+class AuditLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    action = models.CharField(max_length=10)  # 'CREATE', 'UPDATE', 'DELETE'
+    timestamp = models.DateTimeField(auto_now_add=True)
+    table_name = models.CharField(max_length=50)
+    row_id = models.PositiveIntegerField()
