@@ -10,7 +10,7 @@ from order.models import Order, OrderItem
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields.files import FileField
 from django.db.models.fields import DateTimeField
-
+import uuid
 
 """ 
    ________________________________________________________________________________
@@ -41,6 +41,8 @@ def serialize_model_instance(instance):
             continue
         elif isinstance(field_value, Decimal):
             field_value = str(field_value)
+        elif isinstance(field_value, uuid.UUID):
+            field_value = str(field_value)
 
         fields[field.name] = field_value
 
@@ -55,7 +57,6 @@ def serialize_model_instance(instance):
 @receiver(post_save, sender=Reservation)
 @receiver(post_save, sender=Reservation)
 @receiver(post_save, sender=Order)
-@receiver(post_save, sender=OrderItem)
 def log_create_update(sender, instance, created, **kwargs):
     model_name = sender.__name__
 
@@ -77,6 +78,7 @@ def log_create_update(sender, instance, created, **kwargs):
         request = kwargs.get('request')
         if request and request.user.is_authenticated:
             user = request.user
+        user = None
 
     AuditLog.objects.create(
         user=user,
@@ -94,7 +96,6 @@ def log_create_update(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Reservation)
 @receiver(pre_delete, sender=Reservation)
 @receiver(pre_delete, sender=Order)
-@receiver(pre_delete, sender=OrderItem)
 def log_delete(sender, instance, **kwargs):
     model_name = sender.__name__
     if isinstance(instance, Session) or isinstance(instance, AuditLog):

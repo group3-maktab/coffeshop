@@ -36,7 +36,7 @@ class Order(BaseModel):
 class OrderItem(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Food, on_delete=models.PROTECT)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=3)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):

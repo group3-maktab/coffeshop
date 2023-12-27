@@ -33,5 +33,5 @@ class AuditLog(models.Model):
     action = models.CharField(max_length=10)  # 'CREATE', 'UPDATE', 'DELETE'
     timestamp = models.DateTimeField(auto_now_add=True)
     table_name = models.CharField(max_length=50)
-    row_id = models.PositiveIntegerField()
+    row_id = models.TextField()
     old_value = models.JSONField(null=True)

@@ -64,7 +64,7 @@ class MakeOrderView(View):
     def post(self, request):
         cart = Cart(request)
         form = OrderCreateForm(request.POST)
-        if form.is_valid() :
+        if form.is_valid():
 
             table = form.cleaned_data.get('table')
             table = Table.objects.get(pk=table.pk)
@@ -78,6 +78,7 @@ class MakeOrderView(View):
 
             order = form.save()
             for item in cart:
+                # print(order,item['product'],item['price'],item['quantity'])
                 OrderItem.objects.create(order=order,
                                          product=item['product'],
                                          price=item['price'],
