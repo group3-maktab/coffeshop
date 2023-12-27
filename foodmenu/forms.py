@@ -20,6 +20,9 @@ class FoodCreateForm(forms.ModelForm):
         required=False,
     )
 
+    off = forms.IntegerField(max_value=100,min_value=0)
+    price = forms.DecimalField(max_value=10000, min_value=0)
+
     class Meta:
         model = Food
         fields = ['name', 'price', 'off', 'category', 'tags']
