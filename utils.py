@@ -22,7 +22,7 @@ from order.models import Order, OrderItem
 
 def json_menu_generator():
     """
-    https://docs.djangoproject.com/en/5.0/ref/models/querysets/
+    https://docs.djangoproject.com/en/5.0/ref/models/querysets/.
 
     select_related works by creating an SQL join and including the fields of the related object in the SELECT statement.
      For this reason, select_related gets the related objects in the same database query.
