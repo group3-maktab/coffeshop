@@ -186,8 +186,7 @@ class ListTableView(ListView):
         context['table_orders'] = {}
         for table_instance in context['table']:
             try:
-                order = Order.objects.filter(table=table_instance, status__in=["W", "P", "T"]).first()
-                # print(context['table_orders'][table_instance.id],table_instance.id,"\n\n\n")
+                order = Order.objects.filter(table=table_instance, status__in=["W", "P", "T"])
                 context['table_orders'][table_instance.id] = order
             except Order.DoesNotExist:
                 pass

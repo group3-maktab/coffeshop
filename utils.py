@@ -270,7 +270,7 @@ class Cart:
         """
         Initialize the cart.
         """
-        self.session = request.session
+        self.session = request.session  #todo expire at 30 M
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             # save an empty cart in the session
