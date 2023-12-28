@@ -47,7 +47,7 @@ class CreateBlogView(View):
 
             urls = []
             for file_path in self.template_files:
-                url = file_path.split('/')[-1].split('.')[0]
+                url = file_path.split('/')[-1][9:-5]
                 urls.append(url)
 
             if slug in urls:
@@ -130,7 +130,6 @@ class ListBlogView(View):
         for file_path in self.template_files:
             url = file_path.split('/')[-1][9:-5]
             urls.append(url)
-            print(url)
         return render(request, self.templates, {'urls': urls})
 
 
