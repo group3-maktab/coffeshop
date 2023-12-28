@@ -336,6 +336,18 @@ class Cart:
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
+    def edit_orders(self, request, order_id):
+        self.cart.clear()
+        self.cart = Cart(request)
+        products = OrderItem.objects.filter(order_id=order_id)
+        for product in products:
+            product_id = product.id
+            self.cart[product_id] = {'quantity': product.quantity,
+                                     'price': product.price}
+            self.save()
+        Order.objects.get(pk= order_id).status = "C"
+
+
 
 class Reporting:
     """
@@ -379,3 +391,8 @@ class Reporting:
         )
         for food in most_used_foods:
             yield food
+
+
+
+
+

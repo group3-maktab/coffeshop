@@ -67,7 +67,7 @@ In Django, signals are based on the Observer design pattern.
 
 @receiver(post_save, sender=TaggedItem)
 @receiver(post_delete, sender=TaggedItem)
-def handle_taggeditme_generated(sender, instance, **kwargs):
+def handle_taggeditem_generated(sender, instance, **kwargs):
     try:
         taggeditem = TaggedItem.objects.get(pk=instance.pk)
         tag_id = taggeditem.tag_id
