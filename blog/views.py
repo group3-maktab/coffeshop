@@ -128,8 +128,9 @@ class ListBlogView(View):
     def get(self, request):
         urls = []
         for file_path in self.template_files:
-            url = file_path.split('/')[-1].split('.')[0]
+            url = file_path.split('/')[-1][9:-5]
             urls.append(url)
+            print(url)
         return render(request, self.templates, {'urls': urls})
 
 
