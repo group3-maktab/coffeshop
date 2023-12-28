@@ -91,6 +91,14 @@ class MakeOrderView(View):
             return render(request, self.template_name, {'cart': cart, 'form': form})
 
 
+class ChangeOrderView(View):
+    def post(self, request, pk):
+        cart = Cart(request)
+        cart.edit_orders(pk)
+        messages.success(request, 'Order now is ready to change!')
+        return redirect('order:detail-cart')
+
+
 class OrderWaitingListView(ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
@@ -143,3 +151,11 @@ class ChangeStatusOrderView(View):
         order.save()
         messages.success(request, 'Order changed successfully!')
         return redirect(f'order:list-order-{new_status.lower()}')
+
+
+class ListOrderPhoneView(View):
+    template_name = 'Order_ListPhoneOrder.html'
+    def get(self, request, phone):
+        phone = str(phone)
+        orders = Order.objects.filter(customer_phone=phone).select_related('table')
+        return render(request, self.template_name, {'user_order': orders})

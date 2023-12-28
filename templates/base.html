@@ -48,6 +48,7 @@
             <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{% url 'users:login' %}">Sign In</a>
             <a class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:register' %}">Sign up</a>
             {% else %}
+                <p class="text-sm text-center place-self-center mr-3"> you are logged in as :{{ name }}</p>
             <a class="hidden lg:inline-block py-2 px-6 bg-rose-600 hover:bg-cafe-gray text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:logout' %}">Logout</a>
             {% endif %}
         </div>

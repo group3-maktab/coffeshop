@@ -9,7 +9,7 @@ from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
@@ -336,6 +336,18 @@ class Cart:
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
+    def edit_orders(self,  order_id):
+        self.cart.clear()
+        products = OrderItem.objects.filter(order_id=order_id)
+        for product in products:
+            self.add(product=product.product,
+                     quantity=product.quantity,
+                     override_quantity=True)
+        order = Order.objects.get(pk= order_id)
+        order.status = "C"
+        order.save()
+
+
 
 class Reporting:
     """
@@ -379,3 +391,8 @@ class Reporting:
         )
         for food in most_used_foods:
             yield food
+
+
+
+
+

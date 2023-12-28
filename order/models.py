@@ -12,6 +12,7 @@ from tables.models import Table
 
 class Order(BaseModel):
     status_fields = [("W", "Waiting"),
+                     ("C", "Canceled"),
                      ("P", "Preparation"),
                      ("T", "Transmission"),
                      ("F", "Finished")]
