@@ -95,7 +95,7 @@ class ChangeOrderView(View):
 
     def post(self, request, pk):
         cart = Cart(request)
-        cart.edit_orders(request, pk)
+        cart.edit_orders(pk)
         messages.success(request, 'Order now is ready to change!')
         return redirect('order:detail-cart')
 

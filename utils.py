@@ -9,7 +9,7 @@ from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
 from django.db.models import Prefetch, Count
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils import timezone
@@ -336,16 +336,16 @@ class Cart:
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
-    def edit_orders(self, request, order_id):
+    def edit_orders(self,  order_id):
         self.cart.clear()
-        self.cart = Cart(request)
         products = OrderItem.objects.filter(order_id=order_id)
         for product in products:
-            product_id = product.id
-            self.cart[product_id] = {'quantity': product.quantity,
-                                     'price': product.price}
-            self.save()
-        Order.objects.get(pk= order_id).status = "C"
+            self.add(product=product.product,
+                     quantity=product.quantity,
+                     override_quantity=True)
+        order = Order.objects.get(pk= order_id)
+        order.status = "C"
+        order.save()
 
 
 
