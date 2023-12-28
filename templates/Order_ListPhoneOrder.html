@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for order in user_order %}<br>
+        {{order}}
+    <br>{% endfor %}
+{% endblock %}

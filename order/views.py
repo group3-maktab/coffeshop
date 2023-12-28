@@ -92,7 +92,6 @@ class MakeOrderView(View):
 
 
 class ChangeOrderView(View):
-
     def post(self, request, pk):
         cart = Cart(request)
         cart.edit_orders(pk)
@@ -154,3 +153,9 @@ class ChangeStatusOrderView(View):
         return redirect(f'order:list-order-{new_status.lower()}')
 
 
+class ListOrderPhoneView(View):
+    template_name = 'Order_ListPhoneOrder.html'
+    def get(self, request, phone):
+        phone = str(phone)
+        orders = Order.objects.filter(customer_phone=phone).select_related('table')
+        return render(request, self.template_name, {'user_order': orders})
