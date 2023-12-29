@@ -1,182 +1,271 @@
-{% load static %}
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <link rel="icon" type="icon" href="{% static 'src/g3-m-favicon-black.png' %}" >#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>#}
+{#    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.min.js"></script>#}
+{#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
+{#    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>#}
+{#    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>#}
+{#    <link rel="stylesheet" href="{% static 'src/styles.css' %}">#}
+{#    <title>{% block title %}Home{% endblock %}</title>#}
+{#</head>#}
+{#<body class="bg-gray-100 font-enfont">#}
+{##}
+{##}
+{#    #}
+{##}
+{#    <div class="bg-cafe-white flex  px-4 py-5">#}
+{#        <nav class=" px-4 lg:py-4 flex justify-between items-center bg-cafe-white  w-full lg:mx-8 opacity-90">#}
+{#        #}
+{#		<div class="lg:hidden">#}
+{#			<button class="navbar-burger flex items-center text-cafe-black p-3">#}
+{#				<svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">#}
+{#					<title>M_Menu</title>#}
+{#					<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>#}
+{#				</svg>#}
+{#			</button>#}
+{#		</div>#}
+{#        <div>#}
+{#            <a class="hidden lg:inline-block py-2 px-6 bg-cafe-gray hover:bg-cafe-blue text-sm text-white font-bold rounded-xl transition duration-200" href="">Order Now</a>#}
+{#        </div>#}
+{#		<ul class="hidden lg:flex lg:items-start lg:justify-center lg:w-auto lg:space-x-6">#}
+{#			<li class="place-self-center"><a class="text-md text-cafe-gray hover:text-blue-600 font-bold" href="{% url 'core:home' %}">Home</a></li>#}
+{#			<li class="place-self-center">#}
+{#				<svg xmlns="http://www.w3.org/2000/svg" fill="black" stroke="black" class="w-4 h-4 current-fill" viewBox="0 0 24 24">#}
+{#					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />#}
+{#				</svg>#}
+{#			</li>#}
+{#			<li class="place-self-center"><a class="text-md text-cafe-gray hover:text-blue-600 font-bold " href="{% url 'blog:list-blog' %}">Blog</a></li>#}
+{#			#}
+{#		</ul>#}
+{#        <div class="flex">#}
+{#            {% if not user.is_authenticated %}#}
+{#            <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{% url 'users:login' %}">Sign In</a>#}
+{#            <a class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:register' %}">Sign up</a>#}
+{#            {% else %}#}
+{#                <p class="text-sm text-center place-self-center mr-3"> you are logged in as :{{ name }}</p>#}
+{#            <a class="hidden lg:inline-block py-2 px-6 bg-rose-600 hover:bg-cafe-gray text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:logout' %}">Logout</a>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        </nav>#}
+{#    #}
+{#        <img class="w-24 h-fit mr-3 lg:w-40 lg:mr-10" src="{% static 'src/Logo.png' %}">#}
+{#    #}
+{#        <div class="navbar-menu relative z-50 hidden">#}
+{#		<div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>#}
+{#		<nav class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">#}
+{#         #}
+{#			<div class="flex items-center mb-8">#}
+{#				<div>#}
+{#            <a class="hidden lg:inline-block py-2 px-6 bg-cafe-gray hover:bg-cafe-blue text-sm text-white font-bold rounded-xl transition duration-200" href="">Order Now</a>#}
+{#        </div>#}
+{#				<button class="navbar-close">#}
+{#					<svg class="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">#}
+{#						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>#}
+{#					</svg>#}
+{#				</button>#}
+{#			</div>#}
+{#			<div>#}
+{#				<ul>#}
+{#					<li class="mb-1">#}
+{#						<a class="block p-4 text-sm font-semibold text-cafe-blue hover:bg-blue-50 hover:text-blue-600 rounded" href="{% url 'core:home' %}">Home</a>#}
+{#					</li>#}
+{#					<li class="mb-1">#}
+{#						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded" href="{% url 'blog:list-blog' %}">Blog</a>#}
+{#					</li>#}
+{#				</ul>#}
+{#			</div>#}
+{#			<div class="mt-auto">#}
+{#				<div class="pt-6">#}
+{#                    {% if not user.is_authenticated %}#}
+{#                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl font-bold" href="{% url 'users:register' %}">Sign Up</a>#}
+{#                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-gray-400 hover:bg-blue-700  rounded-xl" href="{% url 'users:login' %}">Sign In</a>#}
+{#                    {% else %}#}
+{#                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-rose-600 hover:bg-rose-800 rounded-xl" href="{% url 'users:logout' %}">Logout</a>#}
+{#                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-cafe-gray hover:bg-cafe-blue rounded-xl" href="">Order Now</a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#				<p class="my-4 text-xs text-center text-gray-400">#}
+{#					<span>G3-M</span>#}
+{#				</p>#}
+{#			</div>#}
+{#		</nav>#}
+{#    </div></div>#}
+{#       {% if messages %}#}
+{#    <ul class="messages">#}
+{#    {% for message in messages %}#}
+{#    <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentcolor" data-slot="icon" class="w-6 h-6">#}
+{#    <path stroke-linecap="round" stroke-linejoin="round" d="m12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008h12v-.008z" />#}
+{#    </svg>#}
+{#    {{ message }}</li>{% endfor %}</ul>#}
+{#    {% endif %}#}
+{#    #}
+{#    <div class="mb-36 h-full">#}
+{#        {% block content %}{% endblock %}#}
+{#    </div>#}
+{#    #}
+{#    #}
+{#    <footer class="bg-cafe-white flex flex-col items-center bottom-0 w-full z-30 py-6">#}
+{#    <div class="mb-4 flex">#}
+{#        <img class="w-16 lg:w-40 h-fit" src="{% static 'src/Logo.png' %}">#}
+{#        <div class="lg:flex flex-col hidden">#}
+{#            <p class="font-bold text-xs ">Built </p>#}
+{#            <p class="font-bold text-xs "> In </p>#}
+{#            <p class="font-bold text-xs "> 2023 </p>#}
+{#            <p class="font-bold text-xs "> By </p>#}
+{#            <p class="font-bold text-xs "> G3-M</p>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div class="flex items-center text-cafe-black gap-x-24 inline-block">#}
+{#            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">#}
+{#  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />#}
+{#</svg>#}
+{#<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">#}
+{#  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />#}
+{#</svg>#}
+{#<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">#}
+{#  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />#}
+{#</svg>#}
+{##}
+{#        </div>#}
+{#        #}
+{#    </footer>#}
+{##}
+{#    <script>#}
+{#// Burger menus#}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    // open#}
+{#    const burger = document.querySelectorAll('.navbar-burger');#}
+{#    const menu = document.querySelectorAll('.navbar-menu');#}
+{##}
+{#    if (burger.length && menu.length) {#}
+{#        for (var i = 0; i < burger.length; i++) {#}
+{#            burger[i].addEventListener('click', function() {#}
+{#                for (var j = 0; j < menu.length; j++) {#}
+{#                    menu[j].classList.toggle('hidden');#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#    }#}
+{##}
+{#    // close#}
+{#    const close = document.querySelectorAll('.navbar-close');#}
+{#    const backdrop = document.querySelectorAll('.navbar-backdrop');#}
+{##}
+{#    if (close.length) {#}
+{#        for (var i = 0; i < close.length; i++) {#}
+{#            close[i].addEventListener('click', function() {#}
+{#                for (var j = 0; j < menu.length; j++) {#}
+{#                    menu[j].classList.toggle('hidden');#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#    }#}
+{##}
+{#    if (backdrop.length) {#}
+{#        for (var i = 0; i < backdrop.length; i++) {#}
+{#            backdrop[i].addEventListener('click', function() {#}
+{#                for (var j = 0; j < menu.length; j++) {#}
+{#                    menu[j].classList.toggle('hidden');#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#    }#}
+{#});#}
+{#</script>#}
+{#</body>#}
+{#</html>#}
 
+
+
+<!--
+
+=========================================================
+* Volt Free - Bootstrap 5 Dashboard
+=========================================================
+
+* Product Page: https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard
+* Copyright 2020 Themesberg (https://www.themesberg.com)
+* License (https://themesberg.com/licensing)
+
+* Designed and coded by https://themesberg.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Please contact us to request a removal.
+
+-->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="icon" type="icon" href="{% static 'src/g3-m-favicon-black.png' %}" >
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
-    <link rel="stylesheet" href="{% static 'src/styles.css' %}">
-    <title>{% block title %}Home{% endblock %}</title>
+
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Primary Meta Tags -->
+
+<title>
+    G3-M {% block title %}{% endblock %} | 2023
+</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="title" content="Volt Free Bootstrap Dashboard - Sign up page">
+<meta name="author" content="Themesberg">
+<meta name="description" content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
+<meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard" />
+<link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-volt">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://demo.themesberg.com/volt-pro">
+<meta property="og:title" content="Volt Free Bootstrap Dashboard - Sign up page">
+<meta property="og:description" content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
+<meta property="og:image" content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://demo.themesberg.com/volt-pro">
+<meta property="twitter:title" content="Volt Free Bootstrap Dashboard - Sign up page">
+<meta property="twitter:description" content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS.">
+<meta property="twitter:image" content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg">
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- FA Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- Sweet Alert -->
+<link type="text/css" href="/static/assets/vendor/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- Notyf -->
+<link type="text/css" href="/static/assets/vendor/notyf/notyf.min.css" rel="stylesheet">
+
+<!-- Volt CSS -->
+<link type="text/css" href="/static/assets/css/volt.css" rel="stylesheet">
+
+<!-- Specific Page JS goes HERE  -->    
+{% block stylesheets %}{% endblock stylesheets %}
+
 </head>
-<body class="bg-gray-100 font-enfont">
+<body>
 
+    {% block content %}{% endblock content %}
 
-    
+    {% include 'includes/scripts.html' %}
 
-    <div class="bg-cafe-white flex  px-4 py-5">
-        <nav class=" px-4 lg:py-4 flex justify-between items-center bg-cafe-white  w-full lg:mx-8 opacity-90">
-        
-		<div class="lg:hidden">
-			<button class="navbar-burger flex items-center text-cafe-black p-3">
-				<svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-					<title>M_Menu</title>
-					<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-				</svg>
-			</button>
-		</div>
-        <div>
-            <a class="hidden lg:inline-block py-2 px-6 bg-cafe-gray hover:bg-cafe-blue text-sm text-white font-bold rounded-xl transition duration-200" href="">Order Now</a>
-        </div>
-		<ul class="hidden lg:flex lg:items-start lg:justify-center lg:w-auto lg:space-x-6">
-			<li class="place-self-center"><a class="text-md text-cafe-gray hover:text-blue-600 font-bold" href="{% url 'core:home' %}">Home</a></li>
-			<li class="place-self-center">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="black" stroke="black" class="w-4 h-4 current-fill" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-				</svg>
-			</li>
-			<li class="place-self-center"><a class="text-md text-cafe-gray hover:text-blue-600 font-bold " href="{% url 'blog:list-blog' %}">Blog</a></li>
-			
-		</ul>
-        <div class="flex">
-            {% if not user.is_authenticated %}
-            <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200" href="{% url 'users:login' %}">Sign In</a>
-            <a class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:register' %}">Sign up</a>
-            {% else %}
-                <p class="text-sm text-center place-self-center mr-3"> you are logged in as :{{ name }}</p>
-            <a class="hidden lg:inline-block py-2 px-6 bg-rose-600 hover:bg-cafe-gray text-sm text-white font-bold rounded-xl transition duration-200" href="{% url 'users:logout' %}">Logout</a>
-            {% endif %}
-        </div>
-        </nav>
-    
-        <img class="w-24 h-fit mr-3 lg:w-40 lg:mr-10" src="{% static 'src/Logo.png' %}">
-    
-        <div class="navbar-menu relative z-50 hidden">
-		<div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
-		<nav class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
-         
-			<div class="flex items-center mb-8">
-				<div>
-            <a class="hidden lg:inline-block py-2 px-6 bg-cafe-gray hover:bg-cafe-blue text-sm text-white font-bold rounded-xl transition duration-200" href="">Order Now</a>
-        </div>
-				<button class="navbar-close">
-					<svg class="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-					</svg>
-				</button>
-			</div>
-			<div>
-				<ul>
-					<li class="mb-1">
-						<a class="block p-4 text-sm font-semibold text-cafe-blue hover:bg-blue-50 hover:text-blue-600 rounded" href="{% url 'core:home' %}">Home</a>
-					</li>
-					<li class="mb-1">
-						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded" href="{% url 'blog:list-blog' %}">Blog</a>
-					</li>
-				</ul>
-			</div>
-			<div class="mt-auto">
-				<div class="pt-6">
-                    {% if not user.is_authenticated %}
-                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl font-bold" href="{% url 'users:register' %}">Sign Up</a>
-                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-gray-400 hover:bg-blue-700  rounded-xl" href="{% url 'users:login' %}">Sign In</a>
-                    {% else %}
-                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-rose-600 hover:bg-rose-800 rounded-xl" href="{% url 'users:logout' %}">Logout</a>
-                        <a class="block px-4 py-3 mb-2 leading-loose text-sm text-center text-white font-semibold bg-cafe-gray hover:bg-cafe-blue rounded-xl" href="">Order Now</a>
-                    {% endif %}
-                </div>
-				<p class="my-4 text-xs text-center text-gray-400">
-					<span>G3-M</span>
-				</p>
-			</div>
-		</nav>
-    </div></div>
-       {% if messages %}
-    <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentcolor" data-slot="icon" class="w-6 h-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="m12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008h12v-.008z" />
-    </svg>
-    {{ message }}</li>{% endfor %}</ul>
-    {% endif %}
-    
-    <div class="mb-36 h-full">
-        {% block content %}{% endblock %}
-    </div>
-    
-    
-    <footer class="bg-cafe-white flex flex-col items-center bottom-0 w-full z-30 py-6">
-    <div class="mb-4 flex">
-        <img class="w-16 lg:w-40 h-fit" src="{% static 'src/Logo.png' %}">
-        <div class="lg:flex flex-col hidden">
-            <p class="font-bold text-xs ">Built </p>
-            <p class="font-bold text-xs "> In </p>
-            <p class="font-bold text-xs "> 2023 </p>
-            <p class="font-bold text-xs "> By </p>
-            <p class="font-bold text-xs "> G3-M</p>
-        </div>
-    </div>
-    <div class="flex items-center text-cafe-black gap-x-24 inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
-</svg>
+    <!-- Specific Page JS goes HERE  -->
+    {% block javascripts %}{% endblock javascripts %}  
 
-        </div>
-        
-    </footer>
-
-    <script>
-// Burger menus
-document.addEventListener('DOMContentLoaded', function() {
-    // open
-    const burger = document.querySelectorAll('.navbar-burger');
-    const menu = document.querySelectorAll('.navbar-menu');
-
-    if (burger.length && menu.length) {
-        for (var i = 0; i < burger.length; i++) {
-            burger[i].addEventListener('click', function() {
-                for (var j = 0; j < menu.length; j++) {
-                    menu[j].classList.toggle('hidden');
-                }
-            });
-        }
-    }
-
-    // close
-    const close = document.querySelectorAll('.navbar-close');
-    const backdrop = document.querySelectorAll('.navbar-backdrop');
-
-    if (close.length) {
-        for (var i = 0; i < close.length; i++) {
-            close[i].addEventListener('click', function() {
-                for (var j = 0; j < menu.length; j++) {
-                    menu[j].classList.toggle('hidden');
-                }
-            });
-        }
-    }
-
-    if (backdrop.length) {
-        for (var i = 0; i < backdrop.length; i++) {
-            backdrop[i].addEventListener('click', function() {
-                for (var j = 0; j < menu.length; j++) {
-                    menu[j].classList.toggle('hidden');
-                }
-            });
-        }
-    }
-});
-</script>
 </body>
 </html>

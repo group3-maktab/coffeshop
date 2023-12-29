@@ -2,8 +2,18 @@ from django import forms
 from django.core.validators import RegexValidator
 
 class LoginForm(forms.Form):
-    phone_number = forms.CharField(max_length=11, required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
+    phone_number = forms.CharField(max_length=11, required=True,widget=forms.TextInput(
+            attrs={
+                "placeholder": "Phone",
+                "class": "form-control"
+            }
+        ))
+    password = forms.CharField(required=True,widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Password",
+                "class": "form-control"
+            }
+        ))
 
 
 class RegistrationForm(forms.Form):
