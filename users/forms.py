@@ -5,7 +5,8 @@ class LoginForm(forms.Form):
     phone_number = forms.CharField(max_length=11, required=True,widget=forms.TextInput(
             attrs={
                 "placeholder": "Phone",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "phone_number"
             }
         ))
     password = forms.CharField(required=True,widget=forms.PasswordInput(
@@ -19,7 +20,10 @@ class LoginForm(forms.Form):
 class RegistrationForm(forms.Form):
     phone_number = forms.CharField(
         label='Phone Number',
-        widget=forms.TextInput(attrs={'id': 'phone_number'}),
+        widget=forms.TextInput(attrs={'id': 'phone_number',
+                                            "placeholder": "Phone",
+                                            "class": "form-control"
+    }),
         validators=[
             RegexValidator(
                 regex=r'^09\d{9}$',
@@ -28,7 +32,11 @@ class RegistrationForm(forms.Form):
             )
         ]
     )
-    email = forms.EmailField(label='Email')
+    email = forms.EmailField(label='Email',widget=forms.TextInput(
+        attrs={'id': 'phone_number',
+                "placeholder": "Email",
+                "class": "form-control"
+    }))
     verification_method = forms.ChoiceField(
         choices=[('phone', 'Phone Number'), ('email', 'Email')],
         initial='email',

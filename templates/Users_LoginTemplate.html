@@ -64,28 +64,25 @@
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">
-                                    G3-M - Sign IN
+                                    G3-M | Sign IN
                                 </h1>
                                 <br />
                                 <p>
                                     {% if messages %}
-                                        <ul class="messages">
+                                        <p class="text-danger">
                                         {% for message in messages %}
-                                            <li{% if message.tags %} class="flex gap-2 place-items-center block py-5 px-4 text-cafe-white bg-cafe-gray"{% endif %}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentcolor" data-slot="icon" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008h12v-.008z" />
-                                            </svg>
-                                            {{ message }}</li>
-                                        {% endfor %}</ul>
+                                            {{ message }}
+                                        {% endfor %}</p>
                                     {% endif %}
                                 </p> 
                             </div>
-                            <form method="post" action="{% url 'users:login' %}" class="mt-4">
+                            <form method="post" action="{% url 'users:login' %}" class="mt-4" onsubmit="return validatePhoneNumber()">
                                 
                                 {% csrf_token %}
 
                                 <!-- Form -->
                                 <div class="form-group mb-4">
-                                    <label for="email">Phone</label>
+                                    <label for="phone_number">Phone</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
                                             <span class="fas fa-user-circle"></span>
@@ -149,19 +146,21 @@
             </div>
         </section>
     </main>
-{#<script>#}
-{#        function validatePhoneNumber() {#}
-{#            var phoneNumberInput = document.getElementById('phone_number');#}
-{#            var phoneNumberPattern = /^09\d{9}$/;#}
-{##}
-{#            if (!phoneNumberPattern.test(phoneNumberInput.value)) {#}
-{#                alert('Phone number must be in the format 09XXXXXXXXX.');#}
-{#                return false;  // Prevent form submission#}
-{#            }#}
-{##}
-{#            return true;  // Allow form submission#}
-{#        }#}
-{#    </script>#}
+
+    <script>
+    function validatePhoneNumber() {
+
+        var phoneNumberInput = document.getElementById('phone_number');
+        var phoneNumberPattern = /^09\d{9}$/;
+
+        if (!phoneNumberPattern.test(phoneNumberInput.value)) {
+            alert('Phone number must be in the format 09XXXXXXXXX.');
+            return false;  
+        }
+
+        return true;  
+    }
+</script>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
