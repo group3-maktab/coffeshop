@@ -7,7 +7,10 @@ from utils import Reporting, staff_or_superuser_required
 class HomeView(View):
     template_name = 'Core_HomeTemplate.html'
     def get(self,request):
-        context = {'name' : request.user.phone_number}
+        try:
+            context = {'name' : request.user.phone_number}
+        except Exception:
+            context = {'name' : None}
         return render(request, self.template_name, context)
 
 class DashboardView(View):
