@@ -97,92 +97,65 @@
           </div>
       </div>
   </div>
-  
+
   <div class="card card-body border-0 shadow table-wrapper table-responsive mx-5">
       <table class="table table-hover">
+
           <thead>
               <tr>
                   <th class="border-gray-200">#</th>
                   <th class="border-gray-200">Phone</th>
-                  <th class="border-gray-200">DateTime</th>
                   <th class="border-gray-200">Table</th>
                   <th class="border-gray-200">Status</th>
-                  <th class="border-gray-200">Table</th>
               </tr>
           </thead>
           <tbody>
               <!-- Item -->
-              {% for reserve in reservation_list %}
-              	
-             
-        <tr>
+                  {% for order in user_order %}
+                <tr>
 
-              
                   <td>
-                      <a href="{% url 'tables:detail-reservation' reserve.id %}" class="fw-bold text-sm-start">
-                          {{ reserve.id }}
+                      <a href="{% url 'order:order-detail' order.id %}" class="fw-bold text-sm-start">
+                          {{ order.id }}
                       </a>
                   </td>
                   <td>
-                      <span class="fw-normal">{{ reserve.phone_number }}</span>
+                      <span class="fw-normal">{{ order.customer_phone }}</span>
                   </td>
-                  <td><span class="fw-normal">{{ reserve.datetime }}</span></td>                        
-                  <td><span class="fw-normal">{{ reserve.number_of_persons }}</span></td>                        
-                  <td><span class="fw-normal">{{ reserve.status }}</span></td>                        
-                  <td><span class="fw-normal">{{ reserve.table.number }}</span></td>
-              </tr>    
-                  
-                   <tr>
-              <td class="flex justify-content-center">
-     <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-              
-          <form method="post" class="flex-column" action="{% url 'tables:list-reservation' %}">
-            {% csrf_token %}
-            <input type="hidden" name="reservation_id" value="{{ reserve.id }}">
+                  <td><span class="fw-normal">{{ order.table.number}}</span></td>
+                    {% if order.status == "F" %}
+                        <td><span class="text-white btn btn-success">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "C" %}
+                        <td><span class="text-white btn btn-danger">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "P" %}
+                        <td><span class="text-white btn btn-tertiary">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "T" %}
+                        <td><span class="text-white btn btn-gray-700">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "W" %}
+                        <td><span class="text-white btn btn-info">{{ order.get_status_display }}</span></td>
+                    {% endif %} 
+                                    <td><span class="fw-normal">{{ order.created_at }}</span></td>
 
-            <!-- Select table -->
-            <label for="table_id">Select Table:</label>
-            <select name="table_id" class="btn btn-tertiary mx-3 " id="table_id">
-                <option value="Null">None</option>
-                {% for table in tables %}
-                    <option value="{{ table.id }}">
-                        {{ table.number }} - {{ table.status }}
-                    </option>
-                {% endfor %}
-            </select>
+              </tr>
 
-            <!-- Select new status -->
-            <label for="new_status">Select New Status:</label>
-            <select name="new_status" class="btn btn-secondary mx-3" id="new_status">
-                <option value="A">Accept</option>
-                <option value="D">Denied</option>
-                <option value="O" selected>On Process</option>
-            </select>
-
-            <button type="submit" class="btn btn-primary px-5" name="action" value="set">Set</button>
-        </form>
-
-          </div>
-    </tr>
           {% endfor %}
           </tbody>
       </table>
 <div>
     <span>
-        {% if reservation_list.has_previous %}
-            <a href="?page={{ reservation_list.previous_page_number }}">Previous</a>
+        {% if user_order.has_previous %}
+            <a href="?page={{ user_order.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
     <span>
-        Page {{ reservation_list.number }} of {{ reservation_list.paginator.num_pages }}.
+        Page {{ user_order.number }} of {{ user_order.paginator.num_pages }}.
     </span>
     <span>
-        {% if reservation_list.has_next %}
-            <a href="?page={{ reservation_list.next_page_number }}">Next</a>
+        {% if user_order.has_next %}
+            <a href="?page={{ user_order.next_page_number }}">Next</a>
         {% endif %}
     </span>
 </div>
-  
 
   </div>
 

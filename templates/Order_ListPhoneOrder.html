@@ -71,6 +71,7 @@
                   <th class="border-gray-200">Phone</th>
                   <th class="border-gray-200">Table</th>
                   <th class="border-gray-200">Status</th>
+                  <th class="border-gray-200">DateTime</th>
               </tr>
           </thead>
           <tbody>
@@ -87,7 +88,18 @@
                       <span class="fw-normal">{{ order.customer_phone }}</span>
                   </td>
                   <td><span class="fw-normal">{{ order.table.number}}</span></td>
-                  <td><span class="fw-normal">{{ order.get_status_display }}</span></td>
+                    {% if order.status == "F" %}
+                        <td><span class="text-white btn btn-success">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "C" %}
+                        <td><span class="text-white btn btn-danger">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "P" %}
+                        <td><span class="text-white btn btn-tertiary">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "T" %}
+                        <td><span class="text-white btn btn-gray-700">{{ order.get_status_display }}</span></td>
+                    {% elif order.status == "W" %}
+                        <td><span class="text-white btn btn-info">{{ order.get_status_display }}</span></td>
+                    {% endif %} 
+                <td><span class="fw-normal">{{ order.created_at }}</span></td>
 
               </tr>
 
