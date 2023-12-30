@@ -5,8 +5,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from .forms import TagCreateForm
 from .models import Tag
-from utils import is_staff_or_superuser
+from utils import staff_or_superuser_required
 
 
 class StaffSuperuserRequiredMixin(UserPassesTestMixin):
@@ -24,12 +26,12 @@ class TagListView(StaffSuperuserRequiredMixin, ListView):
 class CreateTagView(StaffSuperuserRequiredMixin, CreateView):
     model = Tag
     template_name = 'Tag_CreateTemplate.html'
-    fields = ['label', 'available']
+    form_class = TagCreateForm
     success_url = reverse_lazy('tags:tag')
 
 
 class DeleteTagView(View):
-    @is_staff_or_superuser
+    @staff_or_superuser_required
     def post(self, request, pk):
         tag = get_object_or_404(Tag, pk=pk)
         tag.delete()
@@ -38,7 +40,7 @@ class DeleteTagView(View):
 
 
 class TagChangeAvailabilityView(View):
-    @is_staff_or_superuser
+    @staff_or_superuser_required
     def post(self, request, pk):
         tag = get_object_or_404(Tag, pk=pk)
         if tag.label == "unavailable":
