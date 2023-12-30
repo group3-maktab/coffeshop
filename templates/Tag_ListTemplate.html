@@ -22,7 +22,7 @@
 
 {% extends "base.html" %}
 
-{% block title %} Tag-List {% endblock %} 
+{% block title %} Tag-List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -91,13 +91,13 @@
           </div>
       </div>
   </div>
-  
+
   <div class="card card-body border-0 shadow table-wrapper table-responsive mx-5">
       <table class="table table-hover">
           <thead>
               <tr>
                   <th class="border-gray-200">#</th>
-                  <th class="border-gray-200">Lable</th>						
+                  <th class="border-gray-200">Lable</th>
                   <th class="border-gray-200">Availability</th>
                   <th class="border-gray-200">Action</th>
               </tr>
@@ -105,9 +105,9 @@
           <tbody>
               <!-- Item -->
               {% for tag in tags %}
-              	
-              
-              
+
+
+
               <tr>
                   <td>
                       <a href="#" class="fw-bold">
@@ -117,7 +117,7 @@
                   <td>
                       <span class="fw-normal">{{ tag.label }}</span>
                   </td>
-                  <td><span class="fw-normal">{{ tag.available }}</span></td>                        
+                  <td><span class="fw-normal">{{ tag.available }}</span></td>
 
 <td class="flex justify-content-center">
      <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
@@ -135,14 +135,14 @@
                   </div>
               </div>
           </div>
-    
-        
+
+
 </td>
 
 
 
 
-              </tr>    
+              </tr>
           {% endfor %}
           </tbody>
       </table>
@@ -159,7 +159,7 @@
     {% endif %}
   </span>
 </div>
-  
+
 
   </div>
 

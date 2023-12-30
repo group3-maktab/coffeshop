@@ -14,7 +14,7 @@ class Table(BaseModel):
 
 
 class Reservation(BaseModel):
-    status_fields = [("A", "accept"), ("D", "Denied"), ("O", "on_process")]
+    status_fields = [("A", "Accept"), ("D", "Denied"), ("O", "On_Process")]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     table = models.ForeignKey(Table, on_delete=models.SET_NULL,
                               null=True, default=None)  # todo:ask????

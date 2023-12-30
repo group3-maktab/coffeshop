@@ -133,13 +133,13 @@
                   </td>
                   <td>
                       {% if table_instance.status == 'R' %}
-                        <span class="fw-normal badge badge-lg bg-secondary">{{ table_instance.status }}</span>
+                        <span class="fw-normal btn btn-secondary">{{ table_instance.get_status_display }}</span>
                       {% elif table_instance.status == 'E' %}
-                        <span class="fw-normal badge badge-lg bg-info">{{ table_instance.status }}</span>
+                        <span class="fw-normal btn btn-info">{{ table_instance.get_status_display }}</span>
                       {% elif table_instance.status == 'F' %}
-                        <span class="fw-normal badge badge-lg bg-primary">{{ table_instance.status }}</span>
+                        <span class="fw-normal btn btn-gray-900">{{ table_instance.get_status_display }}</span>
                       {% else %}
-                        <span class="fw-normal badge badge-lg bg-danger">{{ table_instance.status }}</span>
+                        <span class="fw-normal btn btn-danger">{{ table_instance.get_status_display }}</span>
                       {% endif %}
                   </td>
 
