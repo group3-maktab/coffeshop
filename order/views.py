@@ -101,42 +101,28 @@ class ChangeOrderView(View):
         return redirect('order:detail-cart')
 
 
-class OrderWaitingListView(ListView):
+class BaseOrderListView(ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
     ordering = ['-created_at']
 
+    def get_queryset(self):
+        raise NotImplementedError("Subclasses must implement get_queryset method.")
+
+class OrderWaitingListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='W')
 
-
-class OrderFinishedistView(ListView):
-    model = Order
-    template_name = 'Order_ListOrder.html'
-    context_object_name = 'orders'
-    ordering = ['-created_at']
-
+class OrderFinishedListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='F')
 
-
-class OrderPreparationListView(ListView):
-    model = Order
-    template_name = 'Order_ListOrder.html'
-    context_object_name = 'orders'
-    ordering = ['-created_at']
-
+class OrderPreparationListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='P')
 
-
-class OrderTransmissionListView(ListView):
-    model = Order
-    template_name = 'Order_ListOrder.html'
-    context_object_name = 'orders'
-    ordering = ['-created_at']
-
+class OrderTransmissionListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='T')
 
