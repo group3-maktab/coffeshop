@@ -5,15 +5,9 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
 from .forms import TagCreateForm
 from .models import Tag
-from utils import staff_or_superuser_required
-
-
-class StaffSuperuserRequiredMixin(UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_superuser
+from utils import staff_or_superuser_required, StaffSuperuserRequiredMixin
 
 
 class TagListView(StaffSuperuserRequiredMixin, ListView):

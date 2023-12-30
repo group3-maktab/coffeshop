@@ -38,4 +38,4 @@ class ReservationGetForm(forms.Form):
     code = forms.UUIDField(label="label",widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 class CreateTableForm(forms.Form):
-    number = forms.IntegerField(min_value=1)
+    number = forms.IntegerField(min_value=1,label="label", widget=forms.TextInput(attrs={'class': 'form-control'}))

@@ -19,7 +19,7 @@ class Order(BaseModel):
     customer_phone = models.CharField(max_length=100, blank=True, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     status = models.CharField(max_length=1, choices=status_fields, default='W')
-    table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True)
+    table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, related_name='orders')
 
     class Meta:
         ordering = ['-created_at']

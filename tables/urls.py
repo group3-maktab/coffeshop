@@ -9,5 +9,7 @@ urlpatterns = [
     path('get-reservation', views.GetReservationView.as_view(), name='get-reservation'),
     path('create-table', views.CreateTableView.as_view(), name='create-table'),
     path('list-table', views.ListTableView.as_view(), name='list-table'),
-    path('change-table-status/<int:pk>/<str:status>', views.ChangeStatusTableView.as_view(), name='change-table-status')
+    path('change-table-status/<int:pk>/<str:status>', views.ChangeStatusTableView.as_view(), name='change-table-status'),
+    path('tables/delete/<pk>/', views.DeleteTableView.as_view(), name='delete-table'),
+
 ]

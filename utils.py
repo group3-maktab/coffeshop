@@ -1,4 +1,6 @@
 from functools import wraps
+
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -135,6 +137,9 @@ def is_parent(category):
         parent=category).exists()
     return subcategory_query or category.parent is None
 
+class StaffSuperuserRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
 
 def staff_or_superuser_required(view_func):
     """

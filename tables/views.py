@@ -2,16 +2,16 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.urls import NoReverseMatch
+from django.urls import NoReverseMatch, reverse_lazy
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from order.models import Order
-from utils import staff_or_superuser_required
+from utils import staff_or_superuser_required, StaffSuperuserRequiredMixin
 from .forms import Reservation as ReservationForm
 from .forms import ReservationGetForm, CreateTableForm
 from .models import Reservation as ReservationModel
 from .models import Table
-from django.views.generic import ListView
+from django.views.generic import ListView, DeleteView
 
 
 class CreateReservationView(View):
@@ -61,7 +61,6 @@ class ListReservationView(LoginRequiredMixin, View):
             reservation_list = paginator.page(paginator.num_pages)
 
         return render(request, self.template_name, {'reservation_list': reservation_list, 'tables': tables})
-
 
     @staff_or_superuser_required
     def post(self, request):
@@ -171,29 +170,29 @@ class CreateTableView(View):
     template_name = 'Reservation_CreateTable.html'
 
     @staff_or_superuser_required
-    def get(self,request):
+    def get(self, request):
         form = CreateTableForm()
         return render(request, self.template_name, {'form': form})
 
     @staff_or_superuser_required
-    def post(self,request):
+    def post(self, request):
         form = CreateTableForm(request.POST)
         if form.is_valid():
             Table.objects.all().delete()
-            for i in range(1,form.cleaned_data['number'] +1):
+            for i in range(1, form.cleaned_data['number'] + 1):
                 Table.objects.create(number=i)
             messages.success(request,
-                           'Tables created successfully')
+                             'Tables created successfully')
 
             redirect('tables:list-table')
 
+
 # @staff_or_superuser_required
 
-class ListTableView(ListView):
+class ListTableView(StaffSuperuserRequiredMixin, ListView):
     model = Table
     template_name = 'Reservation_ListTableTemplate.html'
     context_object_name = 'table'
-
 
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -208,14 +207,14 @@ class ListTableView(ListView):
         return context
 
 
-class ChangeStatusTableView(View):
+class ChangeStatusTableView(StaffSuperuserRequiredMixin,View):
 
     @staff_or_superuser_required
-    def post(self,request,pk,status):
+    def post(self, request, pk, status):
         table = Table.objects.get(pk=pk)
         order = Order.objects.filter(table=table, status__in=["W", "P", "T"]).first()
 
-        if order :
+        if order:
             messages.error(request, 'Table has an order you cannot cheng status')
             return redirect('tables:list-table')
 
@@ -226,3 +225,14 @@ class ChangeStatusTableView(View):
         table.save()
         messages.success(request, 'Table status changed successfully!')
         return redirect('tables:list-table')
+
+
+class DeleteTableView(StaffSuperuserRequiredMixin, DeleteView):
+    model = Table
+    template_name = 'Reservation_DeleteTableTemplate.html'
+    success_url = reverse_lazy('tables:list-table')
+    context_object_name = 'table'
+
+    def delete(self, request, *args, **kwargs):
+        table = self.get_object()
+        return super().delete(request, *args, **kwargs)
