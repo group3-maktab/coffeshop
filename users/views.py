@@ -91,7 +91,7 @@ class UsersRegisterView(View):
             request.session['email'] = email
             request.session['v_m'] = verification_method
 
-            messages.success(request, f'Registration successful. Please verify your {verification_method} !')
+            # messages.success(request, f'Registration successful. Please verify your {verification_method} !')
             return redirect('users:verification')
         else:
             messages.error(request, 'Invalid registration form data.')
