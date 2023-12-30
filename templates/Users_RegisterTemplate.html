@@ -12,7 +12,7 @@
 {% extends "layouts/base-fullscreen.html" %}
 {% load static %}
 
-{% block title %} Sign UP {% endblock %} 
+{% block title %} Sign UP {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -40,10 +40,10 @@
                                             {{ message }}
                                         {% endfor %}</p>
                                     {% endif %}
-                                </p> 
+                                </p>
                             </div>
                             <form method="post" action="{% url 'users:register' %}" class="mt-4">
-                                
+
                                 {% csrf_token %}
 
                                 <div class="form-group mb-4">
@@ -53,7 +53,7 @@
                                             <span class="fas fa-user-circle"></span>
                                         </span>
                                         {{ form.phone_number }}
-                                    </div>  
+                                    </div>
                                     <span class="text-error">{{ form.phone_number.errors }}</span>
                                 </div>
 
@@ -65,13 +65,13 @@
                                             <span class="fas fa-envelope"></span>
                                         </span>
                                         {{ form.email }}
-                                    </div>  
+                                    </div>
                                     <span class="text-error">{{ form.email.errors }}</span>
                                 </div>
                                 <!-- End of Form -->
                                 <fieldset>
                                     <legend class="h6">Verification Method</legend>
-                                    
+
                                     <!-- Manually create the radio buttons -->
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="verification_method" id="emailRadio" value="email" checked>
@@ -79,7 +79,7 @@
                                             Email
                                         </label>
                                     </div>
-                                    
+
                                     <!-- Disable the first radio button -->
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="verification_method" id="phoneRadio" value="phone" disabled>
@@ -87,7 +87,7 @@
                                             Phone
                                         </label>
                                     </div>
-                                    
+
                                 </fieldset>
                                     <!-- Form -->
 {#                                    <div class="form-group mb-4">#}
@@ -115,7 +115,7 @@
 
 
                                 <div class="d-grid">
-                                    
+
                                     <button type="button" class="btn btn-block btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNotification">Send Code</button>
                                     <!-- Modal Content -->
                                     <div class="modal fade" id="modalNotification" tabindex="-1" role="dialog" aria-labelledby="modalTitleNotify" aria-hidden="true">
@@ -159,7 +159,7 @@
 
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
-                                    Already have an account? 
+                                    Already have an account?
                                     <a href="{% url 'users:login' %}" class="fw-bold">Sign IN</a>
                                 </span>
                             </div>

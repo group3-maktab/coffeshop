@@ -1,29 +1,30 @@
 from django import forms
 from django.core.validators import RegexValidator
 
+
 class LoginForm(forms.Form):
-    phone_number = forms.CharField(max_length=11, required=True,widget=forms.TextInput(
-            attrs={
-                "placeholder": "Phone",
-                "class": "form-control",
-                "id": "phone_number"
-            }
-        ))
-    password = forms.CharField(required=True,widget=forms.PasswordInput(
-            attrs={
-                "placeholder": "Password",
-                "class": "form-control"
-            }
-        ))
+    phone_number = forms.CharField(max_length=11, required=True, widget=forms.TextInput(
+        attrs={
+            "placeholder": "Phone",
+            "class": "form-control",
+            "id": "phone_number"
+        }
+    ))
+    password = forms.CharField(required=True, widget=forms.PasswordInput(
+        attrs={
+            "placeholder": "Password",
+            "class": "form-control"
+        }
+    ))
 
 
 class RegistrationForm(forms.Form):
     phone_number = forms.CharField(
         label='Phone Number',
         widget=forms.TextInput(attrs={'id': 'phone_number',
-                                            "placeholder": "Phone",
-                                            "class": "form-control"
-    }),
+                                      "placeholder": "Phone",
+                                      "class": "form-control"
+                                      }),
         validators=[
             RegexValidator(
                 regex=r'^09\d{9}$',
@@ -32,15 +33,15 @@ class RegistrationForm(forms.Form):
             )
         ]
     )
-    email = forms.EmailField(label='Email',widget=forms.TextInput(
+    email = forms.EmailField(label='Email', widget=forms.TextInput(
         attrs={'id': 'phone_number',
-                "placeholder": "Email",
-                "class": "form-control"
-    }))
+               "placeholder": "Email",
+               "class": "form-control"
+               }))
     verification_method = forms.ChoiceField(
         choices=[('phone', 'Phone Number'), ('email', 'Email')],
         initial='email',
-        widget=forms.RadioSelect(attrs={"class": "form-check-input"},),
+        widget=forms.RadioSelect(attrs={"class": "form-check-input"}, ),
         label='Preferred Verification Method')
 
 
@@ -48,23 +49,23 @@ class VerifyOTPForm(forms.Form):
     otp = forms.CharField(
         label='Enter code:',
         widget=forms.TextInput(attrs={'id': 'otp',
-                "class": "form-control"}),
+                                      "class": "form-control"}),
         required=True)
 
 
 class SetPasswordForm(forms.Form):
     password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(
-            attrs={
-                "placeholder": "Password",
-                "class": "form-control"
-            }
-        ), validators=[RegexValidator(regex=r'^.{5,}$', message='Password must be at least 5 characters long.')])
+        attrs={
+            "placeholder": "Password",
+            "class": "form-control"
+        }
+    ), validators=[RegexValidator(regex=r'^.{5,}$', message='Password must be at least 5 characters long.')])
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(
-            attrs={
-                "placeholder": "Password check",
-                "class": "form-control"
-            }
-        ))
+        attrs={
+            "placeholder": "Password check",
+            "class": "form-control"
+        }
+    ))
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -75,6 +76,10 @@ class SetPasswordForm(forms.Form):
 
         return password2
 
-class ForgotPass(forms.Form):
-    email = forms.EmailField(label='Email')
 
+class ForgotPass(forms.Form):
+    email = forms.EmailField(label='Email', widget=forms.TextInput(
+        attrs={'id': 'phone_number',
+               "placeholder": "Email",
+               "class": "form-control"
+               }))

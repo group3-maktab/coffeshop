@@ -93,7 +93,7 @@
                                 <!-- End of Form -->
                                 <div class="form-group">
                                     <!-- Form -->
-                                    <div class="form-group mb-4">
+                                    <div class="form-group ">
                                         <label for="password">Your Password</label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="basic-addon2">
@@ -102,6 +102,15 @@
                                             {{ form.password }}
                                         </div>  
                                     </div>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                <span class="fw-normal">
+                                    Forgot your password?
+                                    <a href="{% url 'users:forgot' %}" class="fw-bold">Forgot</a>
+                                </span>
+                                        <br>
+                                        <br>
+                                        <br>
+                            </div>
                                     <!-- End of Form -->
 {#                                    <div class="d-flex justify-content-between align-items-top mb-4">#}
 {#                                        <div class="form-check">#}
