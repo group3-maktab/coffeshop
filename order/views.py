@@ -106,6 +106,7 @@ class BaseOrderListView(ListView):
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
     ordering = ['-created_at']
+    paginate_by = 10
 
     def get_queryset(self):
         raise NotImplementedError("Subclasses must implement get_queryset method.")

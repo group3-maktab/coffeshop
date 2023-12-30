@@ -7,45 +7,7 @@
 
 {% block content %}
 
-
-
-    <h1>Order List</h1>
-    <ul>
-        {% for order in orders %}
-            <li>{{ order.customer_phone }}- Table: {{ order.table }} - Status: {{ order.get_status_display }} Date/Time: {{ order.created_at }}</li>
-            
-            <form method="post" action="{% url 'order:change-status' order.id %}">
-                <br>
-                {% csrf_token %}
-                {% if not order.status == 'W' %}
-                    <button type="submit" name="new_status" value="W">Set to Waiting</button>
-                    <br>
-                {% endif %} 
-                {% if not order.status == 'P' %}
-                    <button type="submit" name="new_status" value="P">Set to Preparation</button>
-                    <br>
-                {% endif %} 
-                {% if not order.status == 'T' %}
-                    <button type="submit" name="new_status" value="T">Set to Transmission</button>
-                    <br>
-                {% endif %} 
-                {% if not order.status == 'F' %}
-                    <button type="submit" name="new_status" value="F">Set to Finished</button>
-                    <br>
-                {% endif %} 
-              
-            </form>
-            <form action="{% url 'order:update-order' order.pk %}" method="post">
-                            {% csrf_token %}
-            <button type="submit" name="edit-order" value="Edit Order">Edit Order</button>
-            </form>
-            <br>
-        {% endfor %}
-    </ul>
-
-
-
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-4">
       <div class="d-block mb-4 mb-md-0">
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
               <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -61,7 +23,7 @@
       </div>
       
   </div>
-    <div class="mx-5">
+    <div class="mx-7">
         {% if messages %}
             <p class="text-danger">
                 {% for message in messages %}
@@ -69,7 +31,7 @@
                 {% endfor %}</p>
         {% endif %}
     </div>
-  <div class="table-settings mb-4 mx-5">
+  <div class="table-settings mb-4 mx-4">
       <div class="row align-items-center justify-content-between">
           <div class="col col-md-6 col-lg-3 col-xl-4">
               <div class="input-group me-2 me-lg-3 fmxw-400">
@@ -98,7 +60,7 @@
       </div>
   </div>
 
-  <div class="card card-body border-0 shadow table-wrapper table-responsive mx-5">
+  <div class="card card-body border-0 shadow table-wrapper table-responsive mx-4 pb-10">
       <table class="table table-hover">
 
           <thead>
@@ -108,6 +70,7 @@
                   <th class="border-gray-200">Table</th>
                   <th class="border-gray-200">Status</th>
                   <th class="border-gray-200">Datetime</th>
+                  <th class="border-gray-200">Actions</th>
               </tr>
           </thead>
           <tbody>
@@ -136,7 +99,46 @@
                         <td><span class="text-white btn btn-info">{{ order.get_status_display }}</span></td>
                     {% endif %} 
                                     <td><span class="fw-normal">{{ order.created_at }}</span></td>
+                    <td class="flex justify-content-center">
+                         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
+                                  <div class="dropdown">
+                                      <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
+                                          <span class="visually-hidden">Actions</span>
+                                      </button>
+                                      <div class="dropdown-menu pb-3 px-6 justify-items-start">
+                                          <span class="small ps-3 fw-bold text-dark">Actions</span>
+              <form class="flex w-100" method="post" action="{% url 'order:change-status' order.id %}">
 
+                {% csrf_token %}
+                {% if not order.status == 'W' %}
+                    <button type="submit" class="btn btn-info my-2" name="new_status" value="W">Set to Waiting</button>
+<br>
+                {% endif %} 
+                {% if not order.status == 'P' %}
+                    <button type="submit" class="btn btn-tertiary my-2" name="new_status" value="P">Set to Preparation</button>
+                    <br>
+                {% endif %} 
+                {% if not order.status == 'T' %}
+                    <button type="submit" class=" btn btn-gray-700 my-2" name="new_status" value="T">Set to Transmission</button>
+                    <br>
+                {% endif %} 
+                {% if not order.status == 'F' %}
+                    <button type="submit" class="btn btn-success my-2" name="new_status" value="F">Set to Finished</button>
+                    <br>
+                {% endif %} 
+              
+            </form>
+            <form action="{% url 'order:update-order' order.pk %}" method="post">
+                            {% csrf_token %}
+            <button type="submit" class="btn bg-warning" name="edit-order" value="Edit Order">Edit Order</button>
+            </form>
+
+                    
+                                      </div>
+                                      </div>
+                                      </div>
+                    </td>
               </tr>
 
           {% endfor %}
@@ -144,16 +146,16 @@
       </table>
 <div>
     <span>
-        {% if user_order.has_previous %}
-            <a href="?page={{ user_order.previous_page_number }}">Previous</a>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
     <span>
-        Page {{ user_order.number }} of {{ user_order.paginator.num_pages }}.
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
     <span>
-        {% if user_order.has_next %}
-            <a href="?page={{ user_order.next_page_number }}">Next</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
         {% endif %}
     </span>
 </div>
