@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
+from django.views.generic.detail import SingleObjectMixin
 
 from foodmenu.models import Food
 from tables.models import Table
@@ -157,5 +158,13 @@ class ListOrderPhoneView(View):
     template_name = 'Order_ListPhoneOrder.html'
     def get(self, request, phone):
         phone = str(phone)
-        orders = Order.objects.filter(customer_phone=phone).select_related('table')
-        return render(request, self.template_name, {'user_order': orders})
+        orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+        return render(request, self.template_name, {'user_order': orders, 'phone': phone})
+
+
+class OrderDetailView(SingleObjectMixin, View):
+    template_name = 'Order_DetailView.html'
+
+    def get(self, request, pk):
+        order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
+        return render(request, self.template_name, {'order': order})

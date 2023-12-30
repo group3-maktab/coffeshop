@@ -35,7 +35,7 @@ class Order(BaseModel):
 
 
 class OrderItem(BaseModel):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
     product = models.ForeignKey(Food, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=10, decimal_places=3)
     quantity = models.PositiveIntegerField(default=1)
