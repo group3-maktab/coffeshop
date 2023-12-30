@@ -20,7 +20,8 @@
                       </a>
                   </li>
                   <li class="breadcrumb-item active" aria-current="page">Tables</li>
-                  <li class="breadcrumb-item active" aria-current="page">Detail_Reservation</li>
+                  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'tables:list-reservation' %}">Reservation</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ pk }}</li>
               </ol>
           </nav>
           <h2 class="h4">Reservation Detail</h2>
