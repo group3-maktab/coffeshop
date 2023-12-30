@@ -89,6 +89,7 @@ class ListReservationView(LoginRequiredMixin, View):
 
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
+            return redirect('tables:list-reservation')
 
 
 class DetailReservationView(View):
@@ -112,6 +113,7 @@ class DetailReservationView(View):
         except ReservationModel.DoesNotExist:
             messages.error(request,
                            'Reservation does not exist.')
+            return redirect('tables:list-reservation')
         return render(request, self.template_name, context=context)
 
     @staff_or_superuser_required
@@ -140,6 +142,7 @@ class DetailReservationView(View):
 
         except ReservationModel.DoesNotExist:
             messages.error(request, 'Reservation does not exist.')
+            return redirect('tables:list-reservation')
 
 
 class GetReservationView(View):
