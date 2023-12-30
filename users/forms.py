@@ -40,14 +40,15 @@ class RegistrationForm(forms.Form):
     verification_method = forms.ChoiceField(
         choices=[('phone', 'Phone Number'), ('email', 'Email')],
         initial='email',
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(attrs={"class": "form-check-input"},),
         label='Preferred Verification Method')
 
 
 class VerifyOTPForm(forms.Form):
     otp = forms.CharField(
         label='Enter code:',
-        widget=forms.TextInput(attrs={'id': 'otp'}),
+        widget=forms.TextInput(attrs={'id': 'otp',
+                "class": "form-control"}),
         required=True)
 
 

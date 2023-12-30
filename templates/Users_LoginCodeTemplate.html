@@ -1,10 +1,64 @@
-{% extends "templates/base.html" %}
-{% block content %}
-    <form method="post" action="{% url 'users:login_code' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <br>
-        <input type="submit" value="Verify OTP">
+{% extends "layouts/base-fullscreen.html" %}
 
-    </form>
-{% endblock %}
+{% block title %} Sign UP {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <main>
+        <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+            <div class="container">
+                <p class="text-center">
+                   FEEL IT , ITS COLD🍦!
+                </p>
+                <div class="row justify-content-center form-bg-image" data-background-lg="/static/assets/img/illustrations/signin.svg">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                            <div class="text-center text-md-center mb-4 mt-md-0">
+                                <h1 class="mb-0 h3">
+                                    G3-M | Verification
+                                </h1>
+                                <br />
+                                <p>
+                                    {% if messages %}
+                                        <p class="text-danger">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}</p>
+                                    {% endif %}
+                                </p> 
+                            </div>
+                            <form method="post" action="{% url 'users:login_code' %}" class="mt-4">
+                                
+                                {% csrf_token %}
+
+                                <div class="form-group mb-4">
+                                    <label for="OTP">Enter Code:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <span class="fas fa-unlock-alt"></span>
+                                        </span>
+                                        {{ form.otp }}
+                                    </div>
+                                    <span class="text-error">{{ form.phone_number.errors }}</span>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" name="Verify" class="btn btn-gray-800">Verify</button>
+                                </div>
+                            </form>
+                            <br />
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
