@@ -70,16 +70,25 @@
                                 </div>
                                 <!-- End of Form -->
                                 <fieldset>
-        <label for="">Verification Method</label>
-        {% for radio in form.verification_method %}
-            <div class="form-check">
-                {{ radio }}
-
-            </div>
-
-        {% endfor %}
-
-    </fieldset>
+                                    <legend class="h6">Verification Method</legend>
+                                    
+                                    <!-- Manually create the radio buttons -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="verification_method" id="emailRadio" value="email" checked>
+                                        <label class="form-check-label" for="emailRadio">
+                                            Email
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Disable the first radio button -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="verification_method" id="phoneRadio" value="phone" disabled>
+                                        <label class="form-check-label" for="phoneRadio">
+                                            Phone
+                                        </label>
+                                    </div>
+                                    
+                                </fieldset>
                                     <!-- Form -->
 {#                                    <div class="form-group mb-4">#}
 {#                                        <label for="password">Your Password</label>#}

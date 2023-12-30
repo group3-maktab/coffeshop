@@ -53,8 +53,18 @@ class VerifyOTPForm(forms.Form):
 
 
 class SetPasswordForm(forms.Form):
-    password1 = forms.CharField(label='New Password', widget=forms.PasswordInput, validators=[RegexValidator(regex=r'^.{5,}$', message='Password must be at least 5 characters long.')])
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Password",
+                "class": "form-control"
+            }
+        ), validators=[RegexValidator(regex=r'^.{5,}$', message='Password must be at least 5 characters long.')])
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Password check",
+                "class": "form-control"
+            }
+        ))
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')

@@ -84,7 +84,13 @@ class UsersRegisterView(View):
         if form.is_valid():
             phone_number = form.cleaned_data['phone_number']
             email = form.cleaned_data['email']
-
+            try:
+                user = User.objects.get(phone_number=phone_number)
+                if user :
+                    messages.error(request, 'This User Exist, Please Sing IN')
+                    return redirect('users:register')
+            except:
+                pass
             verification_method = form.cleaned_data['verification_method']
 
             request.session['phone_number'] = phone_number

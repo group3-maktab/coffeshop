@@ -1,6 +1,6 @@
 {% extends "layouts/base-fullscreen.html" %}
 
-{% block title %} Sign UP {% endblock %} 
+{% block title %} Set Password {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -11,14 +11,14 @@
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <p class="text-center">
-                   FEEL IT , ITS COLD🍦!
+                   FEEL IT , ITS Sweat🍫!
                 </p>
                 <div class="row justify-content-center form-bg-image" data-background-lg="/static/assets/img/illustrations/signin.svg">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">
-                                    G3-M | Sign UP
+                                    G3-M | Set-Password
                                 </h1>
                                 <br />
                                 <p>
@@ -34,60 +34,28 @@
                                 
                                 {% csrf_token %}
 
-                                <div class="form-group mb-4">
-                                    <label for="Phone">Phone</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <span class="fas fa-user-circle"></span>
-                                        </span>
-                                        {{ form.phone_number }}
-                                    </div>
-                                    <span class="text-error">{{ form.phone_number.errors }}</span>
-                                </div>
 
-                                <!-- Form -->
-{#                                <div class="form-group mb-4">#}
-{#                                    <label for="email">Your Email</label>#}
-{#                                    <div class="input-group">#}
-{#                                        <span class="input-group-text" id="basic-addon1">#}
-{#                                            <span class="fas fa-envelope"></span>#}
-{#                                        </span>#}
-{#                                        {{ form.email }}#}
-{#                                    </div>#}
-{#                                    <span class="text-error">{{ form.email.errors }}</span>#}
-{#                                </div>#}
-                                <fieldset>
-        <legend class="h6">Verification Method</legend>
-        {% for radio in form.verification_method %}
-            <div class="form-check">
-                {{ radio }}
-                <label class="form-check-label" for="{{ radio.id_for_label }}">
-                    {{ radio.choice_label }}
-                </label>
-            </div>
-        {% endfor %}
-    </fieldset>
                                     <!-- Form -->
-{#                                    <div class="form-group mb-4">#}
-{#                                        <label for="password">Your Password</label>#}
-{#                                        <div class="input-group">#}
-{#                                            <span class="input-group-text" id="basic-addon2">#}
-{#                                                <span class="fas fa-unlock-alt"></span>#}
-{#                                            </span>#}
-{#                                            {{ form.password1 }}#}
-{#                                        </div>  #}
-{#                                        <span class="text-error">{{ form.password1.errors }}</span>#}
-{#                                    </div>#}
-{#                                    <div class="form-group mb-4">#}
-{#                                        <label for="password">Password Confirmation</label>#}
-{#                                        <div class="input-group">#}
-{#                                            <span class="input-group-text" id="basic-addon2">#}
-{#                                                <span class="fas fa-unlock-alt"></span>#}
-{#                                            </span>#}
-{#                                            {{ form.password2 }}#}
-{#                                        </div>  #}
-{#                                        <span class="text-error">{{ form.password2.errors }}</span>#}
-{#                                    </div>#}
+                                    <div class="form-group mb-4">
+                                        <label for="password">Your Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <span class="fas fa-unlock-alt"></span>
+                                            </span>
+                                            {{ form.password1 }}
+                                        </div>
+                                        <span class="text-error">{{ form.password1.errors }}</span>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="password">Password Confirmation</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon2">
+                                                <span class="fas fa-unlock-alt"></span>
+                                            </span>
+                                            {{ form.password2 }}
+                                        </div>
+                                        <span class="text-error">{{ form.password2.errors }}</span>
+                                    </div>
 
                                     <!-- End of Form -->
 
@@ -114,10 +82,10 @@
                             </div>-->
 
                             <div class="d-flex justify-content-center align-items-center mt-4">
-                                <span class="fw-normal">
-                                    Already have an account? 
-                                    <a href="{% url 'users:login' %}" class="fw-bold">Sign IN</a>
-                                </span>
+{#                                <span class="fw-normal">#}
+{#                                    Already have an account? #}
+{#                                    <a href="{% url 'users:login' %}" class="fw-bold">Sign IN</a>#}
+{#                                </span>#}
                             </div>
                         </div>
                     </div>
