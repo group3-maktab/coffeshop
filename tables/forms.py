@@ -35,7 +35,7 @@ class Reservation(forms.Form):
         return datetime
 
 class ReservationGetForm(forms.Form):
-    code = forms.UUIDField()
+    code = forms.UUIDField(label="label",widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 class CreateTableForm(forms.Form):
     number = forms.IntegerField(min_value=1)
