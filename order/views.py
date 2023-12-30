@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
@@ -156,9 +157,20 @@ class ChangeStatusOrderView(View):
 
 class ListOrderPhoneView(View):
     template_name = 'Order_ListPhoneOrder.html'
+    paginate_by = 10
     def get(self, request, phone):
         phone = str(phone)
         orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+
+        paginator = Paginator(orders, self.paginate_by)
+        page = request.GET.get('page')
+
+        try:
+            orders = paginator.page(page)
+        except PageNotAnInteger:
+            orders = paginator.page(1)
+        except EmptyPage:
+            orders = paginator.page(paginator.num_pages)
         return render(request, self.template_name, {'user_order': orders, 'phone': phone})
 
 

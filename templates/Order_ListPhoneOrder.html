@@ -79,7 +79,7 @@
                 <tr>
 
                   <td>
-                      <a href="#" class="fw-bold text-sm-start">
+                      <a href="{% url 'order:order-detail' order.id %}" class="fw-bold text-sm-start">
                           {{ order.id }}
                       </a>
                   </td>
@@ -96,16 +96,16 @@
       </table>
 <div>
     <span>
-        {% if reservation_list.has_previous %}
-            <a href="?page={{ reservation_list.previous_page_number }}">Previous</a>
+        {% if user_order.has_previous %}
+            <a href="?page={{ user_order.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
     <span>
-        Page {{ reservation_list.number }} of {{ reservation_list.paginator.num_pages }}.
+        Page {{ user_order.number }} of {{ user_order.paginator.num_pages }}.
     </span>
     <span>
-        {% if reservation_list.has_next %}
-            <a href="?page={{ reservation_list.next_page_number }}">Next</a>
+        {% if user_order.has_next %}
+            <a href="?page={{ user_order.next_page_number }}">Next</a>
         {% endif %}
     </span>
 </div>
