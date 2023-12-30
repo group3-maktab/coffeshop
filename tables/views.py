@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch
 from django.views import View
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from order.models import Order
 from utils import staff_or_superuser_required
 from .forms import Reservation as ReservationForm
@@ -41,12 +41,26 @@ class CreateReservationView(View):
 
 class ListReservationView(LoginRequiredMixin, View):
     template_name = 'Reservation_ListTemplate.html'
+    paginate_by = 10  # Set the number of items per page
 
     @staff_or_superuser_required
     def get(self, request):
-        reservationlist = ReservationModel.objects.all()
+        reservation_list = ReservationModel.objects.all().order_by('-datetime')  # Order by datetime in descending order
         tables = Table.objects.all()
-        return render(request, self.template_name, {'reservationlist': reservationlist, 'tables': tables})
+
+        # Using Django's built-in ListView for pagination
+        paginator = Paginator(reservation_list, self.paginate_by)
+        page = request.GET.get('page')
+
+        try:
+            reservation_list = paginator.page(page)
+        except PageNotAnInteger:
+            reservation_list = paginator.page(1)
+        except EmptyPage:
+            reservation_list = paginator.page(paginator.num_pages)
+
+        return render(request, self.template_name, {'reservation_list': reservation_list, 'tables': tables})
+
 
     @staff_or_superuser_required
     def post(self, request):

@@ -20,7 +20,7 @@ class TagListView(StaffSuperuserRequiredMixin, ListView):
     model = Tag
     template_name = 'Tag_ListTemplate.html'
     context_object_name = 'tags'
-    paginate_by = 5
+    paginate_by = 10
 
 
 class CreateTagView(StaffSuperuserRequiredMixin, CreateView):
