@@ -1,55 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %} Tag-List {% endblock %} 
+{% block title %} Table-List {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-{#    <div class="forms-div">#}
-{#        <h2 class='forms-header'>Tables</h2>#}
-{#        <div class="center">#}
-{#            <ul class="tasks">#}
-{#                {% for table_instance in table %}#}
-{#                    <br>#}
-{#                    {{ table_instance }} ||| {% for order in table_orders.table_instance %}{{ order }}{% endfor %}#}
-{#                    {{ table_instance.status }}  |||#}
-{#                    {% if table_instance.status != 'R' %}#}
-{#                        <form action="{% url 'tables:change-table-status' table_instance.pk 'R' %}" method="post" style="display:inline;">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit">Reserve</button>#}
-{#                        </form>#}
-{#                    {% endif %}#}
-{#                    {% if table_instance.status != 'E' %}#}
-{#                        <form action="{% url 'tables:change-table-status' table_instance.pk 'E' %}" method="post" style="display:inline;">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit">Empty</button>#}
-{#                        </form>#}
-{#                    {% endif %}#}
-{#                    {% if table_instance.status != 'F' %}#}
-{#                        <form action="{% url 'tables:change-table-status' table_instance.pk 'F' %}" method="post" style="display:inline;">#}
-{#                            {% csrf_token %}#}
-{#                            <button type="submit">Full</button>#}
-{#                        </form>#}
-{#                    {% endif %}#}
-{#                        {% for table_id , order in table_orders.items %}#}
-{#                            {% if table_id == table_instance.id %}#}
-{#                                {% for orders in order %}#}
-{#                                    <li>Order ID: {{ orders.id }} -#}
-{#                                        Status: {{ orders.get_status_display }} #}
-{#                                        - Date/Time: {{ orders.created_at }}</li> #}
-{#                                {% endfor %}#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
-{#                {% endfor %}#}
-{#            </ul>#}
-{#        </div>#}
-{#    </div>#}
-
-
-
-
-
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
       <div class="d-block mb-4 mb-md-0">
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block">

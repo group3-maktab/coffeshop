@@ -132,7 +132,7 @@ class ChangeStatusOrderView(View):
     def post(self,request, pk):
         new_status:str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
-        if new_status == 'F':
+        if new_status == 'F' and order.table.status != "T":
             table = Table.objects.get(pk = order.table.pk)
             table.status = 'E'
             table.save()
