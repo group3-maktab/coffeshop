@@ -13,6 +13,7 @@ from .models import Reservation as ReservationModel
 from .models import Table
 from django.views.generic import ListView
 
+
 class CreateReservationView(View):
     template_name = 'Reservation_CreateTemplate.html'
 
@@ -41,11 +42,11 @@ class CreateReservationView(View):
 
 class ListReservationView(LoginRequiredMixin, View):
     template_name = 'Reservation_ListTemplate.html'
-    paginate_by = 10  # Set the number of items per page
+    paginate_by = 10
 
     @staff_or_superuser_required
     def get(self, request):
-        reservation_list = ReservationModel.objects.all().order_by('-datetime')  # Order by datetime in descending order
+        reservation_list = ReservationModel.objects.all().order_by('-created_at')
         tables = Table.objects.all()
 
         # Using Django's built-in ListView for pagination
