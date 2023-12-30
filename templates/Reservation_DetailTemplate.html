@@ -52,7 +52,7 @@
                            <p><b>Status:</b> {{ status }}<br></p>
                              <form method="post" class="flex-column" action="{% url 'tables:list-reservation' %}">
             {% csrf_token %}
-            <input type="hidden" name="reservation_id" value="{{ reserve.id }}">
+            <input type="hidden" name="reservation_id" value="{{ pk }}">
 
             <!-- Select table -->
             <label for="table_id">Select Table:</label>
