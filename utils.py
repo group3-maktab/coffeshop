@@ -1,3 +1,4 @@
+from collections import namedtuple
 from functools import wraps
 
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -367,7 +368,7 @@ class Reporting:
     def total_sales(self):
         orders = Order.objects.filter(
             created_at__gte=timezone.now()
-                            - timezone.timedelta(days=self.days))
+                            - timezone.timedelta(days=self.days),status__in=["F"])
 
         total_sales = orders.aggregate(
             total_sales=Sum(F('items__price') * F('items__quantity'))
@@ -386,16 +387,47 @@ class Reporting:
         )
         for table in most_used_tables:
             yield table
+
     def favorite_foods(self):
+        FoodData = namedtuple('FoodData', ['id', 'name', 'total_sales', 'counts', 'category']) #WTF :-/
+
         most_used_foods = (Food.objects.annotate(
             used_foods=Sum('orderitem__quantity', distinct=True, filter=(
                 Q(orderitem__created_at__gte=timezone.now()
-                  - timezone.timedelta(days=self.days)
-                  )
+                                             - timezone.timedelta(days=self.days)
+                  ) & Q(orderitem__orders__status='F')
             ))).order_by('-used_foods')[0:10]
         )
+
         for food in most_used_foods:
-            yield food
+            if food.used_foods :
+                food_data = FoodData(
+                    id=food.pk,
+                    name=food.name,
+                    total_sales=food.used_foods * float(food.price),
+                    counts=food.used_foods,
+                    category=food.category,
+                )
+                yield food_data
+
+    def get_percentage_difference(self):
+        """
+        Calculate the percentage difference between the current time frame and the previous one.
+        For instance, if self.days is 2, it will compare the last 2 days with the 2 days before that.
+        """
+        # Get the sales for the current time frame
+        current_sales = self.total_sales()
+
+        # Get the sales for the previous time frame
+        previous_days_sales = Reporting(self.days * 2).total_sales()
+
+        # Calculate the percentage difference
+        if previous_days_sales:
+            percentage_difference = ((current_sales - previous_days_sales) / previous_days_sales) * 100
+        else:
+            percentage_difference = 0  # Handle the case where previous_days_sales is zero
+
+        return percentage_difference
 
 
 
