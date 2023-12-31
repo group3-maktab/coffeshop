@@ -1,37 +1,95 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}
-Your shopping cart
-{% endblock %}
-{% block content %}
 
-    <div class="cart">
-        {% with total_items=cart|length %}
-            {% if total_items > 0 %}
-                Your cart:
-                <a href="{% url "order:detail-cart" %}">
-                {{ total_items }} item{{ total_items|pluralize }},
-                ${{ cart.get_total_price }}
-                </a>
-            {% else %}
-                Your cart is empty.
-            {% endif %}
-        {% endwith %}
-    </div>
-<h1>Your shopping cart</h1>
-<table class="cart">
-    <thead>
-    <tr>
-    <th>Image</th>
-    <th>Product</th>
-    <th>Quantity</th>
-    <th>Remove</th>
-    <th>Unit price</th>
-    <th>Price</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for item in cart %}
+{% extends 'base.html' %}
+
+
+{% block title %} Cart {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    
+
+
+
+
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
+      <div class="d-block mb-4 mb-md-0">
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+              <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                  <li class="breadcrumb-item">
+                      <a href="{% url 'core:home' %}">
+                          <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                      </a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Cart</li>
+              </ol>
+          </nav>
+          <h2 class="h4">Cart</h2>
+      </div>
+      <div class="btn-toolbar mb-2 mb-md-0">
+          <a href="{% url "foods:list-food" %}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
+              <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+              Continue Shopping
+          </a>
+
+          <div class="btn-group ms-2 ms-lg-3">
+            <a href="{% url 'order:create-order' %}" class="text-white btn btn-sm btn-success d-inline-flex align-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon icon-xs me-2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+</svg>              Checkout
+            </a>          </div>
+      </div>
+
+  </div>
+    <div class="row justify-content-center form-bg-image px-5 m-0" >
+                    <div class="col-12 d-flex align-items-center justify-content-center m-0">
+                        <div class="bg-white shadow border-0 rounded-3 border-light m-0 p-5 w-100">
+                            <div class="text-center text-md-center mb-4 mt-md-0">
+                            <div class="cart">
+                                {% with total_items=cart|length %}
+                                    {% if total_items > 0 %}
+                                        <button class="btn btn-primary d-inline-flex align-items-center gap-2" >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="image-xs">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+</svg>
+
+                                        Your cart:
+                                        {{ total_items }} item{{ total_items|pluralize }},
+                                        ${{ cart.get_total_price }}
+                                        </button>
+                                    {% else %}
+                                        Your cart is empty.
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                                <h1 class="mb-0 fw-bolder text-xxl-center my-4">
+                                    Cart
+                                </h1>
+                                <br />
+                                <p>
+                                    {% if messages %}
+                                        <p class="text-danger">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}</p>
+                                    {% endif %}
+                                </p>
+                            </div>
+                           
+                        <div class="card card-body border-0 shadow table-wrapper table-responsive">
+                          <table class="table w-100 table-hover">
+                             <thead>
+                            <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                            <th>Unit price</th>
+                            <th>Price</th>
+                            </tr>
+                            </thead>
+                            {% for item in cart %}
         {% with product=item.product %}
         <tr>
         <td>{{ product.name }}</td>
@@ -39,14 +97,14 @@ Your shopping cart
             <form action="{% url "order:create-cart" product.id %}" method="post">
             {{ item.update_quantity_form.quantity }}
             {{ item.update_quantity_form.override }}
-            <input type="submit" value="Update">
+            <input class="btn btn-tertiary" type="submit" value="Update">
             {% csrf_token %}
             </form>
         </td>
         <td>
             <form action="{% url 'order:delete-cart' product.id %}"
                 method="post">
-                <input type="submit" value="Remove">
+                <input class="btn btn-danger" type="submit" value="Remove">
                 {% csrf_token %}
             </form>
         </td>
@@ -55,15 +113,21 @@ Your shopping cart
         </tr>
         {% endwith %}
         {% endfor %}
-        <tr class="total">
+        <tr class="bg-gray-800 fw-bolder text-white">
             <td>Total</td>
             <td colspan="4"></td>
-            <td class="num">${{ cart.get_total_price }}</td>
+            <td class="">${{ cart.get_total_price }}</td>
         </tr>
     </tbody>
 </table>
-<p class="text-right">
-<a href="{% url "foods:list-food" %}" class="button light">Continue shopping</a>
-<a href="{% url 'order:create-order' %}" class="button">Checkout</a>
-</p>
+                    </div>
+                    </div>
+                    </div>
+
+                </div>
+
+
+
+
+
 {% endblock %}

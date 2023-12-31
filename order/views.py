@@ -27,7 +27,7 @@ class CreateCartView(View):
                      quantity=cd['quantity'],
                      override_quantity=cd['override'])
         messages.success(request, 'Item added successfully!')
-        return redirect('foods:list-food')
+        return redirect('order:detail-cart')
 
 
 class DeleteCartView(View):
