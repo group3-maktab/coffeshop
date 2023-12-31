@@ -36,7 +36,7 @@ class UsersLoginView(View):
                 messages.error(request, 'Authentication failed')
                 return redirect('users:login')
         else:
-            messages.error(request, 'Invalid data')
+            messages.error(request, 'Invalid Data')
             return redirect('users:login')
 
 
@@ -46,6 +46,7 @@ class UsersAuthCodeView(View):
     def get(self, request):
         form = VerifyOTPForm()
         if request.user.is_authenticated:
+            messages.error(request, 'You are logged in')
             return redirect('core:home')
         return render(request, self.template_name, {'form': form})
 
@@ -143,7 +144,6 @@ class UsersSetPasswordView(View):
         if form.is_valid():
             phone_number = request.session.get('phone_number')
             email = request.session.get('email')
-            verification_method = request.session.get('v_m')
 
             if not (phone_number or email):
                 messages.error(request, 'Invalid session data.')
@@ -176,6 +176,9 @@ class UsersForgotPasswordView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.error(request, 'You are logged in')
+            return redirect('core:home')
         form = ForgotPass(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
