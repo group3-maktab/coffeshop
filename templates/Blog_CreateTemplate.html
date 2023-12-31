@@ -2,6 +2,14 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
+    <p>
+                                    {% if messages %}
+                                        <p class="text-danger">
+                                        {% for message in messages %}
+                                            {{ message }}
+                                        {% endfor %}</p>
+                                    {% endif %}
+                                </p>
     <div class=" forms-div ">
         <h2 class='forms-header'>Create New Blog</h2>
 

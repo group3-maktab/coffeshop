@@ -47,7 +47,10 @@ class CreateBlogView(View):
 
             urls = []
             for file_path in self.template_files:
-                url = file_path.split('/')[-1].split('.')[0]
+                if os.name == 'nt':  # wwindows
+                    url = file_path.split('\\')[-1][9:-5]
+                else:
+                    url = file_path.split('/')[-1].split('.')[0]
                 urls.append(url)
 
             if slug in urls:
