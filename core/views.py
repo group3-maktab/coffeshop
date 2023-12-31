@@ -3,15 +3,18 @@ from django.views import View
 from utils import Reporting, staff_or_superuser_required
 from decimal import Decimal
 
+
 # Create your views here.
 class HomeView(View):
     template_name = 'Core_HomeTemplate.html'
-    def get(self,request):
+
+    def get(self, request):
         try:
-            context = {'name' : request.user.phone_number}
+            context = {'name': request.user.phone_number}
         except Exception:
-            context = {'name' : None}
+            context = {'name': None}
         return render(request, self.template_name, context)
+
 
 class DashboardView(View):
     template_name = 'Core_DashboardTemplate.html'
@@ -32,19 +35,12 @@ class DashboardView(View):
         r = Reporting(days)
         total_sales: Decimal = r.total_sales()
         percentage_difference = r.get_percentage_difference()
-        favorite_table = []
-
-        for table in r.favorite_tables():
-            favorite_table.append(f"Table #{table.number} - Seats: {table.used_seats}")
-
-
 
         context = {
             'total_sales': total_sales,
-            'percentage_difference': -(percentage_difference),
+            'percentage_difference': -percentage_difference,
             'favorite_food': r.favorite_foods(),
-            'favorite_table': favorite_table,
+            'favorite_table': r.favorite_tables(),
         }
 
         return render(request, self.template_name, context=context)
-
