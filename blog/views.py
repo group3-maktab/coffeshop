@@ -76,7 +76,7 @@ class CreateBlogView(View):
                                              'time': datetime.now().strftime("%y-%b-%d"),
                                              'content': content,
                                              'thumbnail_url': thumbnail_path}))
-            messages.success(request, 'Blog created successfully.')
+            messages.success(request, 'Blog Created Successfully.')
             return redirect('blog:detail-blog', slug=slug)
         else:
             messages.error(request, 'Invalid Data.')
@@ -105,10 +105,10 @@ class UpdateBlogView(LoginRequiredMixin, View):
                 if '<div id="title">' in data:
                     title = lines[i + 2].strip()
 
-                elif '<div id="thumbnail"><img id="thumbnail" src="' in data:
+                elif '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="' in data:
                     thumbnail_url = lines[i + 1].strip()
 
-                elif '<div id="content">' in data:
+                elif '<div class="bg-white rounded-3 mx-5 my-4 p-4 text-center justify-content-center" id="content">' in data:
                     content = lines[i + 2].strip()
 
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
@@ -120,6 +120,7 @@ class UpdateBlogView(LoginRequiredMixin, View):
 
         if os.path.exists(path):
             os.remove(path)
+            messages.success(request, 'Blog Initialize Successfully.')
         return render(request, self.template_name,
                       {'form': form})
 
@@ -157,4 +158,5 @@ class DeleteBlogView(LoginRequiredMixin, View):
 
         if os.path.exists(path):
             os.remove(path)
+            messages.success(request, 'Blog Deleted Successfully.')
         return redirect('blog:create-blog')
