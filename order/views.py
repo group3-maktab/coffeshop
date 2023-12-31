@@ -89,7 +89,7 @@ class MakeOrderView(View):
             messages.success(request, 'Order created successfully!')
             return render(request, self.template_name, {'order': order})
         else:
-            messages.error(request, 'invalid data!')
+            messages.error(request, 'Invalid Data!')
             return render(request, self.template_name, {'cart': cart, 'form': form})
 
 

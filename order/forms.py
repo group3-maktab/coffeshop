@@ -17,9 +17,9 @@ class CartAddProductForm(forms.Form):
 
 class OrderCreateForm(forms.ModelForm):
 
-    customer_phone =  forms.CharField(
+    customer_phone = forms.CharField(
         label='Phone Number',
-        widget=forms.TextInput(attrs={'id': 'phone_number'}),
+        widget=forms.TextInput(attrs={'id': 'phone_number', 'class': 'form-control', 'placeholder': 'Phone'}),
         validators=[
             RegexValidator(
                 regex=r'^09\d{9}$',
@@ -28,6 +28,10 @@ class OrderCreateForm(forms.ModelForm):
             )
         ]
     )
+
     class Meta:
         model = Order
         fields = ['customer_phone', 'table']
+        widgets = {
+            'table': forms.Select(attrs={'class': 'btn btn-info'},),
+        }
