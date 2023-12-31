@@ -370,16 +370,16 @@ class Reporting:
                             - timezone.timedelta(days=self.days))
 
         total_sales = orders.aggregate(
-            total_sales=Sum(F('orderitem__price') * F('orderitem__quantity'))
+            total_sales=Sum(F('items__price') * F('items__quantity'))
         )
         return total_sales['total_sales']
 
     def favorite_tables(self):
         most_used_tables = (
             Table.objects
-            .annotate(used_seats=Count('order__id', distinct=True, filter=(
-                    Q(order__status='F') &
-                    Q(order__created_at__gte=timezone.now()
+            .annotate(used_seats=Count('orders__id', distinct=True, filter=(
+                    Q(orders__status='F') &
+                    Q(orders__created_at__gte=timezone.now()
                                              - timezone.timedelta(days=self.days))
             )))
             .order_by('-used_seats')

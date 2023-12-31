@@ -61,7 +61,7 @@
                       <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="media d-flex align-items-center">
                           <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="black" class="icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="black" class="icon icon-sm me-2">
   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
 </svg>
 <span class="mb-0 font-small fw-bold text-gray-900">
@@ -119,6 +119,21 @@
     </div>
     
 {% endif %}
+
+
+
+
+        <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
+            <a class="navbar-brand me-lg-5" href="/">
+                <img class="navbar-brand-dark" src="/static/assets/img/brand/light.svg" alt="Volt logo" /> <img class="navbar-brand-light" src="/static/assets/img/brand/dark.svg" alt="Volt logo" />
+            </a>
+            <div class="d-flex align-items-center">
+                <button class="navbar-toggler d-lg-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+
     {% block content %}{% endblock content %}
 
     {% include 'includes/scripts.html' %}
