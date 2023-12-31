@@ -48,7 +48,7 @@ class CreateBlogView(View):
             urls = []
             for file_path in self.template_files:
                 if os.name == 'nt':  # wwindows
-                    url = file_path.split('\\')[-1][9:-5]
+                    url = file_path.split('/')[-1][9:-5]
                 else:
                     url = file_path.split('/')[-1].split('.')[0]
                 urls.append(url)
@@ -97,32 +97,48 @@ class UpdateBlogView(LoginRequiredMixin, View):
         path = f'blog/templates/articles/{slug}.html'
 
         with open(path, 'r') as file:
-            lines = file.readlines()
+            contents = file.read()
             title = None
             thumbnail_url = None
-            content = None
-            for i, data in enumerate(lines):
-                if '<div id="title">' in data:
-                    title = lines[i + 2].strip()
 
-                elif '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="' in data:
-                    thumbnail_url = lines[i + 1].strip()
+            # Extract content between <p> tags
+            start_tag = '<p>'
+            end_tag = '</p>'
 
-                elif '<div class="bg-white rounded-3 mx-5 my-4 p-4 text-center justify-content-center" id="content">' in data:
-                    content = lines[i + 2].strip()
+            start_index = contents.find(start_tag)
+            end_index = contents.rfind(end_tag)
+
+            if start_index != -1 and end_index != -1:
+                content = contents[start_index + len(start_tag):end_index].strip()
+
+            # Extract title and thumbnail_url from content
+            # You may need to adjust these patterns based on the actual structure of your HTML content
+            title_start = '<h1 class="text-center fw-bolder display-1 text-capitalize">'
+            title_end = '</h1>'
+            title_index_start = contents.find(title_start)
+            title_index_end = contents.rfind(title_end)
+            if title_index_start != -1 and title_index_end != -1:
+                title = contents[title_index_start + len(title_start):title_index_end].strip()
+
+            thumbnail_start = '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="'
+            thumbnail_end = f' "alt="{title} Thumbnail">'
+            thumbnail_index_start = contents.find(thumbnail_start)
+            thumbnail_index_end = contents.rfind(thumbnail_end)
+
+            if thumbnail_index_start != -1 and thumbnail_index_end != -1:
+                thumbnail_url = contents[thumbnail_index_start + len(thumbnail_start):thumbnail_index_end].strip()
 
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
 
-        thumbnail_path = f'blog/{thumbnail_url}'
-        print(thumbnail_path)
+        thumbnail_path = f'blog{thumbnail_url}'
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
 
         if os.path.exists(path):
             os.remove(path)
             messages.success(request, 'Blog Initialize Successfully.')
-        return render(request, self.template_name,
-                      {'form': form})
+
+        return render(request, self.template_name, {'form': form})
 
 
 class ListBlogView(View):
@@ -133,7 +149,7 @@ class ListBlogView(View):
         urls = []
         for file_path in self.template_files:
             if os.name == 'nt':  # wwindows
-                url = file_path.split('\\')[-1][9:-5]
+                url = file_path.split('/')[-1][9:-5]
             else:
                 url = file_path.split('/')[-1].split('.')[0]
             urls.append(url)

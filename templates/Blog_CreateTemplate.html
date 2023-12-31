@@ -1,8 +1,48 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% load static %}
+
+{% block title %} Blog Create {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
 {% block content %}
-    <p>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
+      <div class="d-block mb-4 mb-md-0">
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+              <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                  <li class="breadcrumb-item">
+                      <a href="{% url 'core:home' %}">
+                          <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                      </a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'blog:list-blog' %}">Blogs</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Create-Blog</li>
+              </ol>
+          </nav>
+          <h2 class="h4">Create Blog</h2>
+      </div>
+      <div class="btn-toolbar mb-2 mb-md-0">
+          <a href="{% url "foods:list-food" %}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon icon-xs me-2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+              Blog List
+          </a>
+          
+      </div>
+
+  </div>
+    <div class="row justify-content-center form-bg-image px-5 m-0" >
+                    <div class="col-12 d-flex align-items-center justify-content-center m-0">
+                        <div class="bg-white shadow border-0 rounded-3 border-light m-0 p-2 w-100 fmxw-999">
+                            <div class="text-center text-md-center mb-4 mt-md-0">
+                            
+                                <h1 class="mb-0 fw-bolder text-xxl-center my-4">
+                                    Blog
+                                </h1>
+                                <br />
+                                <p>
                                     {% if messages %}
                                         <p class="text-danger">
                                         {% for message in messages %}
@@ -10,24 +50,24 @@
                                         {% endfor %}</p>
                                     {% endif %}
                                 </p>
-    <div class=" forms-div ">
-        <h2 class='forms-header'>Create New Blog</h2>
-
-        <form method="post" enctype="multipart/form-data" action="{% url 'blog:create-blog' %}" 
-        class="forms-form">
-            {% csrf_token %}
-            {{ form.title.label_tag }} <br> {% render_field form.title placeholder="Title" class="forms-field w-3/5 z-50"%}
-            <br>
-            {{ form.thumbnail.label_tag }} <br> {% render_field form.thumbnail  class="my-3 w-1/2 z-50"%}
-            <br>
-            {{ form.content.label_tag }} <br> {% render_field form.content class="forms-field w-5/6 h-96 z-50"%}
-
-            <br><br>
-
-            <button class="forms-submit" type="submit">Create Blog</button>
-            <img class="opacity-25 absolute z-10 w-2/3 overflow-y-hidden" src="{% static 'src/blog.png' %}">
-
-        </form>
-    </div>
-
+                            </div>
+                           
+                        <div class="card card-body border-0 shadow table-wrapper table-responsive">
+                          <form method="post" enctype="multipart/form-data" action="{% url 'blog:create-blog' %}" 
+                            class="align-items-center justify-content-center ">
+                                {% csrf_token %}
+                                {{ form.title.label_tag }} <br> {% render_field form.title placeholder="Title" class="form-control"%}
+                                <br>
+                                {{ form.thumbnail.label_tag }} <br> {% render_field form.thumbnail  class="form-control"%}
+                                <br>
+                                {{ form.content.label_tag }} <br> {% render_field form.content class="form-control"%}
+                                <br><br>
+                    
+                                <button class="btn w-100 btn-gray-900 text-center justify-content-center" type="submit">Create Blog</button>
+                    
+                            </form>
+                    </div>
+                    </div>
+                    </div>
+                </div>
 {% endblock %}

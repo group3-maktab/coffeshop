@@ -63,7 +63,7 @@
                             </li>
                             {% endfor %}
                             <p class="btn w-100 btn-secondary text-dark my-4">Total: ${{ cart.get_total_price }}</p>
-                            <form method="post" class="order-form">
+                            <form method="post" class="">
                             {{ form.as_p }}
                             <p><input class="btn fw-extrabold w-100 btn-primary text-white text-dark my-4" type="submit" value="Place order"></p>
                             {% csrf_token %}

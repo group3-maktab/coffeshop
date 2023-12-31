@@ -35,7 +35,6 @@
                                 <h1 class="mb-0 fw-bolder text-xxl-center my-4">
                                     Category
                                 </h1>
-                                <br />
                                 <p>
                                     {% if messages %}
                                         <p class="text-danger">
@@ -45,12 +44,8 @@
                                     {% endif %}
                                 </p>
                             </div>
-                        
-
                             <form method="post" class="order-form p-3">
-                            
                                {{ form.as_p }}
-                                 
                             <p><input class="btn fw-extrabold w-100 btn-primary text-white text-dark my-4" type="submit" value="Create"></p>
                             {% csrf_token %}
                             </form>
