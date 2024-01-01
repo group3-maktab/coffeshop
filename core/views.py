@@ -37,13 +37,14 @@ class DashboardView(View):
         r = Reporting(days)
         total_sales: Decimal = r.total_sales()
         percentage_difference = r.get_percentage_difference()
-
+        peak_hour, most_peak_hour = r.peak_hours()
         context = {
             'total_sales': total_sales,
             'percentage_difference': -percentage_difference,
             'favorite_food': r.favorite_foods(),
             'favorite_table': r.favorite_tables(),
-            'peak_hour': r.peak_hours(),
+            'peak_hour': peak_hour,
+            'most_peak_hour': most_peak_hour,
             'best_cutomer': r.best_cutomer(),
         }
 

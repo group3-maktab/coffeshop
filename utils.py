@@ -392,10 +392,7 @@ class Reporting:
 
         total_sales = orders.aggregate(
             total_sales=Sum(
-                ExpressionWrapper(
                     F('items__price') * F('items__quantity'),
-                    output_field=DecimalField(),
-                )
             )
         )
 
@@ -434,11 +431,10 @@ class Reporting:
             .annotate(
                 used_foods=Sum('orderitem__quantity', distinct=True),
                 total_sales=Sum(
-                    F('orderitem__quantity') * (F('price') - (F('price') * F('off') / 100)),
-                    distinct=True
+                    F('orderitem__quantity') * F('orderitem__quantity'),
                 )
             )
-            .order_by('-used_foods')[0:10]
+            .order_by('-used_foods')
         )
 
         for food in most_used_foods:
@@ -467,8 +463,8 @@ class Reporting:
         return percentage_difference
 
     def peak_hours(self): #todo: Dahanam sevice shod :-|
-        start_hour = 8
-        end_hour = 24  # 2 am of the next day
+        start_hour = 0
+        end_hour = 24
 
         orders = Order.objects.filter(
             created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
@@ -496,9 +492,41 @@ class Reporting:
                 'order_count': order_count
             })
         if peak_hours_list:
-            return list(peak_hours_list[0].values())[0]
+            return peak_hours_list, list(peak_hours_list[0].values())[0]
+        else: return 'No hour found','No hour found'
+
+    def peak_day_of_week(self):
+        start_date = timezone.now() - timezone.timedelta(days=self.days)
+        end_date = timezone.now()
+
+        orders = Order.objects.filter(
+            created_at__range=(start_date, end_date),
+            status='F'
+        )
+
+        orders_by_day = orders.annotate(day_of_week=ExtractDayOfWeek('created_at'))
+
+        peak_days_data = (
+            orders_by_day
+            .values('day_of_week')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+
+        peak_days_list = []
+        for day_data in peak_days_data:
+            day_of_week = day_data['day_of_week']
+            order_count = day_data['order_count']
+            peak_days_list.append({
+                'day_of_week': day_of_week,
+                'order_count': order_count
+            })
+
+        if peak_days_list:
+            return peak_days_list, list(peak_days_list[0].values())[0]
         else:
-            return 'No hours found'
+            return 'No day found', 'No day found'
+
 
 
     def best_cutomer(self):

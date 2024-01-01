@@ -458,12 +458,15 @@
     
     
     
+    <h3 class="mx-12 px-5"> Peak Hours</h3>
+    <div class="line-chart-filled mx-12"></div>
+    
+    
     
 
     
       
     <div class="row mx-12 flex-row justify-content-center" >
-        
         <div class="col-12 col-sm-12 col-xl-6 mb-4 ">
             <div class="card border-0 shadow">
                 <div class="card-body">
@@ -480,7 +483,7 @@
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h6 text-gray-400 mb-0 text-center my-2">Best Customer</h2>
-                                <h5 class="fw-extrabold mb-2 text-center mt-4">{{ best_cutomer }}</h5>
+                              <a href="{% url 'order:phone-orders' best_cutomer %}"> <h5 class="fw-extrabold mb-2 text-center mt-4">{{ best_cutomer }}</h5></a> 
                             </div>
                         </div>
                     </div>`
@@ -497,13 +500,13 @@
                             </div>
                             <div class="d-sm-none">
                                 <h2 class="h5">Peak Hour</h2>
-                                <h5 class="fw-extrabold mb-1">{{ peak_hour }}</h5>
+                                <h5 class="fw-extrabold mb-1">{{ most_peak_hour }}</h5>
                             </div>
                         </div>
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h6 text-gray-400 mb-0 text-center my-2">Peak Hour</h2>
-                                <h5 class="fw-extrabold mb-2 text-center mt-4">{{ peak_hour }}</h5>
+                                <h5 class="fw-extrabold mb-2 text-center mt-4">{{ most_peak_hour }}</h5>
                             </div>
                         </div>
                     </div>`
@@ -950,12 +953,31 @@
     
     
     
-    
-    
-    
+
     
     
             {% endblock %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+    // Initialize empty arrays
+    var labels = [];
+    var series = [];
+
+    {% for hour_data in peak_hour %}
+        labels.push('{{ hour_data.hour_range }}');
+        series.push({{ hour_data.order_count }});
+    {% endfor %}
+
+    new Chartist.Line('.line-chart-filled', {
+        labels: labels,
+        series: [series]
+    }, {
+        low: 0,
+        showArea: true
+    });
+</script>
+    <script src="{% static 'assets/vendor/chartist/dist/chartist.min.js' %}"></script>
+<script src="{% static 'assets/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js' %}"></script>
+{% endblock javascripts %}
