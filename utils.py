@@ -1,8 +1,10 @@
 from collections import namedtuple
+from datetime import timedelta
 from functools import wraps
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
+from django.db.models.functions import ExtractHour
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
@@ -463,3 +465,37 @@ class Reporting:
             percentage_difference = 0
 
         return percentage_difference
+
+    def peak_hours(self): #todo: Dahanam sevice shod :-|
+        start_hour = 8
+        end_hour = 24  # 2 am of the next day
+
+        orders = Order.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
+
+        orders_by_hour = orders.annotate(hour=ExtractHour('created_at'))
+
+        peak_hours_data = (
+            orders_by_hour
+            .filter(hour__gte=start_hour, hour__lt=end_hour)
+            .values('hour')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+
+        peak_hours_list = []
+        for hour_data in peak_hours_data:
+            current_hour = hour_data['hour']
+            next_hour = current_hour + 1 if current_hour < 23 else 0  # 24th hour wraps back to 0 #todo: ajab shizi shod :-)
+
+            order_count = hour_data['order_count']
+            peak_hours_list.append({
+                'hour_range': f"{current_hour} - {next_hour}",
+                'order_count': order_count
+            })
+        if peak_hours_list:
+            return list(peak_hours_list[0].values())[0]
+        else:
+            return 'No peak hours found'

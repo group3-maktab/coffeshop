@@ -101,7 +101,9 @@
                       </a>
                   </td>
                   <td>
-                      <span class="fw-normal">{{ order.customer_phone }}</span>
+                      <a href="{% url 'order:phone-orders' order.customer_phone %}" class="fw-bold text-sm-start">
+                          {{ order.customer_phone }}
+                      </a>
                   </td>
                   <td><span class="fw-normal">{{ order.table.number}}</span></td>
                     {% if order.status == "F" %}

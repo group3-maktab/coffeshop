@@ -29,8 +29,10 @@ class DashboardView(View):
             days = 7
         elif selected_range == 'day':
             days = 1
-        else:
+        elif selected_range == 'month':
             days = 30
+        elif selected_range == 'total':
+            days = 99999
 
         r = Reporting(days)
         total_sales: Decimal = r.total_sales()
@@ -41,6 +43,7 @@ class DashboardView(View):
             'percentage_difference': -percentage_difference,
             'favorite_food': r.favorite_foods(),
             'favorite_table': r.favorite_tables(),
+            'peak_hour': r.peak_hours(),
         }
 
         return render(request, self.template_name, context=context)
