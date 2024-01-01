@@ -111,29 +111,38 @@ class BaseOrderListView(ListView):
     def get_queryset(self):
         raise NotImplementedError("Subclasses must implement get_queryset method.")
 
+
 class OrderWaitingListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='W')
+
 
 class OrderFinishedListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='F')
 
+
 class OrderPreparationListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='P')
+
 
 class OrderTransmissionListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='T')
 
 
+class OrderCanceldListView(BaseOrderListView):
+    def get_queryset(self):
+        return Order.objects.filter(status='C')
+
+
 class ChangeStatusOrderView(View):
-    def post(self,request, pk):
-        new_status:str = request.POST.get('new_status')
+    def post(self, request, pk):
+        new_status: str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
         if new_status == 'F' and order.table.status != "T":
-            table = Table.objects.get(pk = order.table.pk)
+            table = Table.objects.get(pk=order.table.pk)
             table.status = 'E'
             table.save()
         order.status = new_status
@@ -145,6 +154,7 @@ class ChangeStatusOrderView(View):
 class ListOrderPhoneView(View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
+
     def get(self, request, phone):
         phone = str(phone)
         orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')

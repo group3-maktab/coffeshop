@@ -21,6 +21,20 @@
           </nav>
           <h2 class="h4">All Orders</h2>
       </div>
+  <div class="btn-toolbar mb-2 mb-md-0">
+          <a href="{% url 'order:list-order-w' %}" class="btn btn-sm btn-info d-inline-flex align-items-center">
+              Waiting
+          </a>
+          <div class="btn-group ms-2 ms-lg-3">
+              <a href="{% url 'order:list-order-f' %}" type="button" class="btn btn-sm btn-success text-white">Finished</a>
+          </div>
+      <div class="btn-group ms-2 ms-lg-3">
+              <a href="{% url 'order:list-order-t' %}" type="button" class="btn btn-sm btn-gray-700 text-white">Transmission</a>
+          </div>
+      <div class="btn-group ms-2 ms-lg-3">
+              <a href="{% url 'order:list-order-p' %}" type="button" class="btn btn-sm btn-tertiary text-white">Preparation</a>
+          </div>
+      </div>
       
   </div>
     <div class="mx-7">
