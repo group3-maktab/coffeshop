@@ -231,19 +231,19 @@
                 </a>
               </li>
               <li class="nav-item {% if 'transactions' in segment %} active {% endif %}">
-                <a href="/transactions.html" class="nav-link">
+                <a href="{% url 'order:list-order-w' %}" class="nav-link">
                   <span class="sidebar-icon">
                     <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
                   </span>
-                  <span class="sidebar-text">Transactions</span>
+                  <span class="sidebar-text">Orders</span>
                 </a>
               </li>
               <li class="nav-item {% if 'settings' in segment %} active {% endif %}">
-                <a href="/settings.html" class="nav-link">
+                <a href="{% url 'tables:list-table' %}" class="nav-link">
                   <span class="sidebar-icon">
                     <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
                   </span>
-                  <span class="sidebar-text">Settings</span>
+                  <span class="sidebar-text">.......</span>
                 </a>
               </li>
               <li class="nav-item {% if 'tables-bootstrap-' in segment %} active {% endif %}">
@@ -264,8 +264,13 @@
                   role="list" id="submenu-app" aria-expanded="false">
                   <ul class="flex-column nav">
                     <li class="nav-item {% if 'bootstrap-tables' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/tables-bootstrap-tables.html">
-                        <span class="sidebar-text">Bootstrap Tables</span>
+                      <a class="nav-link" href="{% url 'tables:list-table' %}">
+                        <span class="sidebar-text">Table List</span>
+                      </a>
+                    </li>
+                      <li class="nav-item {% if 'bootstrap-tables' in segment %} active {% endif %}">
+                      <a class="nav-link" href="{% url 'tables:list-reservation' %}">
+                        <span class="sidebar-text">Reservations</span>
                       </a>
                     </li>
                   </ul>
@@ -277,9 +282,12 @@
                   data-bs-toggle="collapse" data-bs-target="#submenu-pages">
                   <span>
                     <span class="sidebar-icon">
-                      <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"></path></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon icon-xs me-2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+</svg>
                     </span> 
-                    <span class="sidebar-text">Page examples</span>
+                    <span class="sidebar-text">Foods</span>
                   </span>
                   <span class="link-arrow">
                     <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
@@ -289,38 +297,22 @@
                   id="submenu-pages" aria-expanded="false">
                   <ul class="flex-column nav">
                     <li class="nav-item">
-                      <a class="nav-link" href="/page-sign-in.html">
-                        <span class="sidebar-text">Sign In</span>
+                      <a class="nav-link" href="{% url 'foods:create-food' %}">
+                        <span class="sidebar-text">Create Food</span>
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/page-sign-up.html">
-                        <span class="sidebar-text">Sign Up</span>
+                      <a class="nav-link" href="{% url 'foods:create-category' %}">
+                        <span class="sidebar-text">Create Category</span>
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/page-forgot-password.html">
-                        <span class="sidebar-text">Forgot password</span>
+                      <a class="nav-link" href="{% url 'foods:list-food' %}">
+                        <span class="sidebar-text">Foods List</span>
                       </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/page-reset-password.html">
-                        <span class="sidebar-text">Reset password</span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/page-lock.html">
-                        <span class="sidebar-text">Lock</span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/page-404.html">
-                        <span class="sidebar-text">404 Not Found</span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/page-500.html">
-                        <span class="sidebar-text">500 Not Found</span>
+                    </li> <li class="nav-item">
+                      <a class="nav-link" href="{% url 'tags:tag' %}">
+                        <span class="sidebar-text">Tags List</span>
                       </a>
                     </li>
                   </ul>
@@ -332,9 +324,11 @@
                   data-bs-toggle="collapse" data-bs-target="#submenu-components">
                   <span>
                     <span class="sidebar-icon">
-                      <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon icon-xs me-2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+</svg>
                     </span> 
-                    <span class="sidebar-text">Components</span>
+                    <span class="sidebar-text">Blog</span>
                   </span>
                   <span class="link-arrow">
                     <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
@@ -344,30 +338,16 @@
                   id="submenu-components" aria-expanded="false">
                   <ul class="flex-column nav">
                     <li class="nav-item {% if 'components-buttons' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/components-buttons.html">
-                        <span class="sidebar-text">Buttons</span>
+                      <a class="nav-link" href="{% url 'blog:list-blog' %}">
+                        <span class="sidebar-text">Blogs List</span>
                       </a>
                     </li>
                     <li class="nav-item {% if 'components-notifications' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/components-notifications.html">
-                        <span class="sidebar-text">Notifications</span>
+                      <a class="nav-link" href="">
+                        <span class="sidebar-text">Reviews</span>
                       </a>
                     </li>
-                    <li class="nav-item {% if 'components-forms' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/components-forms.html">
-                        <span class="sidebar-text">Forms</span>
-                      </a>
-                    </li>
-                    <li class="nav-item {% if 'components-modals' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/components-modals.html">
-                        <span class="sidebar-text">Modals</span>
-                      </a>
-                    </li>
-                    <li class="nav-item {% if 'components-typography' in segment %} active {% endif %}">
-                      <a class="nav-link" href="/components-typography.html">
-                        <span class="sidebar-text">Typography</span>
-                      </a>
-                    </li>
+                    
                   </ul>
                 </div>
               </li>
