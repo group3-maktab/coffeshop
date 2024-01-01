@@ -35,3 +35,17 @@ class OrderCreateForm(forms.ModelForm):
         widgets = {
             'table': forms.Select(attrs={'class': 'btn btn-info'},),
         }
+
+
+class GetPhoneOrder(forms.Form):
+    customer_phone = forms.CharField(
+        label='Phone Number',
+        widget=forms.TextInput(attrs={'id': 'phone_number', 'class': 'form-control', 'placeholder': 'Phone'}),
+        validators=[
+            RegexValidator(
+                regex=r'^09\d{9}$',
+                message='Phone number must be in the format 09XXXXXXXXX.',
+                code='invalid_phone_number'
+            )
+        ]
+    )

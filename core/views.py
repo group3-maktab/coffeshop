@@ -44,6 +44,7 @@ class DashboardView(View):
             'favorite_food': r.favorite_foods(),
             'favorite_table': r.favorite_tables(),
             'peak_hour': r.peak_hours(),
+            'best_cutomer': r.best_cutomer(),
         }
 
         return render(request, self.template_name, context=context)

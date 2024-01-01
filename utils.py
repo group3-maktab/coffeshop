@@ -498,4 +498,21 @@ class Reporting:
         if peak_hours_list:
             return list(peak_hours_list[0].values())[0]
         else:
-            return 'No peak hours found'
+            return 'No hours found'
+
+
+    def best_cutomer(self):
+        orders = Order.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
+        best_customer_data =(
+            orders
+            .values('customer_phone')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+        if best_customer_data:
+            return list(best_customer_data[0].values())[0]
+        else:
+            return 'No user found'

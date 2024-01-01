@@ -8,7 +8,7 @@ from django.views.generic.detail import SingleObjectMixin
 from foodmenu.models import Food
 from tables.models import Table
 from utils import Cart, staff_or_superuser_required
-from .forms import CartAddProductForm, OrderCreateForm
+from .forms import CartAddProductForm, OrderCreateForm, GetPhoneOrder
 from order.models import OrderItem, Order
 
 
@@ -177,3 +177,18 @@ class OrderDetailView(SingleObjectMixin, View):
     def get(self, request, pk):
         order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
         return render(request, self.template_name, {'order': order})
+
+
+class GetPhoneOrderView(View):
+    template_name = 'Order_GetPhoneOrder.html'
+    form = GetPhoneOrder()
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form})
+
+    def post(self, request):
+        form = GetPhoneOrder(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['customer_phone']
+            return redirect('order:phone-orders', phone=phone_number)
+        return render(request, self.template_name, {'form': form})
