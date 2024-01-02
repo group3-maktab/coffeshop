@@ -6,7 +6,6 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.detail import SingleObjectMixin
-
 from foodmenu.models import Food
 from tables.models import Table
 from utils import Cart, staff_or_superuser_required, StaffSuperuserRequiredMixin
@@ -62,7 +61,12 @@ class MakeOrderView(View):
     def get(self, request):
         cart = Cart(request)
         form = OrderCreateForm()
-        return render(request, self.template_name, {'cart': cart, 'form': form})
+        if len(cart) > 0:
+            return render(request, self.template_name, {'cart': cart, 'form': form})
+        else:
+            messages.error(request, 'You cannot Checkout with empty cart')
+            return redirect('order:detail-cart')
+
 
     @staff_or_superuser_required
     def post(self, request):
