@@ -72,10 +72,10 @@ def log_create_update(sender, instance, created, **kwargs):
     table_name = sender._meta.db_table
     row_id = instance.id
     """                                                                                               """"""
-        |                                                                                                   |        
-        |        https://stackoverflow.com/questions/4721771/get-current-user-log-in-signal-in-django       |
-        |                                                                                                   |
-        """                                                                                               """"""
+    |                                                                                                   |        
+    |        https://stackoverflow.com/questions/4721771/get-current-user-log-in-signal-in-django       |
+    |                                                                                                   |
+    """                                                                                               """"""
     # refrence is up here
     for frame_record in inspect.stack():
         if frame_record[3] == 'get_response':

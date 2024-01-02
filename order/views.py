@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Sum, F
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
@@ -7,7 +8,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from foodmenu.models import Food
 from tables.models import Table
-from utils import Cart, staff_or_superuser_required
+from utils import Cart, staff_or_superuser_required, StaffSuperuserRequiredMixin
 from .forms import CartAddProductForm, OrderCreateForm, GetPhoneOrder
 from order.models import OrderItem, Order
 
@@ -101,7 +102,7 @@ class ChangeOrderView(View):
         return redirect('order:detail-cart')
 
 
-class BaseOrderListView(ListView):
+class BaseOrderListView(StaffSuperuserRequiredMixin, ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
@@ -137,7 +138,7 @@ class OrderCanceldListView(BaseOrderListView):
         return Order.objects.filter(status='C')
 
 
-class ChangeStatusOrderView(View):
+class ChangeStatusOrderView(StaffSuperuserRequiredMixin, View):
     def post(self, request, pk):
         new_status: str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
@@ -151,7 +152,7 @@ class ChangeStatusOrderView(View):
         return redirect(f'order:list-order-{new_status.lower()}')
 
 
-class ListOrderPhoneView(View):
+class ListOrderPhoneView(StaffSuperuserRequiredMixin, View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
 
@@ -178,8 +179,10 @@ class OrderDetailView(SingleObjectMixin, View):
         order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
         return render(request, self.template_name, {'order': order})
 
+    # def dispatch(self, request, *args, **kwargs):#todo:
 
-class GetPhoneOrderView(View):
+
+class GetPhoneOrderView(StaffSuperuserRequiredMixin, View):
     template_name = 'Order_GetPhoneOrder.html'
     form = GetPhoneOrder()
 
@@ -192,3 +195,22 @@ class GetPhoneOrderView(View):
             phone_number = form.cleaned_data['customer_phone']
             return redirect('order:phone-orders', phone=phone_number)
         return render(request, self.template_name, {'form': form})
+
+
+class CustomerOrdersView(StaffSuperuserRequiredMixin, View):
+    template_name = 'Order_ListCustomer.html'
+    def get(self, request):
+        orders = Order.objects.filter(
+            status='F'
+        )
+        customers_data = (
+            orders
+            .values('customer_phone')
+            .annotate(count=Count('id'),
+                      total = Sum(
+                    F('items__price') * F('items__quantity'),
+            )
+                      )
+            .order_by('-total')
+        )
+        return render(request, self.template_name, {'customer_orders': customers_data})
