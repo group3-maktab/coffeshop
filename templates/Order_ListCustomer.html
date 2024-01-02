@@ -94,16 +94,16 @@
       </table>
 <div>
     <span>
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% if customer_orders.has_previous %}
+            <a href="?page={{ customer_orders.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
     <span>
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        Page {{ customer_orders.number }} of {{ customer_orders.paginator.num_pages }}.
     </span>
     <span>
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% if customer_orders.has_next %}
+            <a href="?page={{ customer_orders.next_page_number }}">Next</a>
         {% endif %}
     </span>
 </div>

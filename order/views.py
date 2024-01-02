@@ -199,6 +199,7 @@ class GetPhoneOrderView(StaffSuperuserRequiredMixin, View):
 
 class CustomerOrdersView(StaffSuperuserRequiredMixin, View):
     template_name = 'Order_ListCustomer.html'
+    paginate_by = 10
     def get(self, request):
         orders = Order.objects.filter(
             status='F'
@@ -213,4 +214,14 @@ class CustomerOrdersView(StaffSuperuserRequiredMixin, View):
                       )
             .order_by('-total')
         )
+
+        paginator = Paginator(customers_data, self.paginate_by)
+        page = request.GET.get('page')
+
+        try:
+            customers_data = paginator.page(page)
+        except PageNotAnInteger:
+            customers_data = paginator.page(1)
+        except EmptyPage:
+            customers_data = paginator.page(paginator.num_pages)
         return render(request, self.template_name, {'customer_orders': customers_data})
