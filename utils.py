@@ -1,12 +1,13 @@
+from collections import namedtuple
+from datetime import timedelta
 from functools import wraps
-
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
+from django.db.models.functions import ExtractHour, Extract ,ExtractWeekDay
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
-from django.db.models import Q, Sum, F
-
+from django.db.models import Q, Sum, F, ExpressionWrapper, DecimalField
 from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
@@ -137,9 +138,11 @@ def is_parent(category):
         parent=category).exists()
     return subcategory_query or category.parent is None
 
+
 class StaffSuperuserRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff or self.request.user.is_superuser
+
 
 def staff_or_superuser_required(view_func):
     """
@@ -275,7 +278,7 @@ class Cart:
         """
         Initialize the cart.
         """
-        self.session = request.session  #todo expire at 30 M
+        self.session = request.session  # todo expire at 30 M
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             # save an empty cart in the session
@@ -341,17 +344,16 @@ class Cart:
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
-    def edit_orders(self,  order_id):
+    def edit_orders(self, order_id):
         self.cart.clear()
         products = OrderItem.objects.filter(order_id=order_id)
         for product in products:
             self.add(product=product.product,
                      quantity=product.quantity,
                      override_quantity=True)
-        order = Order.objects.get(pk= order_id)
+        order = Order.objects.get(pk=order_id)
         order.status = "C"
         order.save()
-
 
 
 class Reporting:
@@ -361,17 +363,37 @@ class Reporting:
     favorite foods           *
     generate Sales Invoice
     """
+
     def __init__(self, days):
         self.days = days
 
     def total_sales(self):
+        """
+        By using ExpressionWrapper in combination with annotate or other queryset methods,
+         you can include more complex database expressions in your queries,
+          providing flexibility and allowing you to perform calculations directly at the database level.
+        """
+        # def total_sales(self):
+        #     orders = Order.objects.filter(
+        #         created_at__gte=timezone.now()
+        #                         - timezone.timedelta(days=self.days),status__in=["F"])
+        #
+        #     total_sales = orders.aggregate(
+        #         total_sales=Sum(F('items__price_after_off') * F('items__quantity'))
+        #     )
+        #     return total_sales['total_sales']
+
         orders = Order.objects.filter(
-            created_at__gte=timezone.now()
-                            - timezone.timedelta(days=self.days))
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
 
         total_sales = orders.aggregate(
-            total_sales=Sum(F('items__price') * F('items__quantity'))
+            total_sales=Sum(
+                    F('items__price') * F('items__quantity'),
+            )
         )
+
         return total_sales['total_sales']
 
     def favorite_tables(self):
@@ -380,24 +402,140 @@ class Reporting:
             .annotate(used_seats=Count('orders__id', distinct=True, filter=(
                     Q(orders__status='F') &
                     Q(orders__created_at__gte=timezone.now()
-                                             - timezone.timedelta(days=self.days))
+                                              - timezone.timedelta(days=self.days))
             )))
             .order_by('-used_seats')
         )
         for table in most_used_tables:
             yield table
+
     def favorite_foods(self):
-        most_used_foods = (Food.objects.annotate(
-            used_foods=Sum('orderitem__quantity', distinct=True, filter=(
-                Q(orderitem__created_at__gte=timezone.now()
-                  - timezone.timedelta(days=self.days)
-                  )
-            ))).order_by('-used_foods')[0:10]
+        """
+        collections.namedtuple is a factory function in Python's collections module that creates
+         a new class with named fields. It returns a new class type that can be used to create tuples
+          with named fields.
+        used namedtuple to create a simple data structure (FoodData) to represent
+         the data for each food item with named fields. This makes it easier to manage and access
+          the attributes in the template.
+        """
+        FoodData = namedtuple('FoodData', ['id', 'name', 'total_sales', 'counts', 'category'])
+
+        most_used_foods = (
+            Food.objects
+            .filter(
+                orderitem__order__created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                orderitem__order__status='F'
+            )
+            .annotate(
+                used_foods=Sum('orderitem__quantity', distinct=True),
+                total_sales=Sum(
+                    F('orderitem__quantity') * F('orderitem__quantity'),
+                )
+            )
+            .order_by('-used_foods')
         )
+
         for food in most_used_foods:
-            yield food
+            if food.used_foods > 0:
+                food_data = FoodData(
+                    id=food.pk,
+                    name=food.name,
+                    total_sales=food.total_sales,
+                    counts=food.used_foods,
+                    category=food.category,
+                )
+                yield food_data
+
+    def get_percentage_difference(self):
+        """
+        Calculate the percentage difference between the current time frame and the previous one.
+        For instance, if self.days is 2, it will compare the last 2 days with the 2 days before that.
+        """
+        current_sales = self.total_sales()
+        previous_days_sales = Reporting(self.days * 2).total_sales()
+        if previous_days_sales:
+            percentage_difference = ((current_sales - previous_days_sales) / previous_days_sales) * 100
+        else:
+            percentage_difference = 0
+
+        return percentage_difference
+
+    def peak_hours(self): #todo: Dahanam sevice shod :-|
+        start_hour = 0
+        end_hour = 24
+
+        orders = Order.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
+
+        orders_by_hour = orders.annotate(hour=ExtractHour('created_at'))
+
+        peak_hours_data = (
+            orders_by_hour
+            .filter(hour__gte=start_hour, hour__lt=end_hour)
+            .values('hour')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+
+        peak_hours_list = []
+        for hour_data in peak_hours_data:
+            current_hour = hour_data['hour']
+            next_hour = current_hour + 1 if current_hour < 23 else 0  # 24th hour wraps back to 0 #todo: ajab shizi shod :-)
+
+            order_count = hour_data['order_count']
+            peak_hours_list.append({
+                'hour_range': f"{current_hour} - {next_hour}",
+                'order_count': order_count
+            })
+        if peak_hours_list:
+            return peak_hours_list, list(peak_hours_list[0].values())[0]
+        else: return 'No hour found','No hour found'
+
+    def peak_day_of_week(self):
+
+        orders = Order.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
+
+        orders_by_day = orders.annotate(day_of_week=ExtractWeekDay('created_at'))
+
+        peak_days_data = (
+            orders_by_day
+            .values('day_of_week')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+
+        peak_days_list = []
+        for day_data in peak_days_data:
+            day_of_week = day_data['day_of_week']
+            order_count = day_data['order_count']
+            peak_days_list.append({
+                'day_of_week': day_of_week,
+                'order_count': order_count
+            })
+        if peak_days_list:
+            return peak_days_list
+        else:
+            return None
 
 
 
-
-
+    def best_cutomer(self):
+        orders = Order.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            status='F'
+        )
+        best_customer_data =(
+            orders
+            .values('customer_phone')
+            .annotate(order_count=Count('id'))
+            .order_by('-order_count')
+        )
+        if best_customer_data:
+            return list(best_customer_data[0].values())[0]
+        else:
+            return 'No user found'

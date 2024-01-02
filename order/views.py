@@ -8,7 +8,7 @@ from django.views.generic.detail import SingleObjectMixin
 from foodmenu.models import Food
 from tables.models import Table
 from utils import Cart, staff_or_superuser_required
-from .forms import CartAddProductForm, OrderCreateForm
+from .forms import CartAddProductForm, OrderCreateForm, GetPhoneOrder
 from order.models import OrderItem, Order
 
 
@@ -111,29 +111,38 @@ class BaseOrderListView(ListView):
     def get_queryset(self):
         raise NotImplementedError("Subclasses must implement get_queryset method.")
 
+
 class OrderWaitingListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='W')
+
 
 class OrderFinishedListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='F')
 
+
 class OrderPreparationListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='P')
+
 
 class OrderTransmissionListView(BaseOrderListView):
     def get_queryset(self):
         return Order.objects.filter(status='T')
 
 
+class OrderCanceldListView(BaseOrderListView):
+    def get_queryset(self):
+        return Order.objects.filter(status='C')
+
+
 class ChangeStatusOrderView(View):
-    def post(self,request, pk):
-        new_status:str = request.POST.get('new_status')
+    def post(self, request, pk):
+        new_status: str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
         if new_status == 'F' and order.table.status != "T":
-            table = Table.objects.get(pk = order.table.pk)
+            table = Table.objects.get(pk=order.table.pk)
             table.status = 'E'
             table.save()
         order.status = new_status
@@ -145,6 +154,7 @@ class ChangeStatusOrderView(View):
 class ListOrderPhoneView(View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
+
     def get(self, request, phone):
         phone = str(phone)
         orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
@@ -167,3 +177,18 @@ class OrderDetailView(SingleObjectMixin, View):
     def get(self, request, pk):
         order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
         return render(request, self.template_name, {'order': order})
+
+
+class GetPhoneOrderView(View):
+    template_name = 'Order_GetPhoneOrder.html'
+    form = GetPhoneOrder()
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form})
+
+    def post(self, request):
+        form = GetPhoneOrder(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['customer_phone']
+            return redirect('order:phone-orders', phone=phone_number)
+        return render(request, self.template_name, {'form': form})
