@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
-    
 
-  
+
+
     <h1>Menu</h1>
 
     <div class="mb-4">
-        <a href="{% url 'foods:create-food' %}"><button class="bg-green-500 text-white px-4 py-2 rounded">Add Food</button></a>
-        <a href="{% url 'foods:create-category' %}"><button class="bg-green-500 text-white px-4 py-2 rounded">Add Category</button></a>
+        <a href="{% url 'foods:create-food' %}">
+            <button class="bg-green-500 text-white px-4 py-2 rounded">Add Food</button>
+        </a>
+        <a href="{% url 'foods:create-category' %}">
+            <button class="bg-green-500 text-white px-4 py-2 rounded">Add Category</button>
+        </a>
     </div>
 
     {% for category in menu_data %}
@@ -21,9 +25,9 @@
             <ul>
                 {% for food in category.foods %}
                     <li class="bg-rose-600">
-                        {{ food.name }} - 
+                        {{ food.name }} -
                         {% if food.off_percent %}
-                            <span class="text-gray-600">Original Price: ${{ food.original_price }}</span> - 
+                            <span class="text-gray-600">Original Price: ${{ food.original_price }}</span> -
                             <span class="text-white">Off Percent: {{ food.off_percent }}%</span> -
                             <span class="text-green-500">Discounted Price: ${{ food.price_after_off }}</span>
                         {% else %}
@@ -50,10 +54,10 @@
                 <ul>
                     {% for food in subcategory.foods %}
                         <li class="bg-rose-600">
-                            {{ food.name }} - 
+                            {{ food.name }} -
                             {% if food.off_percent %}
-                                <span class="text-gray-700">Original Price: ${{ food.original_price }}</span> - 
-                                <span class="text-white">Off Percent: {{ food.off_percent }}%</span> - 
+                                <span class="text-gray-700">Original Price: ${{ food.original_price }}</span> -
+                                <span class="text-white">Off Percent: {{ food.off_percent }}%</span> -
                                 <span class="text-green-500">Discounted Price: ${{ food.price_after_off }}</span>
                             {% else %}
                                 ${{ food.original_price }}

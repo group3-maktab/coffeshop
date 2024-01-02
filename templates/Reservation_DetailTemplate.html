@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 
@@ -11,76 +10,81 @@
 
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
-      <div class="d-block mb-4 mb-md-0">
-          <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-              <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                  <li class="breadcrumb-item">
-                      <a href="{% url 'core:home' %}">
-                          <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                      </a>
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">Tables</li>
-                  <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'tables:list-reservation' %}">Reservation</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ pk }}</li>
-              </ol>
-          </nav>
-          <h2 class="h4">Reservation Detail</h2>
-      </div>
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'core:home' %}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Tables</li>
+                    <li class="breadcrumb-item active" aria-current="page"><a
+                            href="{% url 'tables:list-reservation' %}">Reservation</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ pk }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">Reservation Detail</h2>
+        </div>
 
-  </div>
-    <div class="row justify-content-center form-bg-image w-100" >
-                    <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="bg-white shadow border-0 rounded border-light p-10 p-lg-5 w-100 mx-10">
-                            <div class="text-center text-md-center mb-4 mt-md-0">
-                                <h1 class="mb-0 h3">
-                                    {{ pk }}<br>
-                                </h1>
-                                <br />
-                                <p>
-                                    {% if messages %}
-                                        <p class="text-danger">
-                                        {% for message in messages %}
-                                            {{ message }}
-                                        {% endfor %}</p>
-                                    {% endif %}
-                                </p>
-                            </div>
-                           <p><b>Phone:</b> {{ phone_number }}<br></p>
-                           <p><b>Datetime:</b> {{ datetime }}<br></p>
-                           <p><b>Persons:</b> {{ number_of_persons }}<br></p>
-                           <p><b>Table:</b> {{ table }}<br></p>
-                           <p><b>Status:</b> {{ status }}<br></p>
-                             <form method="post" class="flex-column" action="{% url 'tables:list-reservation' %}">
-            {% csrf_token %}
-            <input type="hidden" name="reservation_id" value="{{ pk }}">
-
-            <!-- Select table -->
-            <label for="table_id">Select Table:</label>
-            <select name="table_id" class="btn btn-tertiary mx-3 my-2" id="table_id">
-                <option value="Null">None</option>
-                {% for table in tables %}
-                    <option value="{{ table.id }}">
-                        {{ table.number }} - {{ table.status }}
-                    </option>
-                {% endfor %}
-            </select>
-            <br>
-
-            <!-- Select new status -->
-            <label for="new_status">Select New Status:</label>
-            <select name="new_status" class="btn btn-secondary mx-3 rounded" id="new_status">
-                <option value="A">Accept</option>
-                <option value="D">Denied</option>
-                <option value="O" selected>On Process</option>
-            </select>
-            <br>
-            <br>
-            <button type="submit" class="btn btn-primary px-5" name="action" value="set">Set</button>
-        </form>
-                    </div>
-                    </div>
-
+    </div>
+    <div class="row justify-content-center form-bg-image w-100">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <div class="bg-white shadow border-0 rounded border-light p-10 p-lg-5 w-100 mx-10">
+                <div class="text-center text-md-center mb-4 mt-md-0">
+                    <h1 class="mb-0 h3">
+                        {{ pk }}<br>
+                    </h1>
+                    <br/>
+                    <p>
+                        {% if messages %}
+                            <p class="text-danger">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}</p>
+                        {% endif %}
+                    </p>
                 </div>
+                <p><b>Phone:</b> {{ phone_number }}<br></p>
+                <p><b>Datetime:</b> {{ datetime }}<br></p>
+                <p><b>Persons:</b> {{ number_of_persons }}<br></p>
+                <p><b>Table:</b> {{ table }}<br></p>
+                <p><b>Status:</b> {{ status }}<br></p>
+                <form method="post" class="flex-column" action="{% url 'tables:list-reservation' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="reservation_id" value="{{ pk }}">
+
+                    <!-- Select table -->
+                    <label for="table_id">Select Table:</label>
+                    <select name="table_id" class="btn btn-tertiary mx-3 my-2" id="table_id">
+                        <option value="Null">None</option>
+                        {% for table in tables %}
+                            <option value="{{ table.id }}">
+                                {{ table.number }} - {{ table.status }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <br>
+
+                    <!-- Select new status -->
+                    <label for="new_status">Select New Status:</label>
+                    <select name="new_status" class="btn btn-secondary mx-3 rounded" id="new_status">
+                        <option value="A">Accept</option>
+                        <option value="D">Denied</option>
+                        <option value="O" selected>On Process</option>
+                    </select>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary px-5" name="action" value="set">Set</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
 
 
 
