@@ -27,8 +27,18 @@
             </nav>
             <h2 class="h4">Orders</h2>
         </div>
+      <div class="btn-toolbar mb-2 mb-md-0">
 
+            <div class="btn-group ms-2 ms-lg-3">
+                <form method="get" action="">
+                    <input type="hidden" name="export_csv" value="1">
+                    <button type="submit" class="btn btn-outline-gray-800">Export</button>
+                </form>
+            </div>
+        </div>
     </div>
+    </div>
+    
     <div class="mx-5">
         {% if messages %}
             <p class="text-danger">

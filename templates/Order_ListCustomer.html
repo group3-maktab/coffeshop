@@ -27,7 +27,12 @@
             </nav>
             <h2 class="h4">All Customer</h2>
         </div>
-
+    <div class="btn-group ms-2 ms-lg-3">
+                <form method="get" action="">
+                    <input type="hidden" name="export_csv" value="1">
+                    <button type="submit" class="btn btn-outline-gray-800">Export</button>
+                </form>
+            </div>
     </div>
     <div class="mx-7">
         {% if messages %}

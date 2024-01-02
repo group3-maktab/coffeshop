@@ -38,12 +38,15 @@
             <div class="btn-group ms-2 ms-lg-3">
                 <a href="{% url 'order:list-order-p' %}" type="button" class="btn btn-sm btn-tertiary text-white">Preparation</a>
             </div>
-            <div class="btn-group ms-2 ms-lg-3">
+            <div class="btn-group ms-2 me-6 ms-lg-3">
                 <a href="{% url 'order:list-order-c' %}" type="button"
                    class="btn btn-sm btn-danger text-white">Canceled</a>
             </div>
+            <form method="get" action="">
+                <input type="hidden" name="export_csv" value="1">
+                <button type="submit" class="btn btn-outline-gray-800">Export</button>
+            </form>
         </div>
-
     </div>
     <div class="mx-7">
         {% if messages %}
@@ -198,7 +201,6 @@
                         </div>
                     </td>
                 </tr>
-
             {% endfor %}
             </tbody>
         </table>
@@ -217,7 +219,6 @@
         {% endif %}
     </span>
         </div>
-
     </div>
 
 {% endblock content %}

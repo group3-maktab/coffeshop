@@ -1,3 +1,5 @@
+import csv
+from abc import ABC,abstractmethod
 from collections import namedtuple
 from datetime import timedelta
 from functools import wraps
@@ -8,6 +10,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
 from django.db.models import Q, Sum, F, ExpressionWrapper, DecimalField
+from django.http import HttpResponse
+
 from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
@@ -566,3 +570,31 @@ class Reporting:
                 )
                 yield category_data
 
+
+class CSVExportMixin(StaffSuperuserRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if 'export_csv' in request.GET:
+            queryset = self.get_csv_export_queryset()
+            filename = self.get_csv_export_filename()
+            return self.export_csv(queryset, filename)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_csv_export_queryset(self):
+        return None
+
+    def get_csv_export_filename(self):
+        return 'exported_data'
+
+    def export_csv(self, queryset, filename):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}.csv"'
+
+        writer = csv.writer(response)
+        headers = [field.name for field in queryset.model._meta.fields]
+        writer.writerow(headers)
+
+        for obj in queryset:
+            writer.writerow([str(getattr(obj, field)) for field in headers])
+
+        return response

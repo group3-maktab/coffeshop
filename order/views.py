@@ -1,14 +1,17 @@
+import csv
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum, F
+from django.http import HttpResponse
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.detail import SingleObjectMixin
 from foodmenu.models import Food
 from tables.models import Table
-from utils import Cart, staff_or_superuser_required, StaffSuperuserRequiredMixin
+from utils import Cart, staff_or_superuser_required, StaffSuperuserRequiredMixin, CSVExportMixin
 from .forms import CartAddProductForm, OrderCreateForm, GetPhoneOrder
 from order.models import OrderItem, Order
 
@@ -107,7 +110,7 @@ class ChangeOrderView(View):
         return redirect('order:detail-cart')
 
 
-class BaseOrderListView(StaffSuperuserRequiredMixin, ListView):
+class BaseOrderListView(CSVExportMixin ,StaffSuperuserRequiredMixin, ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
@@ -116,6 +119,12 @@ class BaseOrderListView(StaffSuperuserRequiredMixin, ListView):
 
     def get_queryset(self):
         raise NotImplementedError("Subclasses must implement get_queryset method.")
+
+    def get_csv_export_queryset(self):
+        return self.get_queryset()
+
+    def get_csv_export_filename(self):
+        return 'orders_export'
 
 
 class OrderWaitingListView(BaseOrderListView):
@@ -157,9 +166,19 @@ class ChangeStatusOrderView(StaffSuperuserRequiredMixin, View):
         return redirect(f'order:list-order-{new_status.lower()}')
 
 
-class ListOrderPhoneView(LoginRequiredMixin, View):
+class ListOrderPhoneView(LoginRequiredMixin, CSVExportMixin, View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
+
+    def get_csv_export_queryset(self):
+        if self.request.user.is_superuser or self.request.user.is_staff:
+            orders = Order.objects.filter(customer_phone=self.kwargs['phone']).select_related('table').order_by('-created_at')
+        else:
+            orders = Order.objects.filter(customer_phone=self.request.user.phone_number).select_related('table').order_by('-created_at')
+        return orders
+
+    def get_csv_export_filename(self):
+        return 'orders_export'
 
     def get(self, request, phone):
         phone = str(phone)
@@ -169,9 +188,7 @@ class ListOrderPhoneView(LoginRequiredMixin, View):
         else:
             if not str(request.user.phone_number) == phone:
                 messages.error(request, "You don't have permission to access others order.")
-                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
-            else:
-                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
+            orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
 
         paginator = Paginator(orders, self.paginate_by)
         page = request.GET.get('page')
@@ -214,9 +231,29 @@ class GetPhoneOrderView(StaffSuperuserRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
-class CustomerOrdersView(StaffSuperuserRequiredMixin, View):
+class CustomerOrdersView(CSVExportMixin, StaffSuperuserRequiredMixin, View):
     template_name = 'Order_ListCustomer.html'
     paginate_by = 10
+
+    def get_csv_export_queryset(self):
+        orders = Order.objects.filter(
+            status='F'
+        )
+        customers_data = (
+            orders
+            .values('customer_phone')
+            .annotate(count=Count('id'),
+                      total=Sum(
+                          F('items__price') * F('items__quantity'),
+                      )
+                      )
+            .order_by('-total')
+        )
+        return customers_data
+
+    def get_csv_export_filename(self):
+        return 'orders_export'
+
     def get(self, request):
         orders = Order.objects.filter(
             status='F'
