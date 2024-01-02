@@ -102,11 +102,11 @@ class UpdateBlogView(LoginRequiredMixin, View):
             thumbnail_url = None
 
             # Extract content between <p> tags
-            start_tag = '<p>'
+            start_tag = '<p id="content">'
             end_tag = '</p>'
 
             start_index = contents.find(start_tag)
-            end_index = contents.rfind(end_tag)
+            end_index = contents.find(end_tag)
 
             if start_index != -1 and end_index != -1:
                 content = contents[start_index + len(start_tag):end_index].strip()
@@ -121,9 +121,9 @@ class UpdateBlogView(LoginRequiredMixin, View):
                 title = contents[title_index_start + len(title_start):title_index_end].strip()
 
             thumbnail_start = '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="'
-            thumbnail_end = f' "alt="{title} Thumbnail">'
+            thumbnail_end = f'"alt="'
             thumbnail_index_start = contents.find(thumbnail_start)
-            thumbnail_index_end = contents.rfind(thumbnail_end)
+            thumbnail_index_end = contents.find(thumbnail_end)
 
             if thumbnail_index_start != -1 and thumbnail_index_end != -1:
                 thumbnail_url = contents[thumbnail_index_start + len(thumbnail_start):thumbnail_index_end].strip()
@@ -131,6 +131,7 @@ class UpdateBlogView(LoginRequiredMixin, View):
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
 
         thumbnail_path = f'blog{thumbnail_url}'
+        print(thumbnail_path)
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
 
@@ -164,7 +165,7 @@ class DeleteBlogView(LoginRequiredMixin, View):
             lines = file.readlines()
             thumbnail_url = None
             for i, data in enumerate(lines):
-                if '<div id="thumbnail"><img id="thumbnail" src="' in data:
+                if '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="' in data:
                     thumbnail_url = lines[i + 1].strip()
 
         thumbnail_path = f'blog/{thumbnail_url}'
