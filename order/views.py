@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum, F
 from django.views import View
@@ -152,13 +153,21 @@ class ChangeStatusOrderView(StaffSuperuserRequiredMixin, View):
         return redirect(f'order:list-order-{new_status.lower()}')
 
 
-class ListOrderPhoneView(StaffSuperuserRequiredMixin, View):
+class ListOrderPhoneView(LoginRequiredMixin, View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
 
     def get(self, request, phone):
         phone = str(phone)
-        orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+
+        if request.user.is_superuser or request.user.is_staff:
+            orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+        else:
+            if not str(request.user.phone_number) == phone:
+                messages.error(request, "You don't have permission to access others order.")
+                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
+            else:
+                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
 
         paginator = Paginator(orders, self.paginate_by)
         page = request.GET.get('page')
@@ -172,14 +181,18 @@ class ListOrderPhoneView(StaffSuperuserRequiredMixin, View):
         return render(request, self.template_name, {'user_order': orders, 'phone': phone})
 
 
-class OrderDetailView(SingleObjectMixin, View):
+class OrderDetailView(LoginRequiredMixin, SingleObjectMixin, View):
     template_name = 'Order_DetailView.html'
 
     def get(self, request, pk):
         order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
+        if not (request.user.is_superuser or request.user.is_staff) and order.customer_phone != str(
+                request.user.phone_number):
+            messages.error(request, "You don't have permission to access this order.")
+            return redirect('order:phone-orders', request.user.phone_number)
         return render(request, self.template_name, {'order': order})
 
-    # def dispatch(self, request, *args, **kwargs):#todo:
+
 
 
 class GetPhoneOrderView(StaffSuperuserRequiredMixin, View):
