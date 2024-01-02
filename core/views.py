@@ -44,6 +44,7 @@ class DashboardView(View):
             'favorite_food': r.favorite_foods(),
             'favorite_table': r.favorite_tables(),
             'peak_hour': peak_hour,
+            'peak_day': r.peak_day_of_week(),
             'most_peak_hour': most_peak_hour,
             'best_cutomer': r.best_cutomer(),
         }

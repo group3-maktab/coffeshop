@@ -1,15 +1,13 @@
 from collections import namedtuple
 from datetime import timedelta
 from functools import wraps
-
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
-from django.db.models.functions import ExtractHour
+from django.db.models.functions import ExtractHour, Extract ,ExtractWeekDay
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
 from django.db.models import Q, Sum, F, ExpressionWrapper, DecimalField
-
 from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
@@ -496,15 +494,13 @@ class Reporting:
         else: return 'No hour found','No hour found'
 
     def peak_day_of_week(self):
-        start_date = timezone.now() - timezone.timedelta(days=self.days)
-        end_date = timezone.now()
 
         orders = Order.objects.filter(
-            created_at__range=(start_date, end_date),
+            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
             status='F'
         )
 
-        orders_by_day = orders.annotate(day_of_week=ExtractDayOfWeek('created_at'))
+        orders_by_day = orders.annotate(day_of_week=ExtractWeekDay('created_at'))
 
         peak_days_data = (
             orders_by_day
@@ -521,11 +517,10 @@ class Reporting:
                 'day_of_week': day_of_week,
                 'order_count': order_count
             })
-
         if peak_days_list:
-            return peak_days_list, list(peak_days_list[0].values())[0]
+            return peak_days_list
         else:
-            return 'No day found', 'No day found'
+            return None
 
 
 

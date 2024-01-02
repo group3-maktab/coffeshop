@@ -514,7 +514,15 @@
             </div>
         </div>
         
-        
+        {% if peak_day is not None %}
+             <h3 class="mx-12 px-5"> Peak Weak</h3>
+            <div class="bar-chart mx-12"></div>
+        {% endif %}
+
+    
+    
+    
+    
     </div>
     <div class="row">
         <div class="col-12 col-xl-8">
@@ -978,6 +986,39 @@
         showArea: true
     });
 </script>
-    <script src="{% static 'assets/vendor/chartist/dist/chartist.min.js' %}"></script>
+    
+<script>
+    var labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var series = Array(7).fill(0);  // Initialize series with zeros for each day
+    
+    {% for day_data in peak_day %}
+        // Convert day_of_week to 0-based index (1 for Monday, 2 for Tuesday, ..., 7 for Sunday)
+        var dayIndex = {{ day_data.day_of_week }} - 1;
+        
+        // Update the series value for the corresponding day
+        series[dayIndex] = {{ day_data.order_count }};
+    {% endfor %}
+    
+    new Chartist.Bar('.bar-chart', {
+        labels: labels,
+        series: [series]
+    }, {
+        low: 0,
+        showArea: true,
+        plugins: [Chartist.plugins.tooltip()],
+        axisX: {
+            position: 'end'
+        },
+        axisY: {
+            showGrid: true,
+            showLabel: true,
+            offset: 0
+        }
+    });
+</script>
+    
+    
+    
+<script src="{% static 'assets/vendor/chartist/dist/chartist.min.js' %}"></script>
 <script src="{% static 'assets/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js' %}"></script>
 {% endblock javascripts %}
