@@ -39,7 +39,6 @@ class CreateBlogView(View):
     def post(self, request):
         form = GenerateBlogForm(request.POST, request.FILES)
         if form.is_valid():
-            os.makedirs('blog/templates/articles', exist_ok=True)
             title = form.cleaned_data['title']
             thumbnail = form.cleaned_data['thumbnail']
             content = form.cleaned_data['content']
@@ -103,11 +102,11 @@ class UpdateBlogView(LoginRequiredMixin, View):
             thumbnail_url = None
 
             # Extract content between <p> tags
-            start_tag = '<p id="t">'
+            start_tag = '<p>'
             end_tag = '</p>'
 
             start_index = contents.find(start_tag)
-            end_index = contents.find(end_tag)
+            end_index = contents.rfind(end_tag)
 
             if start_index != -1 and end_index != -1:
                 content = contents[start_index + len(start_tag):end_index].strip()
@@ -117,20 +116,20 @@ class UpdateBlogView(LoginRequiredMixin, View):
             title_start = '<h1 class="text-center fw-bolder display-1 text-capitalize">'
             title_end = '</h1>'
             title_index_start = contents.find(title_start)
-            title_index_end = contents.find(title_end)
+            title_index_end = contents.rfind(title_end)
             if title_index_start != -1 and title_index_end != -1:
                 title = contents[title_index_start + len(title_start):title_index_end].strip()
 
             thumbnail_start = '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="'
-            thumbnail_end = f'"alt='
+            thumbnail_end = f' "alt="{title} Thumbnail">'
             thumbnail_index_start = contents.find(thumbnail_start)
-            thumbnail_index_end = contents.find(thumbnail_end)
+            thumbnail_index_end = contents.rfind(thumbnail_end)
 
             if thumbnail_index_start != -1 and thumbnail_index_end != -1:
                 thumbnail_url = contents[thumbnail_index_start + len(thumbnail_start):thumbnail_index_end].strip()
 
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
-        print(thumbnail_url)
+
         thumbnail_path = f'blog{thumbnail_url}'
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
