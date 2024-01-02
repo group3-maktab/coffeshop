@@ -1,5 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Sum, F
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
@@ -7,7 +9,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from foodmenu.models import Food
 from tables.models import Table
-from utils import Cart, staff_or_superuser_required
+from utils import Cart, staff_or_superuser_required, StaffSuperuserRequiredMixin
 from .forms import CartAddProductForm, OrderCreateForm, GetPhoneOrder
 from order.models import OrderItem, Order
 
@@ -101,7 +103,7 @@ class ChangeOrderView(View):
         return redirect('order:detail-cart')
 
 
-class BaseOrderListView(ListView):
+class BaseOrderListView(StaffSuperuserRequiredMixin, ListView):
     model = Order
     template_name = 'Order_ListOrder.html'
     context_object_name = 'orders'
@@ -137,7 +139,7 @@ class OrderCanceldListView(BaseOrderListView):
         return Order.objects.filter(status='C')
 
 
-class ChangeStatusOrderView(View):
+class ChangeStatusOrderView(StaffSuperuserRequiredMixin, View):
     def post(self, request, pk):
         new_status: str = request.POST.get('new_status')
         order = get_object_or_404(Order, id=pk)
@@ -151,13 +153,21 @@ class ChangeStatusOrderView(View):
         return redirect(f'order:list-order-{new_status.lower()}')
 
 
-class ListOrderPhoneView(View):
+class ListOrderPhoneView(LoginRequiredMixin, View):
     template_name = 'Order_ListPhoneOrder.html'
     paginate_by = 10
 
     def get(self, request, phone):
         phone = str(phone)
-        orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+
+        if request.user.is_superuser or request.user.is_staff:
+            orders = Order.objects.filter(customer_phone=phone).select_related('table').order_by('-created_at')
+        else:
+            if not str(request.user.phone_number) == phone:
+                messages.error(request, "You don't have permission to access others order.")
+                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
+            else:
+                orders = Order.objects.filter(customer_phone=request.user.phone_number).select_related('table').order_by('-created_at')
 
         paginator = Paginator(orders, self.paginate_by)
         page = request.GET.get('page')
@@ -171,15 +181,21 @@ class ListOrderPhoneView(View):
         return render(request, self.template_name, {'user_order': orders, 'phone': phone})
 
 
-class OrderDetailView(SingleObjectMixin, View):
+class OrderDetailView(LoginRequiredMixin, SingleObjectMixin, View):
     template_name = 'Order_DetailView.html'
 
     def get(self, request, pk):
         order = get_object_or_404(Order.objects.prefetch_related('items'), pk=pk)
+        if not (request.user.is_superuser or request.user.is_staff) and order.customer_phone != str(
+                request.user.phone_number):
+            messages.error(request, "You don't have permission to access this order.")
+            return redirect('order:phone-orders', request.user.phone_number)
         return render(request, self.template_name, {'order': order})
 
 
-class GetPhoneOrderView(View):
+
+
+class GetPhoneOrderView(StaffSuperuserRequiredMixin, View):
     template_name = 'Order_GetPhoneOrder.html'
     form = GetPhoneOrder()
 
@@ -192,3 +208,33 @@ class GetPhoneOrderView(View):
             phone_number = form.cleaned_data['customer_phone']
             return redirect('order:phone-orders', phone=phone_number)
         return render(request, self.template_name, {'form': form})
+
+
+class CustomerOrdersView(StaffSuperuserRequiredMixin, View):
+    template_name = 'Order_ListCustomer.html'
+    paginate_by = 10
+    def get(self, request):
+        orders = Order.objects.filter(
+            status='F'
+        )
+        customers_data = (
+            orders
+            .values('customer_phone')
+            .annotate(count=Count('id'),
+                      total = Sum(
+                    F('items__price') * F('items__quantity'),
+            )
+                      )
+            .order_by('-total')
+        )
+
+        paginator = Paginator(customers_data, self.paginate_by)
+        page = request.GET.get('page')
+
+        try:
+            customers_data = paginator.page(page)
+        except PageNotAnInteger:
+            customers_data = paginator.page(1)
+        except EmptyPage:
+            customers_data = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {'customer_orders': customers_data})

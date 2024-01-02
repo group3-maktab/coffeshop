@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %} Orders {% endblock %}
+{% block title %} Customer-List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-5">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-4">
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -20,16 +20,16 @@
                             </svg>
                         </a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Orders</li>
-                    <li class="breadcrumb-item active" aria-current="page">Orders-List</li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ phone }}</li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'order:list-order-w' %}">Orders</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
                 </ol>
             </nav>
-            <h2 class="h4">Orders</h2>
+            <h2 class="h4">All Customer</h2>
         </div>
 
     </div>
-    <div class="mx-5">
+    <div class="mx-7">
         {% if messages %}
             <p class="text-danger">
                 {% for message in messages %}
@@ -37,7 +37,7 @@
                 {% endfor %}</p>
         {% endif %}
     </div>
-    <div class="table-settings mb-4 mx-5">
+    <div class="table-settings mb-4 mx-4">
         <div class="row align-items-center justify-content-between">
             <div class="col col-md-6 col-lg-3 col-xl-4">
                 <div class="input-group me-2 me-lg-3 fmxw-400">
@@ -83,44 +83,31 @@
         </div>
     </div>
 
-    <div class="card card-body border-0 shadow table-wrapper table-responsive mx-5">
+    <div class="card card-body border-0 shadow table-wrapper table-responsive mx-4 pb-10">
         <table class="table table-hover">
 
             <thead>
             <tr>
-                <th class="border-gray-200">#</th>
                 <th class="border-gray-200">Phone</th>
-                <th class="border-gray-200">Table</th>
-                <th class="border-gray-200">Status</th>
-                <th class="border-gray-200">DateTime</th>
+                <th class="border-gray-200">Sales Count</th>
+                <th class="border-gray-200">Sales Total</th>
+
             </tr>
             </thead>
             <tbody>
             <!-- Item -->
-            {% for order in user_order %}
+            {% for orders in customer_orders %}
                 <tr>
 
                     <td>
-                        <a href="{% url 'order:order-detail' order.id %}" class="fw-bold text-sm-start">
-                            {{ order.id }}
+                        <a href="{% url 'order:phone-orders' orders.customer_phone %}" class="fw-bold text-sm-start">
+                            {{ orders.customer_phone }}
                         </a>
                     </td>
                     <td>
-                        <span class="fw-normal">{{ order.customer_phone }}</span>
+                        {{ orders.count }}
                     </td>
-                    <td><span class="fw-normal">{{ order.table.number }}</span></td>
-                    {% if order.status == "F" %}
-                        <td><span class="text-white btn btn-success">{{ order.get_status_display }}</span></td>
-                    {% elif order.status == "C" %}
-                        <td><span class="text-white btn btn-danger">{{ order.get_status_display }}</span></td>
-                    {% elif order.status == "P" %}
-                        <td><span class="text-white btn btn-tertiary">{{ order.get_status_display }}</span></td>
-                    {% elif order.status == "T" %}
-                        <td><span class="text-white btn btn-gray-700">{{ order.get_status_display }}</span></td>
-                    {% elif order.status == "W" %}
-                        <td><span class="text-white btn btn-info">{{ order.get_status_display }}</span></td>
-                    {% endif %}
-                    <td><span class="fw-normal">{{ order.created_at }}</span></td>
+                    <td><span class="fw-normal">{{ orders.total }}</span></td>
 
                 </tr>
 
@@ -129,16 +116,16 @@
         </table>
         <div>
     <span>
-        {% if user_order.has_previous %}
-            <a href="?page={{ user_order.previous_page_number }}">Previous</a>
+        {% if customer_orders.has_previous %}
+            <a href="?page={{ customer_orders.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
             <span>
-        Page {{ user_order.number }} of {{ user_order.paginator.num_pages }}.
+        Page {{ customer_orders.number }} of {{ customer_orders.paginator.num_pages }}.
     </span>
             <span>
-        {% if user_order.has_next %}
-            <a href="?page={{ user_order.next_page_number }}">Next</a>
+        {% if customer_orders.has_next %}
+            <a href="?page={{ customer_orders.next_page_number }}">Next</a>
         {% endif %}
     </span>
         </div>

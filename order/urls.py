@@ -14,9 +14,10 @@ urlpatterns = [
     path('orders/p', views.OrderPreparationListView.as_view(), name='list-order-p'),
     path('orders/t', views.OrderTransmissionListView.as_view(), name='list-order-t'),
     path('orders/f', views.OrderFinishedListView.as_view(), name='list-order-f'),
+    path('customers/', views.CustomerOrdersView.as_view(), name='list-customer'),
     path('orders/c', views.OrderCanceldListView.as_view(), name='list-order-c'),
     path('orders/change-status/<uuid:pk>', views.ChangeStatusOrderView.as_view(), name='change-status'),
     path('orders/find-phone', views.GetPhoneOrderView.as_view(), name='get-phone'),
     path('orders/<str:phone>', views.ListOrderPhoneView.as_view(), name='phone-orders'),
-    path('order/<uuid:pk>/', views.OrderDetailView.as_view(), name='order-detail')
+    path('order/<uuid:pk>/', views.OrderDetailView.as_view(), name='order-detail'),
 ]

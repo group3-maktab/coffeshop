@@ -1,45 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %} Orders-List {% endblock %} 
+{% block title %} Orders-List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-4">
-      <div class="d-block mb-4 mb-md-0">
-          <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-              <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                  <li class="breadcrumb-item">
-                      <a href="{% url 'core:home' %}">
-                          <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                      </a>
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">Orders</li>
-              </ol>
-          </nav>
-          <h2 class="h4">All Orders</h2>
-      </div>
-  <div class="btn-toolbar mb-2 mb-md-0">
-          <a href="{% url 'order:list-order-w' %}" class="btn btn-sm btn-info d-inline-flex align-items-center">
-              Waiting
-          </a>
-          <div class="btn-group ms-2 ms-lg-3">
-              <a href="{% url 'order:list-order-f' %}" type="button" class="btn btn-sm btn-success text-white">Finished</a>
-          </div>
-      <div class="btn-group ms-2 ms-lg-3">
-              <a href="{% url 'order:list-order-t' %}" type="button" class="btn btn-sm btn-gray-700 text-white">Transmission</a>
-          </div>
-      <div class="btn-group ms-2 ms-lg-3">
-              <a href="{% url 'order:list-order-p' %}" type="button" class="btn btn-sm btn-tertiary text-white">Preparation</a>
-          </div>
-      <div class="btn-group ms-2 ms-lg-3">
-              <a href="{% url 'order:list-order-c' %}" type="button" class="btn btn-sm btn-danger text-white">Canceled</a>
-          </div>
-      </div>
-      
-  </div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4 mx-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'core:home' %}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Orders</li>
+                </ol>
+            </nav>
+            <h2 class="h4">All Orders</h2>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{% url 'order:list-order-w' %}" class="btn btn-sm btn-info d-inline-flex align-items-center">
+                Waiting
+            </a>
+            <div class="btn-group ms-2 ms-lg-3">
+                <a href="{% url 'order:list-order-f' %}" type="button" class="btn btn-sm btn-success text-white">Finished</a>
+            </div>
+            <div class="btn-group ms-2 ms-lg-3">
+                <a href="{% url 'order:list-order-t' %}" type="button" class="btn btn-sm btn-gray-700 text-white">Transmission</a>
+            </div>
+            <div class="btn-group ms-2 ms-lg-3">
+                <a href="{% url 'order:list-order-p' %}" type="button" class="btn btn-sm btn-tertiary text-white">Preparation</a>
+            </div>
+            <div class="btn-group ms-2 ms-lg-3">
+                <a href="{% url 'order:list-order-c' %}" type="button"
+                   class="btn btn-sm btn-danger text-white">Canceled</a>
+            </div>
+        </div>
+
+    </div>
     <div class="mx-7">
         {% if messages %}
             <p class="text-danger">
@@ -48,64 +53,81 @@
                 {% endfor %}</p>
         {% endif %}
     </div>
-  <div class="table-settings mb-4 mx-4">
-      <div class="row align-items-center justify-content-between">
-          <div class="col col-md-6 col-lg-3 col-xl-4">
-              <div class="input-group me-2 me-lg-3 fmxw-400">
+    <div class="table-settings mb-4 mx-4">
+        <div class="row align-items-center justify-content-between">
+            <div class="col col-md-6 col-lg-3 col-xl-4">
+                <div class="input-group me-2 me-lg-3 fmxw-400">
                   <span class="input-group-text">
-                      <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                      <svg class="icon icon-xs" x-description="Heroicon name: solid/search"
+                           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                           aria-hidden="true">
+                          <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd"></path>
                       </svg>
                   </span>
-                  <input type="text" class="form-control" placeholder="Search orders">
-              </div>
-          </div>
-          <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-              <div class="dropdown">
-                  <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
-                      <span class="visually-hidden">Toggle Dropdown</span>
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0">
-                      <span class="small ps-3 fw-bold text-dark">Show</span>
-                      <a class="dropdown-item d-flex align-items-center fw-bold" href="#">10 <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg></a>
-                      <a class="dropdown-item fw-bold" href="#">20</a>
-                      <a class="dropdown-item fw-bold rounded-bottom" href="#">30</a>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+                    <input type="text" class="form-control" placeholder="Search orders">
+                </div>
+            </div>
+            <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                  clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0">
+                        <span class="small ps-3 fw-bold text-dark">Show</span>
+                        <a class="dropdown-item d-flex align-items-center fw-bold" href="#">10
+                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a class="dropdown-item fw-bold" href="#">20</a>
+                        <a class="dropdown-item fw-bold rounded-bottom" href="#">30</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <div class="card card-body border-0 shadow table-wrapper table-responsive mx-4 pb-10">
-      <table class="table table-hover">
+    <div class="card card-body border-0 shadow table-wrapper table-responsive mx-4 pb-10">
+        <table class="table table-hover">
 
-          <thead>
-              <tr>
-                  <th class="border-gray-200">#</th>
-                  <th class="border-gray-200">Phone</th>
-                  <th class="border-gray-200">Table</th>
-                  <th class="border-gray-200">Status</th>
-                  <th class="border-gray-200">Datetime</th>
-                  <th class="border-gray-200">Actions</th>
-              </tr>
-          </thead>
-          <tbody>
-              <!-- Item -->
-                  {% for order in orders %}
+            <thead>
+            <tr>
+                <th class="border-gray-200">#</th>
+                <th class="border-gray-200">Phone</th>
+                <th class="border-gray-200">Table</th>
+                <th class="border-gray-200">Status</th>
+                <th class="border-gray-200">Datetime</th>
+                <th class="border-gray-200">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Item -->
+            {% for order in orders %}
                 <tr>
 
-                  <td>
-                      <a href="{% url 'order:order-detail' order.id %}" class="fw-bold text-sm-start">
-                          {{ order.id }}
-                      </a>
-                  </td>
-                  <td>
-                      <a href="{% url 'order:phone-orders' order.customer_phone %}" class="fw-bold text-sm-start">
-                          {{ order.customer_phone }}
-                      </a>
-                  </td>
-                  <td><span class="fw-normal">{{ order.table.number}}</span></td>
+                    <td>
+                        <a href="{% url 'order:order-detail' order.id %}" class="fw-bold text-sm-start">
+                            {{ order.id }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'order:phone-orders' order.customer_phone %}" class="fw-bold text-sm-start">
+                            {{ order.customer_phone }}
+                        </a>
+                    </td>
+                    <td><span class="fw-normal">{{ order.table.number }}</span></td>
                     {% if order.status == "F" %}
                         <td><span class="text-white btn btn-success">{{ order.get_status_display }}</span></td>
                     {% elif order.status == "C" %}
@@ -116,73 +138,90 @@
                         <td><span class="text-white btn btn-gray-700">{{ order.get_status_display }}</span></td>
                     {% elif order.status == "W" %}
                         <td><span class="text-white btn btn-info">{{ order.get_status_display }}</span></td>
-                    {% endif %} 
-                                    <td><span class="fw-normal">{{ order.created_at }}</span></td>
+                    {% endif %}
+                    <td><span class="fw-normal">{{ order.created_at }}</span></td>
                     <td class="flex justify-content-center">
-                         <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
-                                  <div class="dropdown">
-                                      <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                          <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
-                                          <span class="visually-hidden">Actions</span>
-                                      </button>
-                                      <div class="dropdown-menu pb-3 px-6 justify-items-start">
-                                          <span class="small ps-3 fw-bold text-dark">Actions</span>
-              <form class="flex w-100" method="post" action="{% url 'order:change-status' order.id %}">
+                        <div class="col-4 col-md-2 col-xl-1 ps-md-0 text-end">
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                              clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="visually-hidden">Actions</span>
+                                </button>
+                                <div class="dropdown-menu pb-3 px-6 justify-items-start">
+                                    <span class="small ps-3 fw-bold text-dark">Actions</span>
+                                    <form class="flex w-100" method="post"
+                                          action="{% url 'order:change-status' order.id %}">
 
-                {% csrf_token %}
-                {% if not order.status == 'W' %}
-                    <button type="submit" class="btn btn-info my-2" name="new_status" value="W">Set to Waiting</button>
-<br>
-                {% endif %} 
-                {% if not order.status == 'P' %}
-                    <button type="submit" class="btn btn-tertiary my-2" name="new_status" value="P">Set to Preparation</button>
-                    <br>
-                {% endif %} 
-                {% if not order.status == 'T' %}
-                    <button type="submit" class=" btn btn-gray-700 my-2" name="new_status" value="T">Set to Transmission</button>
-                    <br>
-                {% endif %} 
-                {% if not order.status == 'F' %}
-                    <button type="submit" class="btn btn-success my-2" name="new_status" value="F">Set to Finished</button>
-                    <br>
-                {% endif %} 
-              
-            </form>
-            <form action="{% url 'order:update-order' order.pk %}" method="post">
-                            {% csrf_token %}
-            <button type="submit" class="btn bg-warning" name="edit-order" value="Edit Order">Edit Order</button>
-            </form>
+                                        {% csrf_token %}
+                                        {% if not order.status == 'W' %}
+                                            <button type="submit" class="btn btn-info my-2" name="new_status" value="W">
+                                                Set to Waiting
+                                            </button>
+                                            <br>
+                                        {% endif %}
+                                        {% if not order.status == 'P' %}
+                                            <button type="submit" class="btn btn-tertiary my-2" name="new_status"
+                                                    value="P">Set to Preparation
+                                            </button>
+                                            <br>
+                                        {% endif %}
+                                        {% if not order.status == 'T' %}
+                                            <button type="submit" class=" btn btn-gray-700 my-2" name="new_status"
+                                                    value="T">Set to Transmission
+                                            </button>
+                                            <br>
+                                        {% endif %}
+                                        {% if not order.status == 'F' %}
+                                            <button type="submit" class="btn btn-success my-2" name="new_status"
+                                                    value="F">Set to Finished
+                                            </button>
+                                            <br>
+                                        {% endif %}
 
-                    
-                                      </div>
-                                      </div>
-                                      </div>
+                                    </form>
+                                    <form action="{% url 'order:update-order' order.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn bg-warning" name="edit-order"
+                                                value="Edit Order">Edit Order
+                                        </button>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
                     </td>
-              </tr>
+                </tr>
 
-          {% endfor %}
-          </tbody>
-      </table>
-<div>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div>
     <span>
         {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
         {% endif %}
     </span>
-    <span>
+            <span>
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
     </span>
-    <span>
+            <span>
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">Next</a>
         {% endif %}
     </span>
-</div>
+        </div>
 
-  </div>
+    </div>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-      {% endblock javascripts %}
+{% endblock javascripts %}
