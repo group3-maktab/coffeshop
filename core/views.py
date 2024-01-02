@@ -47,6 +47,7 @@ class DashboardView(View):
             'peak_day': r.peak_day_of_week(),
             'most_peak_hour': most_peak_hour,
             'best_cutomer': r.best_cutomer(),
+            'favorite_category': r.favorite_category(),
         }
 
         return render(request, self.template_name, context=context)

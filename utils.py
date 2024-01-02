@@ -3,7 +3,7 @@ from datetime import timedelta
 from functools import wraps
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
-from django.db.models.functions import ExtractHour, Extract ,ExtractWeekDay
+from django.db.models.functions import ExtractHour, Extract, ExtractWeekDay
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.apps import AppConfig
@@ -390,7 +390,7 @@ class Reporting:
 
         total_sales = orders.aggregate(
             total_sales=Sum(
-                    F('items__price') * F('items__quantity'),
+                F('items__price') * F('items__quantity'),
             )
         )
 
@@ -429,9 +429,10 @@ class Reporting:
             .annotate(
                 used_foods=Sum('orderitem__quantity', distinct=True),
                 total_sales=Sum(
-                    F('orderitem__quantity') * F('orderitem__quantity'),
+                    F('orderitem__quantity') * F('orderitem__price'),
                 )
             )
+            .select_related('category')
             .order_by('-used_foods')
         )
 
@@ -460,7 +461,7 @@ class Reporting:
 
         return percentage_difference
 
-    def peak_hours(self): #todo: Dahanam sevice shod :-|
+    def peak_hours(self):  # todo: Dahanam sevice shod :-|
         start_hour = 0
         end_hour = 24
 
@@ -491,7 +492,8 @@ class Reporting:
             })
         if peak_hours_list:
             return peak_hours_list, list(peak_hours_list[0].values())[0]
-        else: return 'No hour found','No hour found'
+        else:
+            return 'No hour found', 'No hour found'
 
     def peak_day_of_week(self):
 
@@ -522,14 +524,12 @@ class Reporting:
         else:
             return None
 
-
-
     def best_cutomer(self):
         orders = Order.objects.filter(
             created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
             status='F'
         )
-        best_customer_data =(
+        best_customer_data = (
             orders
             .values('customer_phone')
             .annotate(order_count=Count('id'))
@@ -539,3 +539,30 @@ class Reporting:
             return list(best_customer_data[0].values())[0]
         else:
             return 'No user found'
+
+    def favorite_category(self):
+        CategoryData = namedtuple('CategoryData', ['id', 'name', 'total_sales'])
+
+        most_used_categories = (
+            Category.objects
+            .filter(
+                food__orderitem__order__created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                food__orderitem__order__status='F'
+            )
+            .annotate(
+                total_sales=Sum(
+                    F('food__orderitem__quantity') * F('food__orderitem__price'),
+                )
+            )
+            .order_by('-total_sales')
+        )
+
+        for category in most_used_categories:
+            if category.total_sales > 0:
+                category_data = CategoryData(
+                    id=category.pk,
+                    name=category.name,
+                    total_sales=category.total_sales,
+                )
+                yield category_data
+

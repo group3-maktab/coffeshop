@@ -39,7 +39,6 @@ class CreateBlogView(View):
     def post(self, request):
         form = GenerateBlogForm(request.POST, request.FILES)
         if form.is_valid():
-            os.makedirs('blog/templates/articles', exist_ok=True)
             title = form.cleaned_data['title']
             thumbnail = form.cleaned_data['thumbnail']
             content = form.cleaned_data['content']
@@ -103,7 +102,7 @@ class UpdateBlogView(LoginRequiredMixin, View):
             thumbnail_url = None
 
             # Extract content between <p> tags
-            start_tag = '<p id="t">'
+            start_tag = '<p id="content">'
             end_tag = '</p>'
 
             start_index = contents.find(start_tag)
@@ -117,12 +116,12 @@ class UpdateBlogView(LoginRequiredMixin, View):
             title_start = '<h1 class="text-center fw-bolder display-1 text-capitalize">'
             title_end = '</h1>'
             title_index_start = contents.find(title_start)
-            title_index_end = contents.find(title_end)
+            title_index_end = contents.rfind(title_end)
             if title_index_start != -1 and title_index_end != -1:
                 title = contents[title_index_start + len(title_start):title_index_end].strip()
 
             thumbnail_start = '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="'
-            thumbnail_end = f'"alt='
+            thumbnail_end = f'"alt="'
             thumbnail_index_start = contents.find(thumbnail_start)
             thumbnail_index_end = contents.find(thumbnail_end)
 
@@ -130,8 +129,9 @@ class UpdateBlogView(LoginRequiredMixin, View):
                 thumbnail_url = contents[thumbnail_index_start + len(thumbnail_start):thumbnail_index_end].strip()
 
         form = GenerateBlogForm(initial={'title': title, 'thumbnail_url': thumbnail_url, 'content': content})
-        print(thumbnail_url)
+
         thumbnail_path = f'blog{thumbnail_url}'
+        print(thumbnail_path)
         if os.path.exists(thumbnail_path):
             os.remove(thumbnail_path)
 
@@ -165,7 +165,7 @@ class DeleteBlogView(LoginRequiredMixin, View):
             lines = file.readlines()
             thumbnail_url = None
             for i, data in enumerate(lines):
-                if '<div id="thumbnail"><img id="thumbnail" src="' in data:
+                if '<div class="rounded-3 justify-content-center align-items-center" id="thumbnail"><img class="rounded-3 justify-content-center align-items-center" id="thumbnail" src="' in data:
                     thumbnail_url = lines[i + 1].strip()
 
         thumbnail_path = f'blog/{thumbnail_url}'
