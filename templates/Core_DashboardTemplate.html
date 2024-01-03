@@ -208,6 +208,57 @@
                     </div>
                 </div>
             </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="col-12 mb-4">
+                <div class="card border-0 shadow">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h2 class="fs-5 fw-bold mb-0">Employee</h2>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th class="border-bottom" scope="col">Employee Phone</th>
+                                <th class="border-bottom" scope="col">Orders Count</th>
+                                <th class="border-bottom" scope="col">Total Sales</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sales in sales_by_employee %}
+
+
+
+                                <tr>
+                                    <th class="text-gray-900" scope="row">
+                                        {{ sales.employee_phone }}
+                                    </th>
+                                    <td class="fw-bolder text-gray-500">
+                                        {{ sales.order_count }}
+                                    </td>
+                                    <td class="fw-bolder text-gray-500">
+                                        {{ sales.total_sales|floatformat }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

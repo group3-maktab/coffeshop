@@ -12,6 +12,7 @@ from django.apps import AppConfig
 from django.db.models import Q, Sum, F, ExpressionWrapper, DecimalField
 from django.http import HttpResponse
 
+from core.models import AuditLog
 from tables.models import Table
 from tag.models import TaggedItem, Tag
 from django.contrib import messages
@@ -43,7 +44,6 @@ def json_menu_generator():
         It also supports prefetching of GenericForeignKey, however,
          the queryset for each ContentType must be provided in the querysets parameter of GenericPrefetch.
     """
-    # Fetch all categories with related subcategories and foods
     """
     prefetch_related in most cases will be implemented using an SQL query that
      uses the ‘IN’ operator. 
@@ -285,7 +285,6 @@ class Cart:
         self.session = request.session  # todo expire at 30 M
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
-            # save an empty cart in the session
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
 
@@ -487,7 +486,7 @@ class Reporting:
         peak_hours_list = []
         for hour_data in peak_hours_data:
             current_hour = hour_data['hour']
-            next_hour = current_hour + 1 if current_hour < 23 else 0  # 24th hour wraps back to 0 #todo: ajab shizi shod :-)
+            next_hour = current_hour + 1 if current_hour < 23 else 0  # 24th hour wraps back to 0 todo: ajab chizi shod :-)
 
             order_count = hour_data['order_count']
             peak_hours_list.append({
@@ -569,6 +568,66 @@ class Reporting:
                     total_sales=category.total_sales,
                 )
                 yield category_data
+
+    def sales_by_employee(self):
+        EmployeeSalesData = namedtuple('EmployeeSalesData', ['employee_phone', 'order_count', 'total_sales'])
+
+        # Filter AuditLog entries where action is 'CREATE' and table_name is 'order_order'
+        audit_logs = AuditLog.objects.filter(
+            action='CREATE',
+            table_name='order_order',
+            timestamp__gte=timezone.now() - timezone.timedelta(days=self.days)
+        ).values('user__phone_number', 'row_id')
+
+        # Extract the row_ids and user__phone_number from AuditLog entries
+        audit_logs_dict = {entry['row_id']: entry['user__phone_number'] for entry in audit_logs}
+
+        # Get the unique row_ids from the AuditLog entries
+        row_ids = list(audit_logs_dict.keys())
+
+        # Aggregate orders and calculate total sales for each employee
+        sales_data = (
+            Order.objects
+            .filter(
+                created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                status='F',
+                id__in=row_ids
+            )
+            .values('id', 'items__price', 'items__quantity')
+        )
+        print(audit_logs_dict)
+        print("\n\n\n")
+        print(row_ids)
+        print("\n\n\n")
+        print(sales_data)
+        print("\n\n\n")
+
+        employee_sales_data = {}
+        for data in sales_data:
+            order_id = data['id']
+            print(order_id)
+            user_phone_number = audit_logs_dict.get(str(order_id))
+            print(user_phone_number)
+
+            if user_phone_number is not None:
+                if user_phone_number not in employee_sales_data:
+                    employee_sales_data[user_phone_number] = {
+                        'order_count': 0,
+                        'total_sales': 0
+                    }
+                employee_sales_data[user_phone_number]['order_count'] += 1
+                employee_sales_data[user_phone_number]['total_sales'] += data['items__price'] * data['items__quantity']
+
+        result_data = [
+            EmployeeSalesData(
+                employee_phone=user_phone_number if user_phone_number is not None else 'Unknown',
+                order_count=data['order_count'],
+                total_sales=data['total_sales']
+            )
+            for user_phone_number, data in employee_sales_data.items()
+        ]
+        print(result_data)
+        return result_data
 
 
 class CSVExportMixin(StaffSuperuserRequiredMixin):
