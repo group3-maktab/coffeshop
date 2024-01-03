@@ -49,6 +49,7 @@ class DashboardView(View):
             'best_cutomer': r.best_cutomer(),
             'favorite_category': r.favorite_category(),
             'sales_by_employee': r.sales_by_employee(),
+            'order_status_counts': r.order_status_counts(),
         }
 
         return render(request, self.template_name, context=context)

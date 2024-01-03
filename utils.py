@@ -410,7 +410,8 @@ class Reporting:
             .order_by('-used_seats')
         )
         for table in most_used_tables:
-            yield table
+            if table.used_seats > 0:
+                yield table
 
     def favorite_foods(self):
         """
@@ -572,20 +573,16 @@ class Reporting:
     def sales_by_employee(self):
         EmployeeSalesData = namedtuple('EmployeeSalesData', ['employee_phone', 'order_count', 'total_sales'])
 
-        # Filter AuditLog entries where action is 'CREATE' and table_name is 'order_order'
         audit_logs = AuditLog.objects.filter(
             action='CREATE',
             table_name='order_order',
             timestamp__gte=timezone.now() - timezone.timedelta(days=self.days)
         ).values('user__phone_number', 'row_id')
 
-        # Extract the row_ids and user__phone_number from AuditLog entries
         audit_logs_dict = {entry['row_id']: entry['user__phone_number'] for entry in audit_logs}
 
-        # Get the unique row_ids from the AuditLog entries
         row_ids = list(audit_logs_dict.keys())
 
-        # Aggregate orders and calculate total sales for each employee
         sales_data = (
             Order.objects
             .filter(
@@ -628,6 +625,30 @@ class Reporting:
         ]
         print(result_data)
         return result_data
+
+    def order_status_counts(self):
+
+        OrderStatusCount = namedtuple('OrderStatusCount', ['status', 'status_display', 'count'])
+
+        status_counts = (
+            Order.objects
+            .values('status').filter(created_at__gte=timezone.now() - timezone.timedelta(days=self.days),)
+            .annotate(count=Count('id'))
+            .order_by('status')
+        )
+
+        result_data = [
+            OrderStatusCount(
+                status=status_data['status'],
+                status_display=dict(Order.status_fields)[status_data['status']],
+                count=status_data['count']
+            )
+            for status_data in status_counts
+        ]
+
+        print(result_data)
+        return result_data
+
 
 
 class CSVExportMixin(StaffSuperuserRequiredMixin):

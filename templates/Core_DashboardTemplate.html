@@ -259,6 +259,61 @@
                     </div>
                 </div>
             </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="col-12 mb-4">
+                <div class="card border-0 shadow">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h2 class="fs-5 fw-bold mb-0">Status</h2>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                            <tr>
+                                <th class="border-bottom" scope="col">Status</th>
+                                <th class="border-bottom" scope="col">Orders Count</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for orders in order_status_counts %}
+
+
+
+                                <tr>
+                                    <th class="text-gray-900" scope="row">
+                                        {{ orders.status_display }}
+                                    </th>
+                                    <td class="fw-bolder text-gray-500">
+                                        {{ orders.count }}
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
