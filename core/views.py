@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render
 from django.views import View
 from utils import Reporting, staff_or_superuser_required
@@ -21,7 +23,12 @@ class DashboardView(View):
 
     @staff_or_superuser_required
     def get(self, request):
-        selected_range = request.GET.get('range', 'month')  # Default to 'month' if not specified
+
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+
+        selected_range = request.GET.get('range', 'month')
 
         if selected_range == 'year':
             days = 365
@@ -34,7 +41,15 @@ class DashboardView(View):
         elif selected_range == 'total':
             days = 99999
 
-        r = Reporting(days)
+        reporting_params = {'days': days}
+
+        if start_date and end_date:
+            start_date_obj = datetime.strptime(start_date, '%m/%d/%Y').date()
+            end_date_obj = datetime.strptime(end_date, '%m/%d/%Y').date()
+            reporting_params = {'start_at': start_date_obj, 'end_at': end_date_obj}
+
+        r = Reporting(reporting_params)
+
         total_sales: Decimal = r.total_sales()
         percentage_difference = r.get_percentage_difference()
         peak_hour, most_peak_hour = r.peak_hours()

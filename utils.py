@@ -367,8 +367,16 @@ class Reporting:
     generate Sales Invoice
     """
 
-    def __init__(self, days):
-        self.days = days
+    def __init__(self, kwargs):
+        print(kwargs)
+        if 'days' in kwargs:
+            self.days = kwargs['days']
+            self.time_filter = Q(created_at__gte=timezone.now() - timezone.timedelta(days=self.days))
+        elif 'start_at' in kwargs and 'end_at' in kwargs:
+            self.start_at = kwargs['start_at']
+            self.end_at = kwargs['end_at']
+            self.time_filter = Q(created_at__range=[self.start_at, self.end_at])
+
 
     def total_sales(self):
         """
@@ -387,7 +395,7 @@ class Reporting:
         #     return total_sales['total_sales']
 
         orders = Order.objects.filter(
-            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            self.time_filter,
             status='F'
         )
 
@@ -400,12 +408,17 @@ class Reporting:
         return total_sales['total_sales']
 
     def favorite_tables(self):
+        try:
+            time_filter = Q(orders__created_at__gte=timezone.now()
+                                              - timezone.timedelta(days=self.days))
+        except AttributeError:
+            time_filter = Q(orders__created_at__range=[self.start_at, self.end_at])
+
         most_used_tables = (
             Table.objects
             .annotate(used_seats=Count('orders__id', distinct=True, filter=(
                     Q(orders__status='F') &
-                    Q(orders__created_at__gte=timezone.now()
-                                              - timezone.timedelta(days=self.days))
+                    time_filter
             )))
             .order_by('-used_seats')
         )
@@ -424,10 +437,16 @@ class Reporting:
         """
         FoodData = namedtuple('FoodData', ['id', 'name', 'total_sales', 'counts', 'category'])
 
+        try:
+            time_filter = Q(orderitem__order__created_at__gte=timezone.now()
+                                              - timezone.timedelta(days=self.days))
+        except AttributeError:
+            time_filter = Q(orderitem__order__created_at__range=[self.start_at, self.end_at])
+
         most_used_foods = (
             Food.objects
             .filter(
-                orderitem__order__created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                time_filter,
                 orderitem__order__status='F'
             )
             .annotate(
@@ -457,7 +476,11 @@ class Reporting:
         For instance, if self.days is 2, it will compare the last 2 days with the 2 days before that.
         """
         current_sales = self.total_sales()
-        previous_days_sales = Reporting(self.days * 2).total_sales()
+        try:
+            reporting_params = {'days': self.days * 2}
+        except AttributeError:
+            return 0
+        previous_days_sales = Reporting(reporting_params).total_sales()
         if previous_days_sales:
             percentage_difference = ((current_sales - previous_days_sales) / previous_days_sales) * 100
         else:
@@ -470,7 +493,7 @@ class Reporting:
         end_hour = 24
 
         orders = Order.objects.filter(
-            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            self.time_filter,
             status='F'
         )
 
@@ -502,7 +525,7 @@ class Reporting:
     def peak_day_of_week(self):
 
         orders = Order.objects.filter(
-            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            self.time_filter,
             status='F'
         )
 
@@ -530,7 +553,7 @@ class Reporting:
 
     def best_cutomer(self):
         orders = Order.objects.filter(
-            created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+            self.time_filter,
             status='F'
         )
         best_customer_data = (
@@ -547,10 +570,16 @@ class Reporting:
     def favorite_category(self):
         CategoryData = namedtuple('CategoryData', ['id', 'name', 'total_sales'])
 
+        try:
+            time_filter = Q(food__orderitem__order__created_at__gte=timezone.now()
+                                              - timezone.timedelta(days=self.days))
+        except AttributeError:
+            time_filter = Q(food__orderitem__order__created_at__range=[self.start_at, self.end_at])
+
         most_used_categories = (
             Category.objects
             .filter(
-                food__orderitem__order__created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                time_filter,
                 food__orderitem__order__status='F'
             )
             .annotate(
@@ -576,7 +605,7 @@ class Reporting:
         audit_logs = AuditLog.objects.filter(
             action='CREATE',
             table_name='order_order',
-            timestamp__gte=timezone.now() - timezone.timedelta(days=self.days)
+            # timestamp__gte=timezone.now() - timezone.timedelta(days=self.days)
         ).values('user__phone_number', 'row_id')
 
         audit_logs_dict = {entry['row_id']: entry['user__phone_number'] for entry in audit_logs}
@@ -586,25 +615,25 @@ class Reporting:
         sales_data = (
             Order.objects
             .filter(
-                created_at__gte=timezone.now() - timezone.timedelta(days=self.days),
+                self.time_filter,
                 status='F',
                 id__in=row_ids
             )
             .values('id', 'items__price', 'items__quantity')
         )
-        print(audit_logs_dict)
-        print("\n\n\n")
-        print(row_ids)
-        print("\n\n\n")
-        print(sales_data)
-        print("\n\n\n")
+        # print(audit_logs_dict)
+        # print("\n\n\n")
+        # print(row_ids)
+        # print("\n\n\n")
+        # print(sales_data)
+        # print("\n\n\n")
 
         employee_sales_data = {}
         for data in sales_data:
             order_id = data['id']
-            print(order_id)
+            # print(order_id)
             user_phone_number = audit_logs_dict.get(str(order_id))
-            print(user_phone_number)
+            # print(user_phone_number)
 
             if user_phone_number is not None:
                 if user_phone_number not in employee_sales_data:
@@ -632,7 +661,7 @@ class Reporting:
 
         status_counts = (
             Order.objects
-            .values('status').filter(created_at__gte=timezone.now() - timezone.timedelta(days=self.days),)
+            .values('status').filter(self.time_filter)
             .annotate(count=Count('id'))
             .order_by('status')
         )
