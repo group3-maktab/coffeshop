@@ -28,5 +28,6 @@ urlpatterns = [
     path('foods/', include('foodmenu.urls', namespace='foods')),
     path('orders/', include('order.urls', namespace='order')),
     path('tags/', include('tag.urls', namespace='tags')),
+    path('reviews/', include('review.urls', namespace='reviews')),
 
 ]
